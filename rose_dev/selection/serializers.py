@@ -50,3 +50,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserEvent
         fields = '__all__'
+
+
+class GetEventsSerializer(serializers.Serializer):
+    events = serializers.JSONField()

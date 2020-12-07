@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
+from .views import CreateEventAPIView, GetUserEventsAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
 #from .views import 
 
 
@@ -15,6 +15,8 @@ urlpatterns = [
     path('<int:pk>/candidates/', ListSelectionCandidatesAPIView.as_view(), name="list selection candidates"),
     path('<str:mail>/candidates/', ListUserCandidatesAPIView.as_view(), name="list user candidates"),
     path('sendmail/<str:token>', SendMailAPIView.as_view(), name="send mail"),
+    path('events/<str:username>/<str:token>', GetUserEventsAPIView.as_view(), name="list events"),
+    path('create_event/<str:token>', CreateEventAPIView.as_view(), name="create events"),
               ]
 
 """

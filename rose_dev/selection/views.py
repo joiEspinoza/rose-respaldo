@@ -4,12 +4,12 @@ from authentication.models import User
 # Create your views here.
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import EventSerializer, WelcomeSerializer, CustomSerializer, IssueSerializer, SelectionSerializer, CandidateSerializer
+from .serializers import GetEventsSerializer, EventSerializer, WelcomeSerializer, CustomSerializer, IssueSerializer, SelectionSerializer, CandidateSerializer
 from rest_framework.response import Response
 from .models import Selection, Candidate, Issue, Custom, UserConfig, ChangeItem
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
-from .mail_utils import create_gmail, send_gmail, send_outlook
+from .mail_utils import get_gmailevents, create_gmail_event, create_outlook_event, create_gmail, send_gmail, send_outlook, get_outlookevents
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -42,9 +42,9 @@ class WelcomeAPIView(generics.GenericAPIView): #validated
         """
         Estimating time using:
         - 30 seconds of fast-reading
-        - 18 hrs of screening (23 minus 5 hours)
+        - 18 hrs of screening (23 hours)
         """
-        estimated_time = ct_resumes * 0.5 + ct_sel * 60 * 18 #minutes
+        estimated_time = ct_resumes * 0.5 + ct_sel * 23.5 #minutes
 
         json = {
             'selections_ct': ct_sel,
@@ -239,7 +239,7 @@ class ListTutorialsAPIView(generics.GenericAPIView):  #validated
 class SendMailAPIView(generics.GenericAPIView):
     serializer_class = EventSerializer
 
-    desc = 'Google params -> sender, to, cc, subject, message_text \n Microsoft params -> content, subject, to, cc'
+    desc = 'Google params -> sender, to, cc, subject, message_text     to and cc with ";"\n Microsoft params -> content, subject, to, cc     to and cc as array [] '
 
     @swagger_auto_schema(operation_description=desc, operation_id='send_mail_candidate')
     def post(self, request, token):
@@ -276,3 +276,94 @@ class SendMailAPIView(generics.GenericAPIView):
             #    return Response({'error': 'No se pudo enviar el mensaje, crear incidencia con código MAIL_VIEW_SEND'}, status=status.HTTP_400_BAD_REQUEST)
         if user.auth_provider == 'email':
             return Response({'error': 'El envío de mails y calendarización es solo con cuentas oficiales de Google y Microsoft, registra un usuario con esas credenciales!'}, status=status.HTTP_428_PRECONDITION_REQUIRED) 
+
+
+
+class GetUserEventsAPIView(generics.GenericAPIView):  #validated
+    serializer_class = GetEventsSerializer
+
+    @swagger_auto_schema(operation_description="Get user events to check for availability", operation_id='user_events_read')
+    def get(self, request, token, username):
+        user_id = User.objects.get(username=username)
+        user_timezone = UserConfig.objects.get(user=user_id, type="timezone")
+        if user_id.auth_provider == 'google':
+            #try:
+                events = get_gmailevents(token, user_timezone.value)
+                data = {'events': events.json()['items']}
+                serializer = self.serializer_class(data)
+                if events.status_code == 200:
+                    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+                elif events.status_code == 401:
+                    return Response({'error': 'Se requiere un nuevo token'}, status=status.HTTP_401_UNAUTHORIZED)
+                elif events.status_code == 403:
+                    return Response({'error': 'La información de token no corresponde a la del usuario'}, status=status.HTTP_403_FORBIDDEN)
+            #except:
+            #    return Response({'error': 'No se retornar los eventos del usuario, crear incidencia con código CALENDAR_GET_GOOGLE'}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id.auth_provider == 'microsoft':
+            #try:
+                events = get_outlookevents(token, user_timezone.value)
+                data = {'events': events.json()['value']}
+                serializer = self.serializer_class(data)
+                if events.status_code == 200:
+                    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+                elif events.status_code == 401:
+                    return Response({'error': 'Se requiere un nuevo token'}, status=status.HTTP_401_UNAUTHORIZED)
+                elif events.status_code == 403:
+                    return Response({'error': 'La información de token no corresponde a la del usuario'}, status=status.HTTP_403_FORBIDDEN)
+            #except:
+            #    return Response({'error': 'No se retornar los eventos del usuario, crear incidencia con código CALENDAR_GET_MICROSOFT'}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id.auth_provider == 'email':
+            return Response({'error': 'El envío de mails y calendarización es solo con cuentas oficiales de Google y Microsoft, registra un usuario con esas credenciales!'}, status=status.HTTP_428_PRECONDITION_REQUIRED) 
+
+
+
+class CreateEventAPIView(generics.GenericAPIView):  #validated
+    serializer_class = EventSerializer
+
+    @swagger_auto_schema(operation_description="post to create events.\n info JSON: subject, content, start, end, attendees \n Datetime format for start and end in post request 2020-12-07T20:00:00\n attendees format ['mail1', 'mail2'] (microsoft and google)", operation_id='user_event_create')
+    def post(self, request, token):
+
+        """
+        args_url: access_token
+        args request: subject, start, end, attendees
+        """
+        serializer = self.serializer_class(data=request.data)
+        event = serializer.initial_data
+        event_info = event['info']
+        user_id = User.objects.get(pk=event['user'])
+        user_timezone = UserConfig.objects.get(user=user_id, type="timezone")
+        if user_id.auth_provider == 'microsoft':
+            try:
+                meeting = create_outlook_event(token, event_info['subject'],event_info['content'],event_info['start'],event_info['end'],event_info['attendees'],user_timezone.value)
+                print(meeting.status_code)
+                if meeting.status_code == 401:
+                    return Response({'error': 'Se requiere un nuevo token'}, status=status.HTTP_401_UNAUTHORIZED)
+                elif meeting.status_code == 403:
+                    return Response({'error': 'La información de token no corresponde a la del usuario'}, status=status.HTTP_403_FORBIDDEN)
+                else:
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+                    return Response({'created_data': serializer.data}, status=status.HTTP_201_CREATED)
+            except:
+                return Response({'error': 'No se pudo crear la reunión, crear incidencia con código CALENDAR_GOOGLE_CRATE'}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id.auth_provider == 'google':
+            try:
+                meeting = create_gmail_event(token, event_info['subject'],event_info['content'],event_info['start'],event_info['end'],event_info['attendees'],user_timezone.value)
+                print(meeting.status_code)
+                if meeting.status_code == 401:
+                    return Response({'error': 'Se requiere un nuevo token'}, status=status.HTTP_401_UNAUTHORIZED)
+                elif meeting.status_code == 403:
+                    return Response({'error': 'La información de token no corresponde a la del usuario'}, status=status.HTTP_403_FORBIDDEN)
+                else:
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+                    return Response({'created_data': serializer.data}, status=status.HTTP_201_CREATED)
+            except:
+                return Response({'error': 'No se pudo crear la reunión, crear incidencia con código CALENDAR_GOOGLE_CRATE'}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id.auth_provider == 'email':
+            return Response({'error': 'El envío de mails y calendarización es solo con cuentas oficiales de Google y Microsoft, registra un usuario con esas credenciales!'}, status=status.HTTP_428_PRECONDITION_REQUIRED) 
+
+
+        
+
+     

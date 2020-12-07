@@ -93,7 +93,7 @@ class UserConfig(Timestamp):
     value = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.license_type
+        return 'Licence and user: %s / %s' % (self.license_type, self.user)
 
 class ChangeItem(models.Model):
     id = models.AutoField(primary_key=True)
