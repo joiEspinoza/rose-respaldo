@@ -40,10 +40,10 @@ class Selection(Timestamp):
     is_remote = models.BooleanField(default=False)
     status = models.CharField(max_length=100)
     vacant = models.IntegerField(blank=True, null=True)
-    requirements = models.JSONField(null=True)
-    desired = models.JSONField(null=True)
-    kpis = models.JSONField(null=True)
-    storage_url = models.CharField(max_length=500)
+    requirements = models.JSONField(blank=True, null=True)
+    desired = models.JSONField(blank=True, null=True)
+    kpis = models.JSONField(blank=True, null=True)
+    storage_url = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -54,7 +54,7 @@ class Candidate(Timestamp):
     id = models.AutoField(primary_key=True)
     selection = models.ForeignKey(Selection, on_delete=models.CASCADE)
     name = models.CharField(max_length=100) #front validates
-    mail = models.CharField(max_length=100) #front validates
+    mail = models.CharField(max_length=100, blank=True, null=True) #front validates
     info = models.JSONField(null=True)
 
     def __str__(self):

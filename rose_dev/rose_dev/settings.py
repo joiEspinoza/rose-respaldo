@@ -27,7 +27,7 @@ DEBUG = True
 
 #SITE_ID = 0
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0']
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
@@ -124,7 +124,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     )
 }
 

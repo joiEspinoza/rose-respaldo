@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from .models import Selection, Candidate, Issue, Custom, UserConfig, ChangeItem
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
+from .model_utils import create_candidates
 from .mail_utils import get_gmailevents, create_gmail_event, create_outlook_event, create_gmail, send_gmail, send_outlook, get_outlookevents
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
@@ -17,7 +18,8 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.http import HttpResponsePermanentRedirect
 import os
-
+import json
+import shutil
 
 class WelcomeAPIView(generics.GenericAPIView): #validated
     
@@ -110,9 +112,40 @@ class SelectionAPIView(generics.GenericAPIView):  #validated
         return Response({'updated_data': serializer.data}, status=status.HTTP_202_ACCEPTED)
 
 
+class CreateCandidateAPIView(generics.GenericAPIView): #not complete
+    serializer_class = CandidateSerializer
+
+    @swagger_auto_schema(operation_description="Creates ranking of candidates from a selection", operation_id='candidate_create')
+    def post(self, request):
+        """
+        after creating selection and aws S3 path we create and rank the candidates
+        selection = Selection.objects.get(pk=sel_id)
+        user_mail = User.objects.get(pk=selection.user.id).email
+        desired = selection.desired
+        require = selection.requirements
+        R_exp = require.exp
+        R_idioms = require.idioms
+        R_skills = require.skills
+        R_location = require.location
+        D_exp = desired.exp
+        D_idioms = desired.idioms
+        D_skills = desired.skills
+        D_location = desired.location
+        D_designations = desired.designation
+        D_colleges = desired.college
+        print(D_exp, D_skills, D_location, D_designations, D_colleges)
+        """
+
+        serializer = self.serializer_class(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({'created_data': serializer.data}, status=status.HTTP_201_CREATED)
+
+
+
 class CreateSelectionAPIView(generics.GenericAPIView): #not complete
     serializer_class = SelectionSerializer
-    serializer_class2 = CandidateSerializer
 
     @swagger_auto_schema(operation_description="Creates new selection and candidates", operation_id='selection_create')
     def post(self, request):
@@ -127,10 +160,21 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         """
 
         serializer = self.serializer_class(data=request.data)
+        print(serializer.initial_data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({'created_data': serializer.data}, status=status.HTTP_201_CREATED)
+        sel = serializer.save()
+        S3_path = serializer.initial_data['storage_url']
+        print(sel.pk, S3_path)
+        candidates = create_candidates(S3_path, sel.pk)
+        serializer_candidates = CandidateSerializer(data=candidates, many=True)
+        serializer_candidates.is_valid(raise_exception=True)
+        #serializer_candidates.errors
+        serializer_candidates.save()
+        selection = Selection.objects.get(pk=sel.pk)
+        selection.status = 'Done'
+        shutil.rmtree(r'selection/tmp/')
+        os.mkdir(r'selection/tmp/')
+        return Response({'created_data': serializer.data, 'candidates': candidates}, status=status.HTTP_201_CREATED)
 
 
 class ListSelectionCandidatesAPIView(generics.GenericAPIView): #validated
@@ -161,8 +205,9 @@ class ListUserCandidatesAPIView(generics.GenericAPIView):  #validated
         
         try:
             user_obj = User.objects.get(email = mail)
-            sel = Selection.objects.get(user = user_obj)
-            resumes = Candidate.objects.filter(selection = sel)
+            sel = Selection.objects.filter(user = user_obj)
+            for row in sel:
+                resumes = Candidate.objects.filter(selection = row)
             if len(resumes) == 0:
                 return Response({'error': '¡Que raro! Usuario no cuenta con candidatos y sus CVs, creaste alguna selección?'}
                             , status=status.HTTP_400_BAD_REQUEST)

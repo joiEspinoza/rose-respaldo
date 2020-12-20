@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateEventAPIView, GetUserEventsAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
+from .views import CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
 #from .views import 
 
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('issues/<int:pk>/', IssueAPIView.as_view(), name="get issue"),
     path('issues/create/', CreateIssueAPIView.as_view(), name="create issue"),
     path('candidate/<int:pk>/', CandidateAPIView.as_view(), name="get candidate"),
+    path('create_candidate/', CreateCandidateAPIView.as_view(), name="create candidate"),
     path('tutorials/', ListTutorialsAPIView.as_view(), name="list tutorials"),
     path('<int:pk>/candidates/', ListSelectionCandidatesAPIView.as_view(), name="list selection candidates"),
     path('<str:mail>/candidates/', ListUserCandidatesAPIView.as_view(), name="list user candidates"),
