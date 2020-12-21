@@ -161,10 +161,12 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
 
         serializer = self.serializer_class(data=request.data)
         print(serializer.initial_data)
+        user = User.objects.get(email=serializer.initial_data['user'])
+        serializer.initial_data['user'] = user.id
+        print(serializer.initial_data['user'], 'we successfully changed initial data to int')        
         serializer.is_valid(raise_exception=True)
         sel = serializer.save()
         S3_path = serializer.initial_data['storage_url']
-        print(sel.pk, S3_path)
         candidates = create_candidates(S3_path, sel.pk)
         serializer_candidates = CandidateSerializer(data=candidates, many=True)
         serializer_candidates.is_valid(raise_exception=True)
