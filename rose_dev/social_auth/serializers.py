@@ -33,8 +33,7 @@ def register_social_user(provider, user_id, email, name):
 
             return {
                 'username': registered_user.username,
-                'email': registered_user.email,
-                'tokens': registered_user.tokens()}
+                'email': registered_user.email}
 
         else:
             raise AuthenticationFailed(

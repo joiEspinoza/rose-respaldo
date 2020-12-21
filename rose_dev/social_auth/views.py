@@ -8,8 +8,8 @@ from rest_framework.generics import GenericAPIView
 from .serializers import GoogleSocialAuthSerializer, MicrosoftSocialAuthSerializer
 
 ###
-import google.oauth2.credentials
-import google_auth_oauthlib.flow
+#import google.oauth2.credentials
+#import google_auth_oauthlib.flow
 
 class GoogleSocialAuthView(GenericAPIView):
 
