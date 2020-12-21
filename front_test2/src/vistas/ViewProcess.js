@@ -34,14 +34,14 @@ const ViewProcess = (props) => {
   const [openMail, setOpenMail] = React.useState(false);
   const [openCalendar, setOpenCalendar] = React.useState(false);
   const columnas = {
-    "nombre":{titulo:"Nombre",color:"primary",tamano:"h6",link:false},
-    "profesion":{titulo:"Creado",color:"textPrimary",tamano:"body2",link:false, },
-    "universidad":{titulo:"Status",color:"textPrimary",tamano:"body2",link:false, },
-    "email":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
-    "ciudad":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
+    "name":{titulo:"Nombre",color:"primary",tamano:"h6",link:false},
+    //"profesion":{titulo:"Creado",color:"textPrimary",tamano:"body2",link:false, },
+    //"universidad":{titulo:"Status",color:"textPrimary",tamano:"body2",link:false, },
+    "mail":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
+    //"ciudad":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
-  const candidatosProcesoExcel = candidatosProceso.map(i=>({nombre:i.nombre,profesion:i.profesion,universidad:i.universidad,email:i.email,ciudad:i.ciudad}));
+  const candidatosProcesoExcel = candidatosProceso.map(i=>({name:i.name,mail:i.mail}));
   console.log(candidatosProcesoExcel);
   return (
     <Contenedor>
@@ -65,9 +65,9 @@ const ViewProcess = (props) => {
               />
             </Grid>
             <Grid item xs={7}>
-              <CV 
+              {/*<CV 
                 candidato={candidatoCV}
-              />
+              />*/}
             </Grid>
           </Grid>
         </Grid>
@@ -104,12 +104,12 @@ const Lista = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={12} paddingTop={10}>
                 <Typography variant="h6">
-                  {i.nombre}
+                  {i.name}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="caption">
-                  {i.email}
+                  {i.mail}
                 </Typography>
               </Grid>
             </Grid>

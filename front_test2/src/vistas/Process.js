@@ -43,12 +43,12 @@ const Dashboard = (props) => {
   const classes = useStyles();
   const [idSeleccionados, definirIdSeleccionados] = useState([]);
   const columnas = {
-    "nombre":{titulo:"Nombre",color:"primary",tamano:"h6",link:true, href:"/ViewProcess"},
-    "createdAt":{titulo:"Creado",color:"textPrimary",tamano:"body2",link:false, },
+    "name":{titulo:"Nombre",color:"primary",tamano:"h6",link:true, href:"/ViewProcess"},
+    "created_at":{titulo:"Creado",color:"textPrimary",tamano:"body2",link:false, },
     "status":{titulo:"Status",color:"textPrimary",tamano:"body2",link:false, },
-    "below":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
-    "normal":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
-    "outstanding":{titulo:"Outstanding",color:"textPrimary",tamano:"caption",link:false, }
+    //"below":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
+    //"normal":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
+    //"outstanding":{titulo:"Outstanding",color:"textPrimary",tamano:"caption",link:false, }
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
   const procesosSeleccionados = idSeleccionados.length === 0 ? [] : props.procesos.filter((i,index)=>idSeleccionados.map(i=>i-1).includes(index)).map(i=>({nombre:i.nombre,createdAt:i.createdAt,status:i.status,below:i.below,normal:i.normal,outstanding:i.outstanding}));

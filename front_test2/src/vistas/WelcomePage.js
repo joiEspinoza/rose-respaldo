@@ -24,7 +24,7 @@ const WelcomePage = (props) => {
       :
         <>
           <p onClick={()=>{
-            logout();
+            console.log(props.procesos);
           }}>Hola</p>
           <KPIWelcome data={data} />
           <Bienvenida bienvenida={data.welcome_message}/>
@@ -37,6 +37,7 @@ const WelcomePage = (props) => {
 const mapStateToProps = estado => {
   return {
     usuario: estado.usuario,
+    procesos: estado.procesos,
   }
 }
 const mapDispatchToProps = despachar => {

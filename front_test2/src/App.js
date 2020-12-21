@@ -17,9 +17,15 @@ import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 const App = (props) => {
   //let history = useHistory();
   useEffect(()=>{
-    obtenerEstadoUsuarioTest(props);
-    props.cargarProcesos();
-  },[]);
+    console.log("useEffect App 1");
+    //obtenerEstadoUsuarioTest(props);
+    if(props.usuario!==null){
+      requestsProcesos(props.usuario,props.cargarProcesos).then(response=>{
+        console.log("Respuesta verdadera",response);
+      }).catch(e=>console.log(e));
+    }
+    
+  },[props.usuario]);
   
 
   return (
@@ -55,23 +61,66 @@ const actualizarUsuario = (usuario) => {
     usuario: usuario,
   }
 }
-const cargarProcesos = () => {
+const cargarProcesos = (newState) => {
   return {
-    type: 'CARGAR_PROCESOS',
-    newState: data,
-  }
+      type: 'CARGAR_PROCESOS',
+      newState: newState,
+    }  
 }
+
+const requestsProcesos = (usuario, cargarProcesos) => {
+    return new Promise((resolve, reject)=>{
+      var state = data;
+      axios.get(`http://127.0.0.1:8000/selection/list/${usuario.correo}/`)
+      .then(response=>{
+        console.log(response);
+        state = response.data.data;
+        state = state.map((i, index)=>{
+          var salida = i;
+          requestsCandidatosProceso(i.id).then(res=>{
+            salida = Object.assign(i,{candidatos:res});
+          }).catch(er=>console.log(er));
+          return salida;
+        });
+        cargarProcesos(state);
+        resolve(true);
+      })
+      .catch(error=>{
+        console.log(error);
+        cargarProcesos(state);
+        reject(false);
+      });
+    });
+}
+
+const requestsCandidatosProceso = (idProceso) => {
+    return new Promise((resolve, reject)=>{
+      var candidatos;
+      axios.get(`http://127.0.0.1:8000/selection/${idProceso}/candidates/`)
+      .then(response=>{
+        console.log(response);
+        candidatos = response.data.data;
+        resolve(candidatos);
+      })
+      .catch(error=>{
+        console.log(error);
+        reject(error);
+      });
+    });
+}
+
 
 const mapStateToProps = estado => {
   return {
     usuario: estado.usuario,
+    procesos: estado.procesos,
   }
 }
 
 const mapDispatchToProps = despachar => {
     return {
         actualizarUser: (usuario) => despachar(actualizarUsuario(usuario)),
-        cargarProcesos: () => despachar(cargarProcesos()),
+        cargarProcesos: (newState) => despachar(cargarProcesos(newState)),
     }
 }
 
