@@ -24,6 +24,7 @@ const WelcomePage = (props) => {
       :
         <>
           <p onClick={()=>{
+            logout();
           }}>Hola</p>
           <KPIWelcome data={data} />
           <Bienvenida bienvenida={data.welcome_message}/>

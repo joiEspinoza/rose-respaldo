@@ -56,7 +56,7 @@ const LoginView = (props) => {
             })}
             onSubmit={(values, actions) => {
               console.log({"email":values.email,"password":values.password});
-              {/*axios.post("http://127.0.0.1:8000/auth/login/",
+              axios.post("http://127.0.0.1:8000/auth/login/",
                               {"email":values.email,"password":values.password}
                               ).then(r=>{
                                 console.log(r);
@@ -66,7 +66,7 @@ const LoginView = (props) => {
                                   response: r,
                                 });
                                 history.push('/WelcomePage');
-                              }).catch(r=>{console.log(r);history.push('/');});*/}
+                              }).catch(r=>{console.log(r);history.push('/');});
               
             }}
           >

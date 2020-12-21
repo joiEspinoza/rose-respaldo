@@ -14,6 +14,24 @@ import Tabla from '../componentes/table/Procesos';
 import Boton from '../componentes/Boton';
 import { DescargaExcelProcesos } from '../componentes/downloads/DescargaExcel';
 
+
+const example = {
+    "name": "",
+    "description": "",
+    "area": "",
+    "subarea": "",
+    "industry": "",
+    "is_remote": false,
+    "status": "",
+    "vacant": null,
+    "requirements": null,
+    "desired": null,
+    "kpis": null,
+    "storage_url": "",
+    "user": null
+};
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,

@@ -15,7 +15,7 @@ const Google = (props) => {
   const responseGoogle=(response)=>{
     console.log(response);
     console.log(response.profileObj);
-    axios.post("http://127.0.0.1:8000/social_auth/microsoft/",{
+    axios.post("http://127.0.0.1:8000/social_auth/google/",{
               "auth_token":response.tokenId,
             }).then(r=>{
               console.log(r);
