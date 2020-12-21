@@ -64,6 +64,7 @@ const ssoSilent = (props) => {
 	msalInstance.ssoSilent(ssoRequest)
     .then(response => {
         // session silently established
+        console.log("session silently established");
     })
     .catch(error => {
         // handle error by invoking an interactive login method

@@ -10,18 +10,19 @@ const useObtenerEstadoUsuarioTest = (props) => {
         //1° revisar microsoft
         var userMicrosoft = isMicrosoftLogged();
         if(userMicrosoft){
-            console.log("isMicrosoftLogged",userMicrosoft);
-            var token = acquireTokenSilent();
-            console.log("Access token",token);
-            props.actualizarUser({
-              uid: userMicrosoft.accountIdentifier,
-              nombre:userMicrosoft.name,
-              correo: userMicrosoft.userName,
-              accessToken: token,
-              response: userMicrosoft,
-            });
+            //console.log("isMicrosoftLogged",userMicrosoft);
+            //ssoSilent();
+            //var token = acquireTokenSilent();
+            //console.log("Access token",token);
+            //props.actualizarUser({
+            //  uid: userMicrosoft.accountIdentifier,
+            //  nombre:userMicrosoft.name,
+            //  correo: userMicrosoft.userName,
+            //  accessToken: token,
+            //  response: userMicrosoft,
+            //});
             //Inicio de sesión microsoft logrado
-            //logout();
+            logout();
         }else{
             //2° revisar google
         }

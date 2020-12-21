@@ -55,17 +55,18 @@ const LoginView = (props) => {
               password: Yup.string().max(255).required('La contraseña es requerida')
             })}
             onSubmit={(values, actions) => {
-              axios.post("http://127.0.0.1:8000/auth/login/",
-                {"email":values.email,"password":values.password}
-                ).then(r=>{
-                  console.log(r);
-                  props.actualizarUser({
-                    nombre:r.data.username,
-                    correo: r.data.email,
-                    response: r,
-                  });
-                  history.push('/WelcomePage');
-                }).catch(r=>{console.log(r);history.push('/');});
+              console.log({"email":values.email,"password":values.password});
+              {/*axios.post("http://127.0.0.1:8000/auth/login/",
+                              {"email":values.email,"password":values.password}
+                              ).then(r=>{
+                                console.log(r);
+                                props.actualizarUser({
+                                  nombre:r.data.username,
+                                  correo: r.data.email,
+                                  response: r,
+                                });
+                                history.push('/WelcomePage');
+                              }).catch(r=>{console.log(r);history.push('/');});*/}
               
             }}
           >

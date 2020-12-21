@@ -4,6 +4,8 @@ import KPIWelcome from '../componentes/welcome/KPIWelcome';
 import Bienvenida from '../componentes/welcome/Bienvenida';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { loginPopup, ssoSilent, acquireTokenSilent, isMicrosoftLogged, Microsoft, logout } from '../rose/Msal';
+
 
 const WelcomePage = (props) => {
   const [data, setData] = useState({});
@@ -21,6 +23,8 @@ const WelcomePage = (props) => {
         <p>No disponible</p>
       :
         <>
+          <p onClick={()=>{
+          }}>Hola</p>
           <KPIWelcome data={data} />
           <Bienvenida bienvenida={data.welcome_message}/>
         </>
@@ -36,7 +40,7 @@ const mapStateToProps = estado => {
 }
 const mapDispatchToProps = despachar => {
     return {
-        
+        actualizarUsuario: (usuario) => despachar({type: 'ACTUALIZAR_USUARIO',usuario: usuario}),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
