@@ -9,6 +9,9 @@ const MicroSoftOld = (props) => {
  let history = useHistory();
   const authHandler = (err, data) => {
     console.log(err, data);
+    if (err===null) {
+
+    }
   };
  	
   return (
@@ -30,4 +33,4 @@ const MicroSoft = (props) => {
   );
 };
 
-export default MicroSoft;
+export default MicroSoftOld;
