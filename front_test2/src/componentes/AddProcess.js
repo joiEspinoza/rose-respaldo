@@ -21,6 +21,18 @@ import {
 } from '@material-ui/core';
 import Page from './Page';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { uploadFile } from 'react-s3';
+ 
+const config = (string) => {
+  return {
+    bucketName: 'rosev0',
+    dirName: string, /* optional */
+    region: 'us-west-2',
+    accessKeyId: 'AKIAJEN4JB3CITFUIUFQ',
+    secretAccessKey: '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',
+  }
+}
 
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RegisterView = () => {
+const AddProcess = (props) => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -50,23 +62,63 @@ const RegisterView = () => {
         <Container maxWidth="md">
           <Formik
             initialValues={{
-              email: '',
-              firstName: '',
-              lastName: '',
-              password: '',
-              policy: false
+              name: "",
+              vacant: 1,
+              description: "",
+              area: "",
+              subarea: "",
+              industry: "",
+              is_remote: false,
+              exp: 1,
+              idioms: "",
+              skills: "",
+              location: "",
+              desired_exp: 1,
+              desired_idioms: "",
+              desired_skills: "",
+              desired_college: "",
+              desired_designation: "",
+              file: null,
+              
             }}
             validationSchema={
               Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                firstName: Yup.string().max(255).required('First name is required'),
-                lastName: Yup.string().max(255).required('Last name is required'),
-                password: Yup.string().max(255).required('password is required'),
-                policy: Yup.boolean().oneOf([true], 'This field must be checked')
+                name: Yup.string().max(255).required('Nombre es requerido'),
               })
             }
             onSubmit={(values, actions) => {
-              
+              const payload = {
+                "name": values.name,
+                "vacant": values.vacant,
+                "description": values.description,
+                "area": values.area,
+                "subarea": values.subarea,
+                "industry": values.industry,
+                "is_remote": values.is_remote,
+                "status": "In progress",
+                "requirements":{
+                  "exp": values.exp,
+                  "idioms": values.idioms,
+                  "skills": values.skills,
+                  "location": values.location,
+                },
+                "desired":{
+                  "exp": [values.desired_exp],
+                  "idioms": [values.desired_idioms],
+                  "skills": [values.desired_skills],
+                  "college": [values.desired_college],
+                  "designation": [values.desired_designation],
+                },
+                "kpis": {},
+                "storage_url": `clopez_myfuture.ai/21-12-2020*${values.name}*input/`,
+                "user": props.usuario.correo,
+              };
+              console.log(payload);
+              console.log(values.file);
+              {/*uploadFile(values.file, config(`clopez_myfuture.ai/21-12-2020*${values.name}*input/`))
+                .then(data => console.log("archivo exito",data))
+                .catch(err => console.error("error archivo",err));*/}
+              axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>console.log(r)).catch(e=>console.log(e));
               //history.push('/WelcomePage');
             }}
           >
@@ -95,302 +147,250 @@ const RegisterView = () => {
                     Llena los campos
                   </Typography>
                 </Box>
-                <Grid container direction="row" spacing={2}>
-                  <Grid item>
+                <Grid container direction="row" spacing={3}>
+                  <Grid item xs={4}>
                     <TextField
-                      error={Boolean(touched.firstName && errors.firstName)}
+                      error={Boolean(touched.name && errors.name)}
                       fullWidth
-                      helperText={touched.firstName && errors.firstName}
+                      helperText={touched.name && errors.name}
                       label="Nombre Proceso"
                       margin="normal"
-                      name="nombreproceso"
+                      name="name"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.firstName}
+                      value={values.name}
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid item xs={2}>
                     <TextField
-                      error={Boolean(touched.firstName && errors.firstName)}
+                      error={Boolean(touched.vacant && errors.vacant)}
                       fullWidth
-                      helperText={touched.firstName && errors.firstName}
-                      label="Nombre Vacante"
+                      helperText={touched.vacant && errors.vacant}
+                      label="Vacantes"
+                      type="number"
                       margin="normal"
-                      name="nombrevacante"
+                      name="vacant"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.firstName}
+                      value={values.vacant}
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid item xs={6}>
                     <TextField
-                      error={Boolean(touched.firstName && errors.firstName)}
+                      error={Boolean(touched.description && errors.description)}
                       fullWidth
-                      helperText={touched.firstName && errors.firstName}
-                      label="Numero"
+                      helperText={touched.description && errors.description}
+                      label="Descripción del proceso"
                       margin="normal"
-                      name="numero"
+                      name="description"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.firstName}
+                      value={values.description}
                       variant="outlined"
                     />
-                  </Grid>
-                  <Grid item>
-                    <InputLabel id="vacantes">Vacantes</InputLabel>
-                    <Select
-                      labelId="vacantes"
-                      fullWidth
-                      label="Numero"
-                      margin="normal"
-                      name="numero"
-                      onChange={handleChange}
-                      variant="outlined"
-
-                      
-                    >
-                      <MenuItem value={1}>Uno</MenuItem>
-                      <MenuItem value={2}>Dos</MenuItem>
-                      <MenuItem value={3}>Tres</MenuItem>
-                    </Select>
                   </Grid>
                 </Grid>
-                <Grid container direction="row" spacing={2}>
-                  <Grid item>
+                <Grid container direction="row" spacing={3}>
+                  <Grid item xs={3}>
                     <TextField
-                      error={Boolean(touched.firstName && errors.firstName)}
+                      error={Boolean(touched.area && errors.area)}
                       fullWidth
-                      helperText={touched.firstName && errors.firstName}
-                      label="Area"
+                      helperText={touched.area && errors.area}
+                      label="Área"
                       margin="normal"
                       name="area"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.firstName}
+                      value={values.area}
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item>
+                  <Grid item xs={3}>
                     <TextField
-                      error={Boolean(touched.firstName && errors.firstName)}
+                      error={Boolean(touched.subarea && errors.subarea)}
                       fullWidth
-                      helperText={touched.firstName && errors.firstName}
-                      label="Subarea"
+                      helperText={touched.subarea && errors.subarea}
+                      label="Subárea"
                       margin="normal"
                       name="subarea"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.firstName}
+                      value={values.subarea}
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item>
-                    <InputLabel id="industria">Industria</InputLabel>
-                    <Select
+                  <Grid item xs={4}>
+                    <TextField
+                      error={Boolean(touched.industry && errors.industry)}
                       fullWidth
-                      labelId="industria"
+                      helperText={touched.industry && errors.industry}
+                      label="Industria"
                       margin="normal"
-                      name="industria"
+                      name="industry"
+                      onBlur={handleBlur}
                       onChange={handleChange}
+                      value={values.industry}
                       variant="outlined"
-                      value={4}
-                    >
-                      <MenuItem value={1}>Agro</MenuItem>
-                      <MenuItem value={2}>Tech</MenuItem>
-                      <MenuItem value={3}>Fin</MenuItem>
-                      <MenuItem value={4}>AI</MenuItem>
-                    </Select>
+                    />
+                  </Grid>
+                  <Grid xs={2}>
+                    <FormControlLabel
+                      control={<Switch checked={values.is_remote} onChange={handleChange} name="is_remote" />}
+                      label="¿Es remoto?"
+                      labelPlacement="top"
+                    />
+
                   </Grid>
                 </Grid>
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  ml={-1}
-                >
-                  <FormControlLabel
-                    control={<Switch checked={values.remoto} onChange={handleChange} name="remoto" />}
-                    label="Remoto"
-                  />
-                
-                  
-                </Box>
-                <Grid container direction="row" spacing={2}>
+                <br/>
+                <Grid container direction="row" spacing={4}>
                   <Grid item xs={4}>
-                    <Grid container direction="column" spacing={2}>
+                    <Grid container direction="column" spacing={3}>
                       <Grid item>
                         <Typography variant="h5">Requisitos Mínimos</Typography>
                       </Grid>
                       <Grid item>
-                        <InputLabel id="experiencia1">Experiencia</InputLabel>
-                          <Select
-                            fullWidth
-                            labelId="experiencia1"
-                            margin="normal"
-                            name="experiencia1"
-                            onChange={handleChange}
-                            variant="outlined"
-                            value={4}
-                          >
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
-                            <MenuItem value={3}>3</MenuItem>
-                            <MenuItem value={4}>4</MenuItem>
-                          </Select>
-                      </Grid>
-                      <Grid item>
-                        <InputLabel id="tipo">Tipo</InputLabel>
-                        <Select
-                            fullWidth
-                            labelId="experiencia1"
-                            margin="normal"
-                            name="tipo"
-                            onChange={handleChange}
-                            variant="outlined"
-                          >
-                            <MenuItem value={1}>Profesional</MenuItem>
-                            <MenuItem value={2}>Tecnico</MenuItem>
-                          </Select>
+                        <TextField
+                          error={Boolean(touched.exp && errors.exp)}
+                          fullWidth
+                          helperText={touched.exp && errors.exp}
+                          label="Experiencia"
+                          type="number"
+                          margin="normal"
+                          name="exp"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.exp}
+                          variant="outlined"
+                        />
                       </Grid>
                       <Grid item>
                         <TextField
-                          error={Boolean(touched.firstName && errors.firstName)}
+                          error={Boolean(touched.idioms && errors.idioms)}
                           fullWidth
-                          helperText={touched.firstName && errors.firstName}
+                          helperText={touched.idioms && errors.idioms}
+                          label="Idioma"
+                          margin="normal"
+                          name="idioms"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.idioms}
+                          variant="outlined"
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          error={Boolean(touched.skills && errors.skills)}
+                          fullWidth
+                          helperText={touched.skills && errors.skills}
                           label="Skills"
                           margin="normal"
-                          name="skills1"
+                          name="skills"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.firstName}
+                          value={values.skills}
                           variant="outlined"
                         />
-                      </Grid>
-                      <Grid item>
-                        <InputLabel id="idioma1">Idioma</InputLabel>
-                        <Select
-                            fullWidth
-                            labelId="idioma1"
-                            margin="normal"
-                            name="idioma1"
-                            onChange={handleChange}
-                            variant="outlined"
-                          >
-                            <MenuItem value={1}>Español</MenuItem>
-                            <MenuItem value={2}>Inglés</MenuItem>
-                            <MenuItem value={3}>Catalán</MenuItem>
-                            <MenuItem value={4}>Portugués</MenuItem>
-                          </Select>
                       </Grid>
                       <Grid item>
                         <TextField
-                          error={Boolean(touched.firstName && errors.firstName)}
+                          error={Boolean(touched.location && errors.location)}
                           fullWidth
-                          helperText={touched.firstName && errors.firstName}
+                          helperText={touched.location && errors.location}
                           label="Lugar"
                           margin="normal"
-                          name="lugar"
+                          name="location"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.firstName}
+                          value={values.location}
                           variant="outlined"
                         />
                       </Grid>
+                      
                     </Grid>
                   </Grid>
                   <Grid item xs={4}>
-                    <Grid container direction="column" spacing={2}>
+                    <Grid container direction="column" spacing={3}>
                       <Grid item>
                         <Typography variant="h5">Requisitos Deseables</Typography>
                       </Grid>
                       <Grid item>
-                        <InputLabel id="experiencia2">Experiencia</InputLabel>
-                        <Select
-                            fullWidth
-                            labelId="experiencia2"
-                            margin="normal"
-                            name="experiencia2"
-                            onChange={handleChange}
-                            variant="outlined"
-                          >
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
-                            <MenuItem value={3}>3</MenuItem>
-                            <MenuItem value={4}>4</MenuItem>
-                          </Select>
-                      </Grid>
-                      <Grid item>
                         <TextField
-                          error={Boolean(touched.firstName && errors.firstName)}
+                          error={Boolean(touched.desired_exp && errors.desired_exp)}
                           fullWidth
-                          helperText={touched.firstName && errors.firstName}
-                          label="Skills"
+                          helperText={touched.desired_exp && errors.desired_exp}
+                          label="Experiencia deseada"
+                          type="number"
                           margin="normal"
-                          name="skills2"
+                          name="desired_exp"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.firstName}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <InputLabel id="idioma2">Idioma</InputLabel>
-                        <Select
-                            fullWidth
-                            labelId="idioma2"
-                            margin="normal"
-                            name="idioma2"
-                            onChange={handleChange}
-                            variant="outlined"
-                          >
-                            <MenuItem value={1}>Español</MenuItem>
-                            <MenuItem value={2}>Inglés</MenuItem>
-                            <MenuItem value={3}>Catalán</MenuItem>
-                            <MenuItem value={4}>Portugués</MenuItem>
-                          </Select>
-                      </Grid>
-                      <Grid item>
-                        <TextField
-                          error={Boolean(touched.firstName && errors.firstName)}
-                          fullWidth
-                          helperText={touched.firstName && errors.firstName}
-                          label="Universidad"
-                          margin="normal"
-                          name="universidad"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.firstName}
+                          value={values.desired_exp}
                           variant="outlined"
                         />
                       </Grid>
                       <Grid item>
                         <TextField
-                          error={Boolean(touched.firstName && errors.firstName)}
+                          error={Boolean(touched.desired_idioms && errors.desired_idioms)}
                           fullWidth
-                          helperText={touched.firstName && errors.firstName}
-                          label="Lugar"
+                          helperText={touched.desired_idioms && errors.desired_idioms}
+                          label="Idiomas deseados"
                           margin="normal"
-                          name="lugar2"
+                          name="desired_idioms"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.firstName}
+                          value={values.desired_idioms}
+                          variant="outlined"
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          error={Boolean(touched.desired_college && errors.desired_college)}
+                          fullWidth
+                          helperText={touched.desired_college && errors.desired_college}
+                          label="Casa de estudios"
+                          margin="normal"
+                          name="desired_college"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.desired_college}
+                          variant="outlined"
+                        />
+                      </Grid>
+                      <Grid item>
+                        <TextField
+                          error={Boolean(touched.desired_designation && errors.desired_designation)}
+                          fullWidth
+                          helperText={touched.desired_designation && errors.desired_designation}
+                          label="Cargos"
+                          margin="normal"
+                          name="desired_designation"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.desired_designation}
                           variant="outlined"
                         />
                       </Grid>
                     </Grid>
                   </Grid>
                   <Grid item xs={4}>
-                    <Grid container direction="column" justify="flex-end" alignItems="center" spacing={2} >
-                      <Grid item>
+                    <Grid container direction="column" justify="center" alignItems="center" spacing={3} >
+                      <br/><br/><br/><br/>
+                      <Grid item xs={12}>
                         <Button
                           variant="contained"
                           component="label"
+                          fullWidth={true}
+                          style={{ "min-height": "100px" }}
                         >
-                          Upload File
+                          Subir CV's
                           <input
                             type="file"
                             name="file"
+                            onChange={handleChange}
+                            value={values.file}
                             hidden
                           />
                         </Button>
@@ -399,7 +399,8 @@ const RegisterView = () => {
                         <Box my={2}>
                           <Button
                             color="primary"
-                            disabled={isSubmitting}
+                            disabled={false}
+                            style={{ "min-height": "100px" }}
                             fullWidth
                             size="large"
                             type="submit"
@@ -431,4 +432,15 @@ const RegisterView = () => {
   );
 };
 
-export default RegisterView;
+
+const mapStateToProps = estado => {
+  return {
+    usuario: estado.usuario,
+  }
+}
+
+const mapDispatchToProps = despachar => {
+    return {}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddProcess);

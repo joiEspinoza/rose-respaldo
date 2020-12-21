@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from .models import Selection, Candidate, Issue, Custom, UserConfig, ChangeItem
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
-#from .model_utils import create_candidates
+from .model_utils import create_candidates
 from .mail_utils import get_gmailevents, create_gmail_event, create_outlook_event, create_gmail, send_gmail, send_outlook, get_outlookevents
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
+from .views import CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
 #from .views import CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
 #from .views import 
 
@@ -8,7 +8,7 @@ urlpatterns = [
     path('home/<str:mail>/', WelcomeAPIView.as_view(), name="home"),
     path('list/<str:mail>/', ListSelectionAPIView.as_view(), name="list selections"),
     path('<int:pk>/', SelectionAPIView.as_view(), name="selection"),
-    #path('create/', CreateSelectionAPIView.as_view(), name="create selection"),
+    path('create/', CreateSelectionAPIView.as_view(), name="create selection"),
     path('issues/<int:pk>/', IssueAPIView.as_view(), name="get issue"),
     path('issues/create/', CreateIssueAPIView.as_view(), name="create issue"),
     path('candidate/<int:pk>/', CandidateAPIView.as_view(), name="get candidate"),

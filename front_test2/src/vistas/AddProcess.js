@@ -74,7 +74,7 @@ const AddProcess = (props) => {
   
   return (
     <Contenedor>
-      <AddProceso />
+      <AddProceso usuario={props.usuario} />
     </Contenedor>
   );
 }
