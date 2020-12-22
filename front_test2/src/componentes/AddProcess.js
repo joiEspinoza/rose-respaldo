@@ -23,6 +23,39 @@ import Page from './Page';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { uploadFile } from 'react-s3';
+import AWS from 'aws-sdk';
+
+AWS.config.update({
+  accessKeyId: 'AKIAJEN4JB3CITFUIUFQ',
+  secretAccessKey: '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'
+})
+
+const myBucket = new AWS.S3({
+  params: { Bucket: 'rosev0'},
+  region: 'us-west-2',
+})
+
+const uploadFile2 = (file,ruta) => {
+  const params = {
+    ACL: 'public-read',
+    Key: ruta,
+    ContentType: file.type,
+    Body: file,
+  }
+  myBucket.putObject(params)
+    .on('httpUploadProgress', (evt) => console.log("evt",evt))
+    .send((err) => {
+       if (err) {
+         console.log("err",err);
+       }
+    })
+}
+
+
+
+
+
+
  
 const config = (string) => {
   return {
@@ -31,6 +64,27 @@ const config = (string) => {
     region: 'us-west-2',
     accessKeyId: 'AKIAJEN4JB3CITFUIUFQ',
     secretAccessKey: '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',
+  }
+}
+
+{/*
+uploadFile(values.file, configu)
+                .then(data => {
+                  console.log("archivo exito",data);
+                  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>console.log(r)).catch(e=>console.log(e));
+                })
+                .catch(err => console.error("error archivo",err));
+*/}
+
+const fecha = () => {
+  let fecha = new Date();
+  let dia = fecha.getDate();
+  let mes = fecha.getMonth() + 1;
+  let ano = fecha.getFullYear();
+  if(mes < 10){
+    return `${dia}-0${mes}-${ano}`;
+  }else{
+    return `${dia}-${mes}-${ano}`;
   }
 }
 
@@ -87,7 +141,11 @@ const AddProcess = (props) => {
               })
             }
             onSubmit={(values, actions) => {
-              const payload = {
+              var date = fecha();
+              var email_cambiado = props.usuario.correo.replace("@","_");
+              var name_cambiado = values.name.replaceAll(" ","_");
+              var ruta = `${email_cambiado}/${date}*${name_cambiado}*input/`;
+              var payload = {
                 "name": values.name,
                 "vacant": values.vacant,
                 "description": values.description,
@@ -110,15 +168,20 @@ const AddProcess = (props) => {
                   "designation": [values.desired_designation],
                 },
                 "kpis": {},
-                "storage_url": `clopez_myfuture.ai/21-12-2020*${values.name}*input/`,
+                "storage_url": ruta,
                 "user": props.usuario.correo,
               };
               console.log(payload);
               console.log(values.file);
-              {/*uploadFile(values.file, config(`clopez_myfuture.ai/21-12-2020*${values.name}*input/`))
-                .then(data => console.log("archivo exito",data))
-                .catch(err => console.error("error archivo",err));*/}
-              axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>console.log(r)).catch(e=>console.log(e));
+              let configu = config(ruta);
+              console.log(configu);
+              //uploadFile2(values.file,ruta);
+              uploadFile(values.file, configu)
+                .then(data => {
+                  console.log("archivo exito",data);
+                  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>console.log(r)).catch(e=>console.log(e));
+                })
+                .catch(err => console.error("error archivo",err));
               //history.push('/WelcomePage');
             }}
           >
