@@ -17,11 +17,10 @@ import MicroSoft from '../rose/Microsoft';
 import Google from '../rose/Google';
 import { connect } from 'react-redux';
 import Page from '../componentes/Page';
-import rosee from '../images/rose.jpg';
+import rosee from '../images/rose_title.png';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
   form: {
     backgroundColor: "white",
     marginTop: theme.spacing(4),
@@ -40,7 +39,6 @@ const LoginView = (props) => {
       display="flex"
       flexDirection="column"
       justifyContent="center"
-      className={classes.root}
     >
       <Container maxWidth="sm" className={classes.form} >
         <Formik
