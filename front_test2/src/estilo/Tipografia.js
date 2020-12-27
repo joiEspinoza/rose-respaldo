@@ -1,5 +1,6 @@
 export default {
 	fontFamily: [
+		'Comfortaa',
 		'-apple-system',
 		'BlinkMacSystemFont',
 		'"Segoe UI"',
@@ -10,5 +11,5 @@ export default {
 		'"Apple Color Emoji"',
 		'"Segoe UI Emoji"',
 		'"Segoe UI Symbol"',
-	].join(','),	
+	].join(','),
 };

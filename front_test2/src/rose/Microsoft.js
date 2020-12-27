@@ -2,8 +2,10 @@ import React from 'react';
 import MicrosoftLogin from "react-microsoft-login";
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { Button } from '@material-ui/core';
+import { IconButton, Button, Icon } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { loginPopup, ssoSilent, acquireTokenSilent, isMicrosoftLogged, Microsoft, logout } from './Msal';
+import icono from "../images/m.svg";
 
 const MicroSoftOld = (props) => {
  let history = useHistory();
@@ -27,8 +29,16 @@ const MicroSoftOld = (props) => {
   };
  	
   return (
-    <MicrosoftLogin clientId={"d236c53d-05c9-41c5-aade-d26ed6bb6c6d"} authCallback={authHandler} redirectUri={"http://localhost:3000/login/microsoft"} graphScopes={
-    	["Calendars.ReadWrite.Shared","email","Mail.Send","offline_access","openid","profile","User.Read"]}/>
+    <MicrosoftLogin clientId={"d236c53d-05c9-41c5-aade-d26ed6bb6c6d"} authCallback={authHandler} 
+      redirectUri={"http://localhost:3000/login/microsoft"} 
+      graphScopes={["Calendars.ReadWrite.Shared","email","Mail.Send","offline_access","openid","profile","User.Read"]}
+    >
+      <IconButton aria-label="microsoft">
+        <Icon >
+          <img src={icono}/>
+        </Icon>
+      </IconButton>
+    </MicrosoftLogin>
   );
 };
 

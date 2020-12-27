@@ -5,38 +5,70 @@ import paleta from './Paleta';
 import tipografia from './Tipografia';
 import tipografiaresponsiva from './TipografiaResponsiva';
 import puntos from './Breakpoints';
+import { connect } from 'react-redux';
 
-const space = [0, 4, 8, 16, 32, 64];
+const space = [3, 4, 8, 16, 32, 64, 72, 96, 120, 148, 184];
 const tipograf = Object.assign({},tipografia,tipografiaresponsiva);
 
-const theme = createMuiTheme({
-  palette: paleta,
-  typography: tipograf,
-  breakpoints: puntos,
-  spacing: space,
-  overrides: {
-    MuiButton: {
-    	root: {
-        margin: 1,
-    	},
-    },
-    MuiTextField: {
-      root: {
-        margin: 4,
-        '&:hover':{
-          background: `linear-gradient(90deg,${paleta.secondary.main}, ${paleta.info.main})`,
+const theme = (props) => {
+  console.log(props);
+  return createMuiTheme({
+    palette: paleta,
+    typography: tipograf,
+    breakpoints: puntos,
+    spacing: space,
+    overrides: {
+      //MuiCssBaseline styles
+      MuiCssBaseline: {
+        '@global': {
+          '@font-face':{
+            fontFamily: tipograf.fontFamily,
+          },
         },
       },
+      //MuiButton
+      MuiIconButton: {
+        root: {
+          margin: space[1],
+          padding: space[3],
+          color: "black",
+          '&:hover':{
+            color: paleta.primary.main,
+            backgroundColor: paleta.info.main,
+          },
+        },
+      },
+      MuiButton: {
+        root: {
+          margin: 1,
+          color: paleta.primary.main,
+          borderRadius: space[3],
+        },
+      },
+      //
+      MuiTextField: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: paleta.secondary.main,
+              borderWidth: space[0],
+              borderRadius: space[3],
+            },
+            '&:hover fieldset': {
+              borderColor: paleta.primary.main,
+              borderWidth: space[0],
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: paleta.primary.main,
+              borderWidth: space[0],
+            },
+          },
+        },
+      },
+
     },
-    MuiContainer: {
-    	root: {
-    		background: `linear-gradient(90deg,${paleta.primary.xlight}, ${paleta.primary.light})`,
-        margin: space[0],
-        padding: space[1],
-    	},
-    },
-  },
-});
+  });
+}
 
 {/*
 TextField
@@ -56,10 +88,16 @@ Links
 
 const Estilo = (props) => {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme(props.estilo)}>
       {props.children}
     </ThemeProvider>
   );
 }
 
-export default Estilo;
+const mapStateToProps = estado => {
+  return {
+    estilo: estado.estilo,
+  }
+}
+
+export default connect(mapStateToProps, null)(Estilo);

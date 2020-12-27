@@ -8144,6 +8144,11 @@ oauth-sign@~0.9.0:
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.9.0.tgz#47a7b016baa68b5fa0ecf3dee08a85c679ac6455"
   integrity sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==
 
+object-assign@^2.0.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-2.1.1.tgz#43c36e5d569ff8e4816c4efa8be02d26967c18aa"
+  integrity sha1-Q8NuXVaf+OSBbE76i+AtJpZ8GKo=
+
 object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
@@ -9711,6 +9716,13 @@ react-feather@^2.0.9:
   dependencies:
     prop-types "^15.7.2"
 
+react-google-font-loader@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-google-font-loader/-/react-google-font-loader-1.1.0.tgz#9c9ae97aae3d2177e922c9bf4ab6312b903abc79"
+  integrity sha512-mnPYxBdhYEldTtREYPKllbmMvCGkTbpdmNjR6iTM3eTNWcg17OrfXjq9HRDZe+1+mhnUnI/AOcpvG0LIQPcLIw==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-google-login@^5.1.25:
   version "5.1.25"
   resolved "https://registry.yarnpkg.com/react-google-login/-/react-google-login-5.1.25.tgz#6bf5b4c8ce4e9e64a4c80eb14b80c9c6bd07bf9b"
@@ -9718,6 +9730,13 @@ react-google-login@^5.1.25:
   dependencies:
     "@types/react" "*"
     prop-types "^15.6.0"
+
+react-google-svg-icon@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-google-svg-icon/-/react-google-svg-icon-1.0.2.tgz#8552976a1f3816a1bddc3f785a4b7c661da20960"
+  integrity sha1-hVKXah84FqG93D94Wkt8Zh2iCWA=
+  dependencies:
+    object-assign "^2.0.0"
 
 react-helmet@^6.1.0:
   version "6.1.0"
@@ -9728,6 +9747,11 @@ react-helmet@^6.1.0:
     prop-types "^15.7.2"
     react-fast-compare "^3.1.1"
     react-side-effect "^2.1.0"
+
+react-ion-icon@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/react-ion-icon/-/react-ion-icon-4.0.0.tgz#cf98c582b431f11240d7161b77cdb83bd64990c2"
+  integrity sha512-5VWGgz+MBb3jm+QkhrsTTtl9QE/kju/PBBqkM33Zgp5JPzf/e/Obf/rqXU5Sk4EVsLvsEquBB7W9IQTggW7EDg==
 
 react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"

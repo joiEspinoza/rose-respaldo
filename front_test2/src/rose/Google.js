@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import GoogleLogin from 'react-google-login';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { IconButton, Icon } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import icono from "../images/g.png";
 
 const Google = (props) => {
 
@@ -39,9 +42,16 @@ const Google = (props) => {
     <div>
       <GoogleLogin
       clientId="374514394577-gn2bvmp9cjnsjn53aq0p575mdidpot47.apps.googleusercontent.com"
-      buttonText="Login"
+      buttonText=""
     	//accessType="offline"
-    	//responseType="code" 
+    	//responseType="code"
+      render={renderProps => (
+        <IconButton aria-label="google" onClick={renderProps.onClick} disabled={renderProps.disabled}>
+          <Icon>
+            <img src={icono} height="100%" width="100%"/>
+          </Icon>  
+        </IconButton>
+      )}
     	prompt= "consent"
     	scope="https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/calendar"
       onSuccess={responseGoogle}
