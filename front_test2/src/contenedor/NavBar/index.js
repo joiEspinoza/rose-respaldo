@@ -12,43 +12,29 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
-import {
-  AlertCircle as AlertCircleIcon,
-  BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
-  Users as UsersIcon
-} from 'react-feather';
 import NavItem from './NavItem';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Psicóloga',
-  name: 'Catalina Suárez'
-};
+
 
 const items = [
   {
     href: '/WelcomePage',
-    icon: BarChartIcon,
+    icon: "HomeSolid",
     title: 'Inicio'
   },
   {
     href: '/Process',
-    icon: UsersIcon,
+    icon: "Processing",
     title: 'Procesos'
   },
   {
     href: '/Historic',
-    icon: ShoppingBagIcon,
+    icon: "HistoricalWeather",
     title: 'Histórico'
   },
   {
     href: '/Ayuda',
-    icon: UserIcon,
+    icon: "Help",
     title: 'Ayuda'
   },
 ];
@@ -69,7 +55,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = ({ onMobileClose, openMobile, usuario }) => {
   const classes = useStyles();
   const location = useLocation();
 
@@ -85,35 +71,31 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       height="100%"
       display="flex"
       flexDirection="column"
-    >
+      bgcolor={"primary.main"}
+    > 
+      <Divider />
       <Box
         alignItems="center"
         display="flex"
         flexDirection="column"
-        p={2}
+        p={3}
+        bgcolor={"primary.main"}
       >
-        <Avatar
-          className={classes.avatar}
-          component={RouterLink}
-          src={user.avatar}
-          to="/app/account"
-        />
-        <Typography
+        {usuario.nombre.split(" ").map((item,index)=>(
+          <Typography
           className={classes.name}
           color="textPrimary"
-          variant="h5"
+          variant="h4"
+          style={{ margin:"3px", color:"white"}}
         >
-          {user.name}
+          <Box fontWeight="fontWeightBold">
+            {item}
+          </Box>
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-          {user.jobTitle}
-        </Typography>
+        ))}
       </Box>
       <Divider />
-      <Box p={2}>
+      <Box p={2} >
         <List>
           {items.map((item) => (
             <NavItem

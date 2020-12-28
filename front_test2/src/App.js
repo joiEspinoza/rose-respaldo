@@ -14,7 +14,8 @@ import {Helmet} from "react-helmet";
 import data from './componentes/DataProcesos';
 import './App.css';
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
+import { initializeIcons } from '@uifabric/icons';
+initializeIcons();
 
 
 const App = (props) => {

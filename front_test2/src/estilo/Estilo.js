@@ -7,6 +7,8 @@ import tipografiaresponsiva from './TipografiaResponsiva';
 import puntos from './Breakpoints';
 import { connect } from 'react-redux';
 
+
+
 const space = [3, 4, 8, 16, 32, 64, 72, 96, 120, 148, 184];
 const tipograf = Object.assign({},tipografia,tipografiaresponsiva);
 
@@ -50,7 +52,7 @@ const theme = (props) => {
         root: {
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: paleta.secondary.main,
+              borderColor: paleta.success.main,
               borderWidth: space[0],
               borderRadius: space[3],
             },

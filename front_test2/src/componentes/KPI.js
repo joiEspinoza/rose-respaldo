@@ -16,15 +16,12 @@ const useStyles = makeStyles((theme) => ({
     height: '100%'
   },
   avatar: {
-    backgroundColor: colors.purple[600],
     height: 56,
     width: 56
   },
   differenceIcon: {
-    color: colors.purple[900]
   },
   differenceValue: {
-    color: colors.purple[900],
     marginRight: theme.spacing(1)
   }
 }));

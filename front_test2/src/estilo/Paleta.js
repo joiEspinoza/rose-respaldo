@@ -10,7 +10,7 @@ export default {
 	  main: "#d3044c",//rosado
 	},
 	secondary: {
-	  main: "#A6A6A6",//gris
+	  main: "#044454",//verde
 	},
 	error: {
 	  main: "#707070",//gris oscuro
@@ -22,10 +22,13 @@ export default {
 	  main: "#044454",//verde
 	},
 	success: {
-	  main: "#044454",//verde
+	  main: "#A6A6A6",//gris
 	},
+	roseclaro:"#FFE8F3",
+	gris: "#A6A6A6",
+	grisoscuro: "#707070",
 	
 	background: {
-      default: "#A6A6A6", //gris
+      default: "#FFF9FC", //rosa claro
     },
 };

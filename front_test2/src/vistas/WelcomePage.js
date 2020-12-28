@@ -23,11 +23,11 @@ const WelcomePage = (props) => {
         <p>No disponible</p>
       :
         <>
-          <p onClick={()=>{
-            console.log(props.procesos);
-          }}>Hola</p>
-          <KPIWelcome data={data} />
-          <Bienvenida bienvenida={data.welcome_message}/>
+          <Bienvenida bienvenida={data.welcome_message}>
+            <KPIWelcome data={data} />
+          </Bienvenida>
+
+          
         </>
       }
       

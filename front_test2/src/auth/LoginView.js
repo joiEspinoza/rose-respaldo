@@ -23,10 +23,19 @@ import rosee from '../images/rose_title.png';
 const useStyles = makeStyles((theme) => ({
   form: {
     backgroundColor: "white",
-    marginTop: theme.spacing(4),
     padding: theme.spacing(5),
     borderRadius: theme.spacing(7),
-  }
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: theme.spacing(4),
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      borderRadius: theme.spacing(5),
+    },
+  },
+  container: {
+    backgroundColor: theme.palette.success.main,
+    height: window.innerHeight,
+  },
 }));
 
 
@@ -39,6 +48,7 @@ const LoginView = (props) => {
       display="flex"
       flexDirection="column"
       justifyContent="center"
+      className={classes.container}
     >
       <Container maxWidth="sm" className={classes.form} >
         <Formik
@@ -135,7 +145,7 @@ const LoginView = (props) => {
               >
                 <Grid
                   item
-                  xs={0}
+                  xs={2}
                   md={4}
                 ></Grid>
                 <Grid
@@ -155,7 +165,7 @@ const LoginView = (props) => {
                 </Grid>
                 <Grid
                   item
-                  xs={0}
+                  xs={2}
                   md={4}
                 ></Grid>
               </Grid>

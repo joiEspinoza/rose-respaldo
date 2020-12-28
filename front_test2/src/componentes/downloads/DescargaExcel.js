@@ -34,16 +34,16 @@ const dataSet1 = [
 
 
 const DescargaExcelProcesos = ({ boton, columnas, data }) => {
-
+        console.log(columnas, data);
         return (
             <ExcelFile element={boton}>
                 <ExcelSheet data={data} name="Procesos">
                     <ExcelColumn label="Nombre" value="name"/>
                     <ExcelColumn label="Creado" value="created_at"/>
                     <ExcelColumn label="Status" value="status"/>
-                    //<ExcelColumn label="Below" value="below"/>
-                    //<ExcelColumn label="Normal" value="normal"/>
-                    //<ExcelColumn label="Outstanding" value="outstanding"/>
+                    <ExcelColumn label="Below" value="below"/>
+                    <ExcelColumn label="Normal" value="normal"/>
+                    <ExcelColumn label="Outstanding" value="outstanding"/>
                 </ExcelSheet>
             </ExcelFile>
         );

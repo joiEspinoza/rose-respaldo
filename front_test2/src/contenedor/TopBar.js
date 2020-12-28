@@ -14,9 +14,13 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
+import { Icon } from '@fluentui/react/lib/Icon';
+import rose_nav from '../images/rose_nav.jpg';
 
 const useStyles = makeStyles(() => ({
-  root: {},
+  root: {
+    height: 64,
+  },
   avatar: {
     width: 60,
     height: 60
@@ -38,10 +42,10 @@ const TopBar = ({
       {...rest}
     >
       <Toolbar>
-        <RouterLink to="/">
-          
-          {'Rose'}
-        </RouterLink>
+          <img src={rose_nav} style={{
+              height: '100%',
+              width: 'auto',
+            }} />
         <Box flexGrow={1} />
         <Hidden mdDown>
           <IconButton color="inherit">
@@ -50,11 +54,15 @@ const TopBar = ({
               color="primary"
               variant="dot"
             >
-              <NotificationsIcon />
+              <Icon style={{
+                transform: 'scale(1.15)' // Tune it
+              }} iconName={"Message"}  />
             </Badge>
           </IconButton>
           <IconButton color="inherit">
-            <InputIcon />
+            <Icon style={{
+                transform: 'scale(1.15)' // Tune it
+              }} iconName={"Settings"}  />
           </IconButton>
         </Hidden>
         <Hidden lgUp>
