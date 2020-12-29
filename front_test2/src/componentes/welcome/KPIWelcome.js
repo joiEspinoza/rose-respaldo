@@ -1,26 +1,32 @@
 import React from 'react';
 import KPIContainer from './KPIContainer';
-import MoneyIcon from '@material-ui/icons/Money';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import GetAppIcon from '@material-ui/icons/GetApp';
-
+import { Icon } from '@fluentui/react/lib/Icon';
 
 const KPIWelcome = (props) => {
   const itemes = [
     {
-      nombre:"Cantidad CV",
+      nombre:"Cantidad de CVs",
       cantidad:props.data.resumes_ct,
-      icon:<MoneyIcon/>,
+      icon:<Icon style={{
+      transform: 'scale(7)',
+      color:"white", // Tune it
+    }} iconName={"TextDocumentShared"}  />,
     },
     {
-      nombre:"Tiempo ahorrado estimado",
-      cantidad:`${props.data.saved_time_min} h`,
-      icon:<AccessTimeIcon />,
+      nombre:"Tiempo ahorrado",
+      cantidad:props.data.saved_time_min,
+      icon:<Icon style={{
+      transform: 'scale(7)',
+      color:"white", // Tune it
+    }} iconName={"Clock"}  />,
     },
     {
-      nombre:"Cantidad Procesos",
+      nombre:"Procesos completados",
       cantidad:props.data.selections_ct,
-      icon:<GetAppIcon />,
+      icon:<Icon style={{
+      transform: 'scale(7)',
+      color:"white", // Tune it
+    }} iconName={"Contact"}  />,
     },
   ];
   const forma = {

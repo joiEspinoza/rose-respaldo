@@ -35,6 +35,24 @@ function procesos(state = null, accion) {
   }
 }
 
+function bienvenida(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_BIENVENIDA':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
+function tutoriales(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_TUTORIALES':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
 function procesos_exportar_excel(state = [], accion) {
   switch (accion.type) {
     case 'DEFINIR_PROCESOS_EXPORTAR_EXCEL':
@@ -66,7 +84,7 @@ function candidato_viewprocess(state = 0, accion) {
 
 
 
-let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso_viewprocess, procesos_exportar_excel, candidato_viewprocess });
+let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso_viewprocess, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida });
 
 
 export default reductorRaiz;

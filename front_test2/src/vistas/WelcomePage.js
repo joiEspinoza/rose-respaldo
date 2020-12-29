@@ -8,23 +8,16 @@ import { loginPopup, ssoSilent, acquireTokenSilent, isMicrosoftLogged, Microsoft
 
 
 const WelcomePage = (props) => {
-  const [data, setData] = useState({});
   const estado = props.usuario !== null;
-  useEffect(()=>{
-    if(estado){
-      axios.get(`http://127.0.0.1:8000/selection/home/${props.usuario.correo}/`).
-      then(res=>{console.log(res);setData(res.data);}).
-      catch(err=>console.log(err));
-    }
-  },[]);
+  
   return ( 
     <Contenedor>
-    	{data==={} ? 
+    	{props.bienvenida===null ? 
         <p>No disponible</p>
       :
         <>
-          <Bienvenida bienvenida={data.welcome_message}>
-            <KPIWelcome data={data} />
+          <Bienvenida bienvenida={props.bienvenida.welcome_message}>
+            <KPIWelcome data={props.bienvenida} />
           </Bienvenida>
 
           
@@ -38,6 +31,8 @@ const mapStateToProps = estado => {
   return {
     usuario: estado.usuario,
     procesos: estado.procesos,
+    estado: estado,
+    bienvenida: estado.bienvenida,
   }
 }
 const mapDispatchToProps = despachar => {

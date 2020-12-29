@@ -27,6 +27,12 @@ const App = (props) => {
       requestsProcesos(props.usuario,props.cargarProcesos).then(response=>{
         console.log("Respuesta verdadera",response);
       }).catch(e=>console.log(e));
+      requestBienvenida(props.usuario.correo,props.cargarBienvenida).then(response=>{
+        console.log("Respuesta verdadera",response);
+      }).catch(e=>console.log(e));
+      requestTutoriales(props.cargarTutoriales).then(response=>{
+        console.log("Respuesta verdadera",response);
+      }).catch(e=>console.log(e));
     }
     
   },[props.usuario]);
@@ -64,6 +70,18 @@ const actualizarUsuario = (usuario) => {
 const cargarProcesos = (newState) => {
   return {
       type: 'CARGAR_PROCESOS',
+      newState: newState,
+    }  
+}
+const cargarBienvenida = (newState) => {
+  return {
+      type: 'CARGAR_BIENVENIDA',
+      newState: newState,
+    }  
+}
+const cargarTutoriales = (newState) => {
+  return {
+      type: 'CARGAR_TUTORIALES',
       newState: newState,
     }  
 }
@@ -109,6 +127,35 @@ const requestsCandidatosProceso = (idProceso) => {
     });
 }
 
+const requestBienvenida = (correo, cargar) => {
+    return new Promise((resolve, reject)=>{
+      axios.get(`http://127.0.0.1:8000/selection/home/${correo}/`).then(response=>{
+        console.log(response);
+        cargar(response.data);
+
+        resolve(true);
+      })
+      .catch(error=>{
+        console.log(false);
+        reject("bienvenida");
+      });
+    });
+}
+
+const requestTutoriales = (cargar) => {
+    return new Promise((resolve, reject)=>{
+      axios.get(`http://127.0.0.1:8000/selection/tutorials/`).then(response=>{
+        console.log(response);
+        cargar(response.data);
+        resolve(true);
+      })
+      .catch(error=>{
+        console.log(false);
+        reject(error);
+      });
+    });
+}
+
 
 const mapStateToProps = estado => {
   return {
@@ -122,6 +169,8 @@ const mapDispatchToProps = despachar => {
     return {
         actualizarUser: (usuario) => despachar(actualizarUsuario(usuario)),
         cargarProcesos: (newState) => despachar(cargarProcesos(newState)),
+        cargarBienvenida: (newState) => despachar(cargarBienvenida(newState)),
+        cargarTutoriales: (newState) => despachar(cargarTutoriales(newState)),
     }
 }
 

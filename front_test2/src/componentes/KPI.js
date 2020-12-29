@@ -13,17 +13,14 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%'
+    height: '100%',
+    borderRadius: theme.spacing(4),
+    backgroundColor: theme.palette.secondary.main,
+
   },
-  avatar: {
-    height: 56,
-    width: 56
+  icono: {
+    paddingTop: theme.spacing(6),
   },
-  differenceIcon: {
-  },
-  differenceValue: {
-    marginRight: theme.spacing(1)
-  }
 }));
 
 const KPI = ({ nombre, cantidad, icon }) => {
@@ -39,25 +36,27 @@ const KPI = ({ nombre, cantidad, icon }) => {
           justify="space-between"
           spacing={3}
         >
-          <Grid item>
+          <Grid item xs={8}>
             <Typography
               color="textSecondary"
               gutterBottom
               variant="h6"
+              style={{ color: "white"}}
             >
               {nombre}
             </Typography>
             <Typography
               color="textPrimary"
-              variant="h3"
+              variant="h1"
+              style={{ color: "white"}}
             >
               {cantidad}
             </Typography>
           </Grid>
-          <Grid item>
-            <Avatar className={classes.avatar}>
-              {icon}
-            </Avatar>
+          <Grid item item xs={4} >
+              <div className={classes.icono}>
+                {icon}
+              </div>
           </Grid>
         </Grid>
       </CardContent>
