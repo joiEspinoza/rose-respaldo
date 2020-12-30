@@ -167,13 +167,16 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         serializer.is_valid(raise_exception=True)
         sel = serializer.save()
         S3_path = serializer.initial_data['storage_url']
-        candidates = create_candidates(S3_path, sel.pk)
+        min_req = serializer.initial_data['requirements']
+        desire_req = serializer.initial_data['desired']
+        candidates = create_candidates(S3_path, sel.pk, min_req, desire_req, 'scorer')
         serializer_candidates = CandidateSerializer(data=candidates, many=True)
         serializer_candidates.is_valid(raise_exception=True)
         #serializer_candidates.errors
         serializer_candidates.save()
         selection = Selection.objects.get(pk=sel.pk)
         selection.status = 'Done'
+        serializer.save()
         shutil.rmtree(r'selection/tmp/')
         os.mkdir(r'selection/tmp/')
         return Response({'created_data': serializer.data, 'candidates': candidates}, status=status.HTTP_201_CREATED)
