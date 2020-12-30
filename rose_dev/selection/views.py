@@ -169,7 +169,8 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         S3_path = serializer.initial_data['storage_url']
         min_req = serializer.initial_data['requirements']
         desire_req = serializer.initial_data['desired']
-        candidates = create_candidates(S3_path, sel.pk, min_req, desire_req, 'scorer')
+        remote_ind = serializer.initial_data['is_remote']
+        candidates = create_candidates(S3_path, sel.pk, min_req, desire_req, remote_ind, 'scorer')
         serializer_candidates = CandidateSerializer(data=candidates, many=True)
         serializer_candidates.is_valid(raise_exception=True)
         #serializer_candidates.errors
