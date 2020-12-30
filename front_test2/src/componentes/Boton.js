@@ -15,6 +15,7 @@ import {
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import MoneyIcon from '@material-ui/icons/Money';
 import { NavLink as RouterLink } from 'react-router-dom';
+import { Icon } from '@fluentui/react/lib/Icon';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,18 +26,21 @@ const useStyles = makeStyles((theme) => ({
   
 }));
 
-const ProcessButton = ({ nombre, href }) => {
+const ProcessButton = ({ nombre, href, color, icon }) => {
   const classes = useStyles();
 
   return (
     
     <Button
-    variant="contained" color="primary"
+    variant="contained" color={color}
     to={href}
     component={RouterLink}
     className={classes.root}
+    endIcon={<Icon style={{
+      transform: 'scale(1.5)' // Tune it
+    }} iconName={icon}  />}
     >
-    {nombre}
+    {nombre} 
     </Button>
   );
 };

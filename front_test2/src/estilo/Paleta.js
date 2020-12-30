@@ -7,40 +7,28 @@ import teal from '@material-ui/core/colors/teal';
 
 export default {
 	primary: {
-	  xlight: "#ED8FB0",
-	  light: "#D84C7E",
-	  medium: "#98335e",
-	  main: "#7f1445",
-	  dark: "#6b1d41",
+	  main: "#d3044c",//rosado
 	},
 	secondary: {
-	  light: "#E285FF",
-	  main: "#CF33FF",
-	  dark: "#8200AA",
+	  main: "#044454",//verde
 	},
 	error: {
-	  light: "#E285FF",
-	  main: "#CF33FF",
-	  dark: "#8200AA",
+	  main: "#707070",//gris oscuro
 	},
 	warning: {
-	  light: deepPurple[50],
-	  main: deepPurple[500],
-	  dark: deepPurple[800],
+	  main: "#707070",//gris oscuro
 	},
 	info: {
-	  light: indigo[50],
-	  main: indigo[500],
-	  dark: indigo[800],
+	  main: "#044454",//verde
 	},
 	success: {
-	  light: amber[50],
-	  main: amber[500],
-	  dark: amber[800],
+	  main: "#A6A6A6",//gris
 	},
-	indigo: {
-	  light: indigo[50],
-	  main: indigo[500],
-	  dark: indigo[800],
-	},
+	roseclaro:"#FFE8F3",
+	gris: "#A6A6A6",
+	grisoscuro: "#707070",
+	
+	background: {
+      default: "#FFF9FC", //rosa claro
+    },
 };

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Container, makeStyles } from '@material-ui/core';
+import { Container, makeStyles, Box } from '@material-ui/core';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
     display: 'flex',
     height: '100%',
     overflow: 'hidden',
@@ -33,19 +33,31 @@ const DashboardLayout = (props) => {
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className={classes.root}>
+    <Box className={classes.root} height="100%">
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <NavBar
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
+        usuario={props.usuario}
+        
       />
-      <div className={classes.contentContainer}>
-        <Container className={classes.container} maxWidth={false}>
+      <Box className={classes.contentContainer} >
+        <Container className={classes.container} maxWidth={false} >
           {props.children}
         </Container>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
-export default DashboardLayout;
+const mapStateToProps = estado => {
+  return {
+    usuario: estado.usuario,
+  }
+}
+
+const mapDispatchToProps = despachar => {
+    return {}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardLayout);

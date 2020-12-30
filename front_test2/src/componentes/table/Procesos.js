@@ -5,6 +5,7 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { ThemeProvider } from '@material-ui/styles';
 import {
   Avatar,
   Box,
@@ -22,6 +23,7 @@ import {
 } from '@material-ui/core';
 import { Paginacion, TituloColumnaSeleccionador, CeldaColumnaSeleccionador } from './Elementos';
 import getInitials from '../getInitials';
+import { useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -32,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
   
   const classes = useStyles();
+  const theme = useTheme();
   
   const [limite, definirLimite] = useState(7);
   const [pagina, definirPagina] = useState(0);
@@ -110,17 +113,42 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
                   {Object.keys(columnas).map(nombreColumna=>(
                     <TableCell>
                       {typeof columnas[nombreColumna].href === 'undefined' ?
-                        <Typography
-                          color={columnas[nombreColumna].color}
-                          variant={columnas[nombreColumna].tamano}
-                        >
-                          {elemento[nombreColumna]}
-                        </Typography>
+                        <>{nombreColumna === "status" ?
+                          
+                            <Typography
+                              fontWeight= {400}
+                              variant={columnas[nombreColumna].tamano}
+                              style={{ color:"white", backgroundColor:elemento[nombreColumna] === "In progress" ? theme.palette.info.main : theme.palette.primary.main }}
+
+                            >
+                              <Box fontWeight="fontWeightBold">
+                                {elemento[nombreColumna]===undefined ? "No definido" : elemento[nombreColumna]}
+                              </Box>
+                            </Typography>
+                        :
+                          <>{nombreColumna === "created_at"?
+                            <Typography
+                              color={columnas[nombreColumna].color}
+                              variant={columnas[nombreColumna].tamano}
+                            >
+                              {elemento[nombreColumna]===undefined ? "No definido" : elemento[nombreColumna].slice(0,10).concat(" a las ",elemento[nombreColumna].slice(11,16)," horas")}
+                            </Typography>
+                          :
+                            <Typography
+                              color={columnas[nombreColumna].color}
+                              variant={columnas[nombreColumna].tamano}
+                            >
+                              {elemento[nombreColumna]===undefined ? "No definido" : elemento[nombreColumna]}
+                            </Typography>
+                          }</>
+                        }</>
+                        
                       :
                         <Typography
                           color={columnas[nombreColumna].color}
                           variant={columnas[nombreColumna].tamano}
                           component={RouterLink}
+                          style={{ textDecoration: 'none' }}
                           onClick={()=>{seleccionarProceso(elemento.id);history.push(columnas[nombreColumna].href);}}
                           
                         >

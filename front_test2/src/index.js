@@ -9,6 +9,9 @@ import reductorRaiz from './store';
 import Estilo from './estilo/Estilo';
 
 let almacen = createStore(reductorRaiz);
+
+
+
 ReactDOM.render(
   <React.StrictMode>
   	<Provider store={almacen}>

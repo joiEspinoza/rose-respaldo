@@ -9,15 +9,15 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: theme.spacing(3)
   },
   card: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    color: theme.palette.grisoscuro,
   },
 }));
 
-const Bienvenida = ({ className, bienvenida }) => {
+const Bienvenida = ({ className, bienvenida, children }) => {
   const classes = useStyles();
 
   return (
@@ -29,16 +29,21 @@ const Bienvenida = ({ className, bienvenida }) => {
           <CardContent>
             <Typography
               align="center"
-              color="textPrimary"
               gutterBottom
-              variant="h4"
+              variant="h1"
             >
               {"Bienvenida"}
             </Typography>
+          </CardContent>
+        
+          <CardContent>
+            {children}
+          </CardContent>
+          <CardContent>
             <Typography
               align="center"
               color="textPrimary"
-              variant="body1"
+              variant="h5"
             >
               {bienvenida}
             </Typography>

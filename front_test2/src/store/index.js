@@ -15,9 +15,38 @@ function usuario(state = null, accion) {
   }
 }
 
+function estilo(state = {
+  tipography:'Comfortaa',
+  primary:"blue",
+  info:"green",
+}, accion) {
+  switch (accion.type) {
+    default:
+      return state;
+  }
+}
+
 function procesos(state = null, accion) {
   switch (accion.type) {
     case 'CARGAR_PROCESOS':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
+function bienvenida(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_BIENVENIDA':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
+function tutoriales(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_TUTORIALES':
       return accion.newState;
     default:
       return state;
@@ -55,7 +84,7 @@ function candidato_viewprocess(state = 0, accion) {
 
 
 
-let reductorRaiz = combineReducers({ usuario, procesos, proceso_viewprocess, procesos_exportar_excel, candidato_viewprocess });
+let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso_viewprocess, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida });
 
 
 export default reductorRaiz;

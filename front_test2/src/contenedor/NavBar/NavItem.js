@@ -7,38 +7,50 @@ import {
   ListItem,
   makeStyles
 } from '@material-ui/core';
+import { Icon } from '@fluentui/react/lib/Icon';
 
 const useStyles = makeStyles((theme) => ({
   item: {
     display: 'flex',
     paddingTop: 0,
-    paddingBottom: 0
+    paddingBottom: 0,
   },
   button: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.roseclaro,
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: 'flex-start',
     letterSpacing: 0,
     padding: '10px 8px',
+    paddingLeft: theme.spacing(3),
+    margin: theme.spacing(0),
     textTransform: 'none',
     width: '100%',
+    borderRadius: theme.spacing(1),
     '&:hover':{
-      color: theme.palette.text.primary,
+      color: theme.palette.roseclaro,
+      backgroundColor:theme.palette.primary.main,
     },
   },
   icon: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(2),
+
+    paddingLeft: theme.spacing(3),
   },
   title: {
     marginRight: 'auto'
   },
   active: {
-    color: theme.palette.primary.main,
+    color: theme.palette.secondary.main,
+    '&:hover':{
+      color: theme.palette.secondary.dark,
+    },
     '& $title': {
-      fontWeight: theme.typography.fontWeightMedium
+      fontWeight: theme.typography.fontWeightBold,
+      color: theme.palette.secondary.dark,
     },
     '& $icon': {
-      color: theme.palette.primary.main
+      color: theme.palette.secondary.dark,
     }
   }
 }));
@@ -46,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 const NavItem = ({
   className,
   href,
-  icon: Icon,
+  icon,
   title,
   ...rest
 }) => {
@@ -63,13 +75,8 @@ const NavItem = ({
         className={classes.button}
         component={RouterLink}
         to={href}
+        startIcon={<Icono nombre={icon} />}
       >
-        {Icon && (
-          <Icon
-            className={classes.icon}
-            size="20"
-          />
-        )}
         <span className={classes.title}>
           {title}
         </span>
@@ -77,6 +84,14 @@ const NavItem = ({
     </ListItem>
   );
 };
+
+const Icono = ({ nombre }) => {
+  return(
+    <Icon style={{
+      transform: 'scale(1.5)' // Tune it
+    }} iconName={nombre}  />
+  );
+}
 
 NavItem.propTypes = {
   className: PropTypes.string,

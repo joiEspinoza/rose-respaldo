@@ -45,50 +45,21 @@ const Dashboard = (props) => {
   const columnas = {
     "name":{titulo:"Nombre",color:"primary",tamano:"h6",link:true, href:"/ViewProcess"},
     "created_at":{titulo:"Creado",color:"textPrimary",tamano:"body2",link:false, },
-    "status":{titulo:"Status",color:"textPrimary",tamano:"body2",link:false, },
-    //"below":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
-    //"normal":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
-    //"outstanding":{titulo:"Outstanding",color:"textPrimary",tamano:"caption",link:false, }
+    "status":{titulo:"Status",color:"textHint",tamano:"subtitle2",link:false, },
+    "below":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
+    "normal":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
+    "outstanding":{titulo:"Outstanding",color:"textPrimary",tamano:"caption",link:false, }
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
-  const procesosSeleccionados = idSeleccionados.length === 0 ? [] : props.procesos.filter((i,index)=>idSeleccionados.map(i=>i-1).includes(index)).map(i=>({nombre:i.nombre,createdAt:i.createdAt,status:i.status,below:i.below,normal:i.normal,outstanding:i.outstanding}));
+  const procesosSeleccionados = idSeleccionados.length === 0 ? [] : props.procesos.filter((i,index)=>idSeleccionados.includes(i.id)).map(i=>({name:i.name,created_at:i.created_at,status:i.status,below:i.kpis.below,normal:i.kpis.normal,outstanding:i.kpis.outstanding}));
+  console.log(idSeleccionados);
   return (
     
         <Grid
           container
           spacing={3}
         >
-          <Grid
-            item
-            
-            xs={6}
-            md={6}
-            sm={4}
-            lg={3}
-          >
-            <Boton nombre={"Nuevo Proceso"} href={"/AddProcess"}/>
-          </Grid>
-          <Grid item onClick={()=>console.log(procesosSeleccionados)}>Hola</Grid>
-          <Grid
-            item
-            xs={6}
-            md={6}
-            sm={4}
-            lg={3}
-          >
-            {idSeleccionados.length === 0 ? 
-              <Boton nombre={"Exportar Excel"} href={"#"}/>
-            :
-              <DescargaExcelProcesos
-                boton={<Boton nombre={"Exportar Excel"} href={"#"}/>}
-                columnas={columnasExcel}
-                data={procesosSeleccionados}
-
-              />
-            }
-              
-            
-          </Grid>
+          
           
           <Grid
             item
@@ -97,6 +68,45 @@ const Dashboard = (props) => {
           {props.procesos !== undefined &&
             <Tabla  data={props.procesos} columnas={columnas} idSeleccionados={idSeleccionados} definirIdSeleccionados={definirIdSeleccionados} seleccionarProceso={seleccionarProceso}/>
           }
+          </Grid>
+
+          <Grid
+            item
+            
+            xs={6}
+            md={6}
+            sm={4}
+            lg={3}
+          ></Grid>
+          <Grid
+            item
+            
+            xs={6}
+            md={6}
+            sm={4}
+            lg={3}
+          >
+            <Boton nombre={"Nuevo Proceso"} href={"/AddProcess"} color={"secondary"} icon={"CircleAddition"}/>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            md={6}
+            sm={4}
+            lg={3}
+          >
+            {idSeleccionados.length === 0 ? 
+              <Boton nombre={"Exportar Excel"} href={"#"} color={"secondary"} icon={"ExcelDocument"} />
+            :
+              <DescargaExcelProcesos
+                boton={<Boton nombre={"Exportar Excel"} href={"#"} color={"secondary"} icon={"ExcelDocument"}/>}
+                columnas={columnasExcel}
+                data={procesosSeleccionados}
+
+              />
+            }
+              
+            
           </Grid>
           
         </Grid>

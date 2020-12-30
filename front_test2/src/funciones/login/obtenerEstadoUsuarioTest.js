@@ -22,7 +22,7 @@ const useObtenerEstadoUsuarioTest = (props) => {
             //  response: userMicrosoft,
             //});
             //Inicio de sesión microsoft logrado
-            //logout();
+            logout();
         }else{
             //2° revisar google
         }
