@@ -64,10 +64,11 @@ const ViewProcess = (props) => {
                 setOpenCalendar={setOpenCalendar}
               />
             </Grid>
-            <Grid item xs={7}>
-              {/*<CV 
+            <Grid item xs={7} onClick={()=>console.log(candidatoCV)}>
+              hola
+              <CV 
                 candidato={candidatoCV}
-              />*/}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -119,12 +120,12 @@ const Lista = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="body1">
-                  {i.ciudad}
+                  {i.info.data.location[0]}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="subtitle2">
-                  {i.experiencia}
+                  Exp: {i.info.data.exp}
                 </Typography>
               </Grid>
             </Grid>
@@ -170,31 +171,29 @@ const CV = (props) => {
             </Grid>
             <Grid item xs={5}>
               <Typography variant="h6">
-                {props.candidato.nombre}
+                {props.candidato.name}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.universidad}
+                {props.candidato.info.data.college.length > 0 && props.candidato.info.data.college[0]}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.email}
+                {props.candidato.mail}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.ciudad}
+                {props.candidato.info.data.location.length > 0 && props.candidato.info.data.location[0]}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.numero}
+                {props.candidato.info.data.phone.length > 0 && props.candidato.info.data.phone[0]}
               </Typography>
             </Grid>
             <Grid item xs={5} >
               <br/>
+              
               <Typography variant="body1">
-                {props.candidato.profesion}
+                {props.candidato.info.data.graduation.length > 0 && props.candidato.info.data.graduation[0]}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.egreso}
-              </Typography>
-              <Typography variant="body1">
-                {props.candidato.experiencia}
+                {props.candidato.info.data.exp}
               </Typography>
             </Grid>
             <Grid item xs={1}>
@@ -221,7 +220,7 @@ const CV = (props) => {
                 {"Trabajado en:"}
               </Typography>
               <List>
-                {props.candidato.trabajadoen.map(i=>(
+                {props.candidato.info.data.companies.length > 0 && props.candidato.info.data.companies.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -235,7 +234,7 @@ const CV = (props) => {
                 {"Trabajado como:"}
               </Typography>
               <List>
-                {props.candidato.trabajadocomo.map(i=>(
+                {props.candidato.info.data.designation.length > 0 && props.candidato.info.data.designation.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -252,7 +251,7 @@ const CV = (props) => {
                 {"Skills:"}
               </Typography>
               <List>
-                {props.candidato.skills.map(i=>(
+                {props.candidato.info.data.skills.length > 0 && props.candidato.info.data.skills.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -266,7 +265,7 @@ const CV = (props) => {
                 {"Idiomas:"}
               </Typography>
               <List>
-                {props.candidato.idiomas.map(i=>(
+                {props.candidato.info.data.idioms.length > 0 && props.candidato.info.data.idioms.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -280,7 +279,7 @@ const CV = (props) => {
                 {"Certificaciones:"}
               </Typography>
               <List>
-                {props.candidato.certificaciones.map(i=>(
+                {props.candidato.info.data.certficiations.length > 0 && props.candidato.info.data.certficiations.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}

@@ -33,7 +33,7 @@ const theme = (props) => {
         root: {
           margin: space[1],
           padding: space[3],
-          color: "black",
+          color: paleta.primary.main,
           '&:hover':{
             color: paleta.primary.main,
             backgroundColor: paleta.info.main,

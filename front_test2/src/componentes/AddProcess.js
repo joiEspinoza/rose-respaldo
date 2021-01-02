@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { Icon } from '@fluentui/react/lib/Icon';
 import {
   Box,
   Select,
   MenuItem,
   FormControlLabel,
   Switch,
+  Badge,
   Button,
   Checkbox,
   Container,
   FormHelperText,
   Grid,
   Link,
+  IconButton,
   TextField,
   Typography,
   InputLabel,
@@ -25,30 +28,75 @@ import { connect } from 'react-redux';
 import { uploadFile } from 'react-s3';
 import AWS from 'aws-sdk';
 
+
+
+
 AWS.config.update({
-  accessKeyId: 'AKIAJEN4JB3CITFUIUFQ',
-  secretAccessKey: '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'
+  region: 'us-east-2',
+  credentials: new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-east-2:38d700f2-c99b-4c9e-9686-6ce21337d610'
+  })
 })
 
-const myBucket = new AWS.S3({
-  params: { Bucket: 'rosev0'},
-  region: 'us-west-2',
-})
+
+var s3 = new AWS.S3({
+        params: {Bucket: 'rosev0'},
+        region: 'us-east-2',
+});
+
+
+const uploadFile22 = (file,ruta) => {
+  
+  var upload = s3.ManagedUpload({
+    params: {
+      Bucket: 'rosev0',
+      Key: ruta,
+      Body: file,
+      ACL: "public-read",
+    }
+  });
+  var promise = upload.promise();
+  promise.then(
+    function(data) {
+      alert("Successfully uploaded photo.");
+    },
+    function(err) {
+      console.log(err);
+      return alert("There was an error uploading your photo: ");
+    }
+  );
+  
+}
 
 const uploadFile2 = (file,ruta) => {
-  const params = {
-    ACL: 'public-read',
+  var params = {
+    Bucket: 'rosev0',
     Key: ruta,
+    Expires: 60,
     ContentType: file.type,
-    Body: file,
-  }
-  myBucket.putObject(params)
-    .on('httpUploadProgress', (evt) => console.log("evt",evt))
-    .send((err) => {
-       if (err) {
-         console.log("err",err);
-       }
-    })
+    ACL: "public-read"
+  };
+  s3.getSignedUrl('putObject', params, function(err, signedUrl){
+     if (err) {
+          console.log("error papi",err);
+          return err;
+      } else {
+          console.log("Exito papi",signedUrl);
+
+          var instance = axios.create();
+
+          instance.put(signedUrl, file, {headers: {'Content-Type': file.type}})
+              .then(function (result) {
+                  console.log(result);
+              })
+              .catch(function (err) {
+                  console.log(err.code);
+              });
+          return signedUrl;
+      }
+  });
+  
+  
 }
 
 
@@ -101,7 +149,20 @@ const useStyles = makeStyles((theme) => ({
 const AddProcess = (props) => {
   const classes = useStyles();
   let history = useHistory();
-
+  const fileInput = useRef();
+  const handleFile = evento => {
+    evento.preventDefault();
+    console.log(fileInput.current.files[0]);
+  }
+  const [requirements_exp, setRequirements_exp] = useState([]);
+  const [requirements_idioms, setRequirements_idioms] = useState([]);
+  const [requirements_skills, setRequirements_skills] = useState([]);
+  const [requirements_location, setRequirements_location] = useState([]);
+  const [desired_exp, setDesired_exp] = useState([]);
+  const [desired_skills, setDesired_skills] = useState([]);
+  const [desired_college, setDesired_college] = useState([]);
+  const [desired_designation, setDesired_designation] = useState([]);
+  const [desired_degree, setDesired_degree] = useState([]);
   return (
     <Page
       className={classes.root}
@@ -116,22 +177,15 @@ const AddProcess = (props) => {
         <Container maxWidth="md">
           <Formik
             initialValues={{
-              name: "",
+              name: "Vamos",
+              description: "Proceso para desarrollador",
               vacant: 1,
-              description: "",
-              area: "",
-              subarea: "",
-              industry: "",
+              
+              area: "Industrial",
+              subarea: "TI",
+              industry: "TI",
               is_remote: false,
-              exp: 1,
-              idioms: "",
-              skills: "",
-              location: "",
-              desired_exp: 1,
-              desired_idioms: "",
-              desired_skills: "",
-              desired_college: "",
-              desired_designation: "",
+              
               file: null,
               
             }}
@@ -144,6 +198,7 @@ const AddProcess = (props) => {
               var date = fecha();
               var email_cambiado = props.usuario.correo.replace("@","_");
               var name_cambiado = values.name.replaceAll(" ","_");
+              const cvs = fileInput.current.files[0];
               var ruta = `${email_cambiado}/${date}*${name_cambiado}*input/`;
               var payload = {
                 "name": values.name,
@@ -155,34 +210,37 @@ const AddProcess = (props) => {
                 "is_remote": values.is_remote,
                 "status": "In progress",
                 "requirements":{
-                  "exp": values.exp,
-                  "idioms": values.idioms,
-                  "skills": values.skills,
-                  "location": values.location,
+                  "exp": requirements_exp,
+                  "idioms": requirements_idioms,
+                  "skills": requirements_skills,
+                  "location": requirements_location,
                 },
                 "desired":{
-                  "exp": [values.desired_exp],
-                  "idioms": [values.desired_idioms],
-                  "skills": [values.desired_skills],
-                  "college": [values.desired_college],
-                  "designation": [values.desired_designation],
+                  "exp": desired_exp,
+                  "skills": desired_skills,
+                  "college": desired_college,
+                  "designation": desired_designation,
+                  "degree": desired_degree,
                 },
                 "kpis": {},
                 "storage_url": ruta,
                 "user": props.usuario.correo,
               };
-              console.log(payload);
-              console.log(values.file);
+              
               let configu = config(ruta);
-              console.log(configu);
-              //uploadFile2(values.file,ruta);
-              uploadFile(values.file, configu)
-                .then(data => {
-                  console.log("archivo exito",data);
-                  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>console.log(r)).catch(e=>console.log(e));
-                })
-                .catch(err => console.error("error archivo",err));
-              //history.push('/WelcomePage');
+              console.log(payload);
+              axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
+              //uploadFile2(cvs,ruta);
+              //uploadFile(cvs, configu)
+                //.then(data => {
+                //  console.log("archivo exito",data);
+                //  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
+                //})
+                //.catch(err => {
+                //  console.error("error archivo",err);
+                //  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
+                //});
+              
             }}
           >
             {({
@@ -314,64 +372,20 @@ const AddProcess = (props) => {
                       <Grid item>
                         <Typography variant="h5">Requisitos Mínimos</Typography>
                       </Grid>
-                      <Grid item>
-                        <TextField
-                          error={Boolean(touched.exp && errors.exp)}
-                          fullWidth
-                          helperText={touched.exp && errors.exp}
-                          label="Experiencia"
-                          type="number"
-                          margin="normal"
-                          name="exp"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.exp}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <TextField
-                          error={Boolean(touched.idioms && errors.idioms)}
-                          fullWidth
-                          helperText={touched.idioms && errors.idioms}
-                          label="Idioma"
-                          margin="normal"
-                          name="idioms"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.idioms}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <TextField
-                          error={Boolean(touched.skills && errors.skills)}
-                          fullWidth
-                          helperText={touched.skills && errors.skills}
-                          label="Skills"
-                          margin="normal"
-                          name="skills"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.skills}
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <TextField
-                          error={Boolean(touched.location && errors.location)}
-                          fullWidth
-                          helperText={touched.location && errors.location}
-                          label="Lugar"
-                          margin="normal"
-                          name="location"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.location}
-                          variant="outlined"
-                        />
-                      </Grid>
                       
+                      <Grid item>
+                        <ArrayInputNumber data={requirements_exp} set={setRequirements_exp} label={"Experiencia"}/>
+                      </Grid>
+                      <Grid item>
+                        <ArrayInput data={requirements_idioms} set={setRequirements_idioms} label={"Idiomas"}/>
+                      </Grid>
+                      <Grid item>
+                        <ArrayInput data={requirements_skills} set={setRequirements_skills} label={"Skills"}/>
+                      </Grid>
+                      <Grid item>
+                        <ArrayInput data={requirements_location} set={setRequirements_location} label={"Lugar"}/>
+                      </Grid>
+                                            
                     </Grid>
                   </Grid>
                   <Grid item xs={4}>
@@ -380,83 +394,38 @@ const AddProcess = (props) => {
                         <Typography variant="h5">Requisitos Deseables</Typography>
                       </Grid>
                       <Grid item>
-                        <TextField
-                          error={Boolean(touched.desired_exp && errors.desired_exp)}
-                          fullWidth
-                          helperText={touched.desired_exp && errors.desired_exp}
-                          label="Experiencia deseada"
-                          type="number"
-                          margin="normal"
-                          name="desired_exp"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.desired_exp}
-                          variant="outlined"
-                        />
+                        <ArrayInputNumber data={desired_exp} set={setDesired_exp} label={"Experiencia"}/>
                       </Grid>
                       <Grid item>
-                        <TextField
-                          error={Boolean(touched.desired_idioms && errors.desired_idioms)}
-                          fullWidth
-                          helperText={touched.desired_idioms && errors.desired_idioms}
-                          label="Idiomas deseados"
-                          margin="normal"
-                          name="desired_idioms"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.desired_idioms}
-                          variant="outlined"
-                        />
+                        <ArrayInput data={desired_skills} set={setDesired_skills} label={"Skills"}/>
                       </Grid>
                       <Grid item>
-                        <TextField
-                          error={Boolean(touched.desired_college && errors.desired_college)}
-                          fullWidth
-                          helperText={touched.desired_college && errors.desired_college}
-                          label="Casa de estudios"
-                          margin="normal"
-                          name="desired_college"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.desired_college}
-                          variant="outlined"
-                        />
+                        <ArrayInput data={desired_designation} set={setDesired_designation} label={"Cargos"}/>
                       </Grid>
                       <Grid item>
-                        <TextField
-                          error={Boolean(touched.desired_designation && errors.desired_designation)}
-                          fullWidth
-                          helperText={touched.desired_designation && errors.desired_designation}
-                          label="Cargos"
-                          margin="normal"
-                          name="desired_designation"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.desired_designation}
-                          variant="outlined"
-                        />
+                        <ArrayInput data={desired_college} set={setDesired_college} label={"Universidades"}/>
                       </Grid>
+                      <Grid item>
+                        <ArrayInput data={desired_degree} set={setDesired_degree} label={"Títulos"}/>
+                      </Grid>
+                      
+                      
+                      
+                     
                     </Grid>
                   </Grid>
                   <Grid item xs={4}>
                     <Grid container direction="column" justify="center" alignItems="center" spacing={3} >
                       <br/><br/><br/><br/>
                       <Grid item xs={12}>
-                        <Button
-                          variant="contained"
-                          component="label"
-                          fullWidth={true}
-                          style={{ "min-height": "100px" }}
-                        >
+                        
                           Subir CV's
                           <input
                             type="file"
                             name="file"
-                            onChange={handleChange}
-                            value={values.file}
-                            hidden
+                            ref={fileInput}
+          
                           />
-                        </Button>
                       </Grid>
                       <Grid item>
                         <Box my={2}>
@@ -467,6 +436,7 @@ const AddProcess = (props) => {
                             fullWidth
                             size="large"
                             type="submit"
+                            
                             variant="contained"
                           >
                             ¡Traeme a los mejores!
@@ -495,6 +465,112 @@ const AddProcess = (props) => {
   );
 };
 
+const ArrayInputNumber = ({ data, set, label }) => {
+  const [valor, setValor] = useState(1);
+  const definir = () => {
+    set([...data, Number(valor)]);
+    setValor(1);
+  }
+  const actualizar = (i) => {
+    setValor(data[i]);
+    set([...data.slice(0,i), ...data.slice(i+1)]);
+  }
+  const eliminar = (i) => {
+    set([...data.slice(0,i), ...data.slice(i+1)]);
+  }
+  const inputtext = (e) => {
+    e.preventDefault();
+    setValor(e.target.value);
+  }
+  return (
+    <Grid container direction="column" spacing={3}>
+      <Grid item xs={12}>
+        <Grid container direction="row" spacing={0}>
+          <Grid item xs={10}>
+            <TextField variant="outlined" label={label} type="number" fullWidth value={valor} onChange={inputtext}/>
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton onClick={definir}>
+              <Icono nombre={'CircleAdditionSolid'} />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
+          {data.map((i,index)=>(
+            <Grid item>
+              <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
+                <Button variant="outlined" color="primary" onClick={()=>actualizar(index)}>{i}</Button>
+              </Badge>
+            </Grid>
+          ))}
+          
+        </Grid>
+      </Grid>
+    </Grid>
+    
+  );
+}
+
+const ArrayInput = ({ data, set, label }) => {
+  const [valor, setValor] = useState("");
+  const definir = () => {
+    set([...data, valor.toLowerCase()]);
+    setValor("");
+    console.log(data);
+  }
+  const actualizar = (i) => {
+    setValor(data[i]);
+    set([...data.slice(0,i), ...data.slice(i+1)]);
+  }
+  const eliminar = (i) => {
+    set([...data.slice(0,i), ...data.slice(i+1)]);
+  }
+  const inputtext = (e) => {
+    e.preventDefault();
+    setValor(e.target.value);
+  }
+  return (
+    <Grid container direction="column" spacing={3}>
+      <Grid item xs={12}>
+        <Grid container direction="row" spacing={0}>
+          <Grid item xs={10}>
+            <TextField variant="outlined" label={label} type="text" fullWidth value={valor} onChange={inputtext}/>
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton onClick={definir}>
+              <Icono nombre={'CircleAdditionSolid'} />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Grid>
+      {data.length !== 0 && <Grid item xs={12}>
+        <Grid container spacing={2}>
+          {data.map((i,index)=>(
+            <Grid item>
+              <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
+                <Button variant="outlined" color="primary" onClick={()=>actualizar(index)}>{i}</Button>
+              </Badge>
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>} 
+      
+        
+      
+    </Grid>
+    
+  );
+}
+
+const Icono = ({ nombre }) => {
+  return(
+    <Icon style={{
+      transform: 'scale(1.5)' 
+    }} iconName={nombre}  />
+  );
+}
 
 const mapStateToProps = estado => {
   return {
