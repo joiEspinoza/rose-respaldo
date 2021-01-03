@@ -334,9 +334,12 @@ class GetUserEventsAPIView(generics.GenericAPIView):  #validated
     serializer_class = GetEventsSerializer
 
     @swagger_auto_schema(operation_description="Get user events to check for availability", operation_id='user_events_read')
-    def get(self, request, token, username):
-        user_id = User.objects.get(username=username)
-        user_timezone = UserConfig.objects.get(user=user_id, type="timezone")
+    def get(self, request, token, mail):
+        user_id = User.objects.get(email=mail)
+        try:
+            user_timezone = UserConfig.objects.get(user=user_id, type="timezone")
+        except:
+            Response({'error': 'El usuario no tiene configurado una zona horaria'}, status=status.HTTP_428_PRECONDITION_REQUIRED)
         if user_id.auth_provider == 'google':
             #try:
                 events = get_gmailevents(token, user_timezone.value)
