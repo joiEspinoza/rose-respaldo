@@ -1,19 +1,9 @@
 import React from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import {
-  Avatar,
-  Box,
   Button,
-  Card,
-  CardContent,
   Grid,
-  Typography,
-  colors,
   makeStyles
 } from '@material-ui/core';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import MoneyIcon from '@material-ui/icons/Money';
 import { NavLink as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({

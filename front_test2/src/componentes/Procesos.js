@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Avatar,
   Box,
@@ -16,9 +12,7 @@ import {
   TableRow,
   Typography,
   makeStyles,
-  Button,
 } from '@material-ui/core';
-import getInitials from './getInitials';
 
 const useStyles = makeStyles((theme) => ({
   root: {},

@@ -1,25 +1,19 @@
 import React, { useRef, useState } from 'react';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Icon } from '@fluentui/react/lib/Icon';
 import {
   Box,
-  Select,
-  MenuItem,
   FormControlLabel,
   Switch,
   Badge,
   Button,
-  Checkbox,
   Container,
-  FormHelperText,
   Grid,
-  Link,
   IconButton,
   TextField,
   Typography,
-  InputLabel,
   makeStyles
 } from '@material-ui/core';
 import Page from './Page';
@@ -115,14 +109,7 @@ const config = (string) => {
   }
 }
 
-{/*
-uploadFile(values.file, configu)
-                .then(data => {
-                  console.log("archivo exito",data);
-                  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>console.log(r)).catch(e=>console.log(e));
-                })
-                .catch(err => console.error("error archivo",err));
-*/}
+
 
 const fecha = () => {
   let fecha = new Date();

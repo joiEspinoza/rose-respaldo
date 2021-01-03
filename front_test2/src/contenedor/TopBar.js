@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import {
   AppBar,
   Badge,
@@ -12,8 +9,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
 import { Icon } from '@fluentui/react/lib/Icon';
 import rose_nav from '../images/rose_nav.jpg';
 
@@ -37,12 +32,12 @@ const TopBar = ({
 
   return (
     <AppBar
-      className={clsx(classes.root, className)}
+      className={classes.root}
       elevation={0}
       {...rest}
     >
       <Toolbar>
-          <img src={rose_nav} style={{
+          <img src={rose_nav} alt="rose" style={{
               height: '100%',
               width: 'auto',
             }} />
@@ -78,9 +73,5 @@ const TopBar = ({
   );
 };
 
-TopBar.propTypes = {
-  className: PropTypes.string,
-  onMobileNavOpen: PropTypes.func
-};
 
 export default TopBar;

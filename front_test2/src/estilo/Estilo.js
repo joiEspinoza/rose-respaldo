@@ -72,20 +72,6 @@ const theme = (props) => {
   });
 }
 
-{/*
-TextField
-Button
-AppBar
-Menu
-Container
-Grid** Definir varios tipos de grid
-ImageField
-Typografy
-MediaQuerys
-Footer
-Links
-
-*/}
 
 
 const Estilo = (props) => {

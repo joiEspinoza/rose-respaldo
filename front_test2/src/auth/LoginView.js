@@ -16,7 +16,6 @@ import axios from 'axios';
 import MicroSoft from '../rose/Microsoft';
 import Google from '../rose/Google';
 import { connect } from 'react-redux';
-import Page from '../componentes/Page';
 import rosee from '../images/rose_title.png';
 
 

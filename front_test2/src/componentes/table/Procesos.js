@@ -1,28 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React, { useState } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { ThemeProvider } from '@material-ui/styles';
+import { Icon } from '@fluentui/react/lib/Icon';
 import {
-  Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   makeStyles,
-  Button,
 } from '@material-ui/core';
 import { Paginacion, TituloColumnaSeleccionador, CeldaColumnaSeleccionador } from './Elementos';
-import getInitials from '../getInitials';
 import { useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -152,7 +143,9 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
                           onClick={()=>{seleccionarProceso(elemento.id);history.push(columnas[nombreColumna].href);}}
                           
                         >
-                          {elemento[nombreColumna]}
+                          {nombreColumna!== 'edit' ? elemento[nombreColumna]:
+                            <Icon iconName={"EditNote"}  />
+                          }
                         </Typography>
                       }
                     </TableCell>  

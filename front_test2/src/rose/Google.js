@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import GoogleLogin from 'react-google-login';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { IconButton, Icon } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
 import icono from "../images/g.png";
 
 const Google = (props) => {
@@ -48,7 +47,7 @@ const Google = (props) => {
       render={renderProps => (
         <IconButton aria-label="google" onClick={renderProps.onClick} disabled={renderProps.disabled}>
           <Icon>
-            <img src={icono} height="100%" width="100%"/>
+            <img src={icono} height="100%" alt="g-login" width="100%"/>
           </Icon>  
         </IconButton>
       )}

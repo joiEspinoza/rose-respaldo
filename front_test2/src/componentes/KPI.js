@@ -1,12 +1,9 @@
 import React from 'react';
 import {
-  Avatar,
-  Box,
   Card,
   CardContent,
   Grid,
   Typography,
-  colors,
   makeStyles
 } from '@material-ui/core';
 
@@ -53,7 +50,7 @@ const KPI = ({ nombre, cantidad, icon }) => {
               {cantidad}
             </Typography>
           </Grid>
-          <Grid item item xs={4} >
+          <Grid item xs={4} >
               <div className={classes.icono}>
                 {icon}
               </div>

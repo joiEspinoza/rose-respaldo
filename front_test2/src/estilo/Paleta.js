@@ -1,11 +1,4 @@
-import purple from '@material-ui/core/colors/purple';
-import amber from '@material-ui/core/colors/amber';
-import indigo from '@material-ui/core/colors/indigo';
-import deepPurple from '@material-ui/core/colors/deepPurple';
-import red from '@material-ui/core/colors/red';
-import teal from '@material-ui/core/colors/teal';
-
-export default {
+const paleta = {
 	primary: {
 	  main: "#d3044c",//rosado
 	},
@@ -32,3 +25,5 @@ export default {
       default: "#FFF9FC", //rosa claro
     },
 };
+
+export default paleta;

@@ -6,7 +6,7 @@ const theme = createMuiTheme({
 });
 
 
-export default {
+const tipografiaresponsiva = {
 	h1:{
 	  fontSize: '3.5rem',
 	  [theme.breakpoints.up('sm')]: {
@@ -80,3 +80,5 @@ export default {
 	  },
 	},
 };
+
+export default tipografiaresponsiva;

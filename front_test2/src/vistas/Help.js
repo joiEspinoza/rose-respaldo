@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import Contenedor from '../contenedor';
 import Boton from '../componentes/Boton2';
+import Editor from '../componentes/Editor';
+import { EditorState } from 'draft-js';
+import { convertToHTML, convertFromHTML } from 'draft-convert';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 import { 
   Card,
+  Button,
   CardContent,
   Grid,
   makeStyles,
+  TextField,
   Typography
   } from '@material-ui/core';
 import Youtube from 'react-youtube';
@@ -32,8 +39,8 @@ const Help = (props) => {
     				<Grid item xs={3}></Grid>
     			</Grid>
     		</Grid>
-    		<Grid item xs={12}>
-    			{tutorial ? <Tutoriales tutoriales={props.tutoriales}/> : <Issue2 />}
+    		<Grid item >
+    			{tutorial ? <Tutoriales tutoriales={props.tutoriales}/> : <Issue />}
     		</Grid>
     	</Grid>
     </Contenedor>
@@ -42,6 +49,7 @@ const Help = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    paddingTop: theme.spacing(3),
   },
   card: {
     display: 'flex',
@@ -182,32 +190,108 @@ const Tutoriales = ({ className, tutoriales }) => {
   );
 };
 
-const Issue2 = (props) => {
-  
-  return (
-    <p>
-    {"Issue"}
-    </p>
-  );
-}
+
 
 const Issue = (props) => {
-  
+  const [editorState, setEditorState] =useState(EditorState.createEmpty());
+  const html = convertToHTML(editorState.getCurrentContent());
+  const classes = useStyles();
   return (
-    <Contenedor>
-    	<Grid container>
-    		<Grid item xs={12}>
-    			<Grid container>
-    				<Grid item xs={3}></Grid>
-    				<Grid item xs={3}><Boton nombre={"Ver Tutoriales"} href={"#"} /></Grid>
-    				<Grid item xs={3}><Boton nombre={"Crear Incidencia"} href={"#"} /></Grid>
-    				<Grid item xs={3}></Grid>
-    			</Grid>
-    		</Grid>
-    		<Grid item xs={12}>
-    		</Grid>
-    	</Grid>
-    </Contenedor>
+  	<Grid container className={classes.root} spacing={3}>
+  		<Grid item xs={1}></Grid>
+      <Grid item xs={10}>
+        <Card className={classes.card}>
+          <Formik
+            initialValues={{
+              titulo: '',
+              email: '',
+              modulo: '',
+            }}
+            validationSchema={Yup.object().shape({
+              titulo: Yup.string().max(255).required('Debe definir un titulo para el problema'),
+              email: Yup.string().email('Debe ser un email válido').max(255).required('El email es requirido'),
+              modulo: Yup.string().max(255).required('Debe definir el módulo del error')
+            })}
+            onSubmit={(values, actions) => {
+              console.log({"titulo":values.titulo,"email":values.email,"modulo":values.modulo,"html":html});            
+            }}
+          >
+            {({
+              errors,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              touched,
+              values
+            }) => (
+              <form onSubmit={handleSubmit} >
+                <CardContent>
+            			<Grid container spacing={3}>
+            				<Grid item xs={6}>
+                      <TextField
+                        error={Boolean(touched.titulo && errors.titulo)}
+                        fullWidth
+                        helperText={touched.titulo && errors.titulo}
+                        label="Título del problema"
+                        margin="normal"
+                        name="titulo"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type="text"
+                        value={values.titulo}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        error={Boolean(touched.email && errors.email)}
+                        fullWidth
+                        helperText={touched.email && errors.email}
+                        label="Email de contacto"
+                        margin="normal"
+                        name="email"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type="email"
+                        value={values.email}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        error={Boolean(touched.modulo && errors.modulo)}
+                        fullWidth
+                        helperText={touched.modulo && errors.modulo}
+                        label="Título del problema"
+                        margin="normal"
+                        name="modulo"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type="text"
+                        value={values.modulo}
+                        variant="outlined"
+                      />
+                    </Grid>
+            			</Grid>
+                </CardContent>
+                <CardContent>
+                  <Editor editorState={editorState} setEditorState={setEditorState}/>
+                </CardContent>
+                <CardContent>
+                  <Button variant="contained" type="submit" color="primary">
+                    {"Crear incidencia"}
+                  </Button>
+                </CardContent>
+              </form>
+            )}
+          </Formik>
+        </Card>
+  		</Grid>
+      <Grid item xs={1}></Grid>
+  		
+        
+  	</Grid>
   );
 }
 

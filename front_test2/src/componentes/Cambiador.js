@@ -6,7 +6,6 @@ import { AddProcess, EditProcess, Error, Help,
 
 
 import LoginView from '../auth/LoginView';
-import RegisterView from '../auth/RegisterView';
 import MicroSoft from '../rose/Microsoft';
 
 import AccountView from '../componentes/account';
@@ -17,8 +16,6 @@ const Cambiador = (props) => {
     <Switch>
       <Route exact path={"/AccountView"} component={AccountView}/>
 
-      <Route exact path={"/login/microsoft"} component={MicroSoft}/>
-      <Route exact path={"/LoginView"} component={LoginView}/>
       <Route exact path={"/AddProcess"} component={AddProcess}/>
       <Route exact path={"/EditProcess"} component={EditProcess}/>
       <Route exact path={"/Error"} component={Error}/>

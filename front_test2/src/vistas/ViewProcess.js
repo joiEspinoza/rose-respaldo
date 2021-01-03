@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Contenedor from '../contenedor';
 import { connect } from 'react-redux';
 import Calendar from '../componentes/process/Calendar';
 import Mail from '../componentes/process/Mail';
 import {
   Grid,
-  makeStyles,
   Typography,
   List,
   ListItem,
-  ListItemText,
-  ListSubheader,
-  ListItemIcon,
-  ListItemSecondaryAction,
   IconButton,
-  Link,
-  Button,
-  Divider,
 } from '@material-ui/core';
 import CalendarTodayTwoToneIcon from '@material-ui/icons/CalendarTodayTwoTone';
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
@@ -29,7 +21,7 @@ import Pdf from "react-to-pdf";
 const ref = React.createRef();
 
 const ViewProcess = (props) => {
-  const candidatosProceso = props.procesos.filter(i=>i.id===props.proceso_viewprocess)[0].candidatos;
+  const candidatosProceso = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos;
   const candidatoCV = candidatosProceso[props.candidato];
   const [openMail, setOpenMail] = React.useState(false);
   const [openCalendar, setOpenCalendar] = React.useState(false);
@@ -65,7 +57,6 @@ const ViewProcess = (props) => {
               />
             </Grid>
             <Grid item xs={7} onClick={()=>console.log(candidatoCV)}>
-              hola
               <CV 
                 candidato={candidatoCV}
               />
@@ -76,22 +67,14 @@ const ViewProcess = (props) => {
       
       <Calendar setOpen={setOpenCalendar} open={openCalendar}/>
       <Mail setOpen={setOpenMail} open={openMail} usermail={props.usuario.correo} candidatemail={candidatoCV.email}/>
-      {props.proceso_viewprocess}
+      {props.proceso}
       {props.candidato}
     </Contenedor>
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '&:hover':{
-      backgroundColor: theme.palette.primary.ligth,
-    },
-  }
-}));
 
 const Lista = (props) => {
-  const classes = useStyles();
   return (
     <List
       component="nav"
@@ -307,7 +290,7 @@ const mapStateToProps = estado => {
   return {
     usuario: estado.usuario,
     procesos: estado.procesos,
-    proceso_viewprocess: estado.proceso_viewprocess,
+    proceso: estado.proceso,
     candidato: estado.candidato_viewprocess,
   }
 }

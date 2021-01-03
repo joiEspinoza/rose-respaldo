@@ -1,27 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
-  Avatar,
-  Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   makeStyles,
-  Button,
 } from '@material-ui/core';
 import { Paginacion, TituloColumnaSeleccionador, CeldaColumnaSeleccionador } from './Elementos';
-import getInitials from '../getInitials';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -75,7 +65,6 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
   const cambiarPagina = (evento, nuevaPagina) => {
     definirPagina(nuevaPagina);
   };
-  let history = useHistory();
   return (
     <Card
       className={classes.root}

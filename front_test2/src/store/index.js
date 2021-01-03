@@ -62,7 +62,7 @@ function procesos_exportar_excel(state = [], accion) {
   }
 }
 
-function proceso_viewprocess(state = null, accion) {
+function proceso(state = 0, accion) {
   switch (accion.type) {
     case 'SELECCIONAR_PROCESO':
       return accion.newIndex;
@@ -84,7 +84,7 @@ function candidato_viewprocess(state = 0, accion) {
 
 
 
-let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso_viewprocess, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida });
+let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida });
 
 
 export default reductorRaiz;

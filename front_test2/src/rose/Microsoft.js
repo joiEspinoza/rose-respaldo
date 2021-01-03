@@ -3,8 +3,7 @@ import MicrosoftLogin from "react-microsoft-login";
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { IconButton, Button, Icon } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { loginPopup, ssoSilent, acquireTokenSilent, isMicrosoftLogged, Microsoft, logout } from './Msal';
+import { loginPopup } from './Msal';
 import icono from "../images/m.svg";
 
 const MicroSoftOld = (props) => {
@@ -35,14 +34,14 @@ const MicroSoftOld = (props) => {
     >
       <IconButton aria-label="microsoft">
         <Icon >
-          <img src={icono}/>
+          <img src={icono} alt="ms login"/>
         </Icon>
       </IconButton>
     </MicrosoftLogin>
   );
 };
 
-const MicroSoft = (props) => {
+export const MicroSoft = (props) => {
  let history = useHistory();
  const handleLogin = () => {
   loginPopup(props.actualizarUser, history);

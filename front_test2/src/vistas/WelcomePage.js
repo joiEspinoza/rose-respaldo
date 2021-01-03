@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Contenedor from '../contenedor';
 import KPIWelcome from '../componentes/welcome/KPIWelcome';
 import Bienvenida from '../componentes/welcome/Bienvenida';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { loginPopup, ssoSilent, acquireTokenSilent, isMicrosoftLogged, Microsoft, logout } from '../rose/Msal';
 
 
 const WelcomePage = (props) => {
-  const estado = props.usuario !== null;
-  
   return ( 
     <Contenedor>
     	{props.bienvenida===null ? 
@@ -20,7 +16,6 @@ const WelcomePage = (props) => {
             <KPIWelcome data={props.bienvenida} />
           </Bienvenida>
 
-          
         </>
       }
       

@@ -1,38 +1,10 @@
-import React, { useState } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React from 'react';
 import {
-  Avatar,
-  Box,
-  Card,
   Checkbox,
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
   TablePagination,
-  TableRow,
-  Typography,
-  makeStyles,
-  Button,
 } from '@material-ui/core';
 
-
-const Titulo = ({ }) => {
-  return (
-    <> 
-    </>
-  );
-};
-
-const Cuerpo = ({ }) => {
-  return (
-    <> 
-    </>
-  );
-};
 
 const CeldaColumnaSeleccionador = ({ seleccion, chequeado }) => {
   return (

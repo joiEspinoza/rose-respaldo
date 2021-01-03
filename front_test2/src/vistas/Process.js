@@ -2,45 +2,14 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import Contenedor from '../contenedor';
 import {
-  Container,
   Grid,
-  makeStyles,
-  Typography,
 } from '@material-ui/core';
-import KPI from '../componentes/KPI';
-import Bienvenida from '../componentes/welcome/Bienvenida';
-import Procesos from '../componentes/Procesos';
 import Tabla from '../componentes/table/Procesos';
 import Boton from '../componentes/Boton';
 import { DescargaExcelProcesos } from '../componentes/downloads/DescargaExcel';
 
 
-const example = {
-    "name": "",
-    "description": "",
-    "area": "",
-    "subarea": "",
-    "industry": "",
-    "is_remote": false,
-    "status": "",
-    "vacant": null,
-    "requirements": null,
-    "desired": null,
-    "kpis": null,
-    "storage_url": "",
-    "user": null
-};
-
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
-  }
-}));
 const Dashboard = (props) => {
-  const classes = useStyles();
   const [idSeleccionados, definirIdSeleccionados] = useState([]);
   const columnas = {
     "name":{titulo:"Nombre",color:"primary",tamano:"h6",link:true, href:"/ViewProcess"},
@@ -48,7 +17,8 @@ const Dashboard = (props) => {
     "status":{titulo:"Status",color:"textHint",tamano:"subtitle2",link:false, },
     "below":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
     "normal":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
-    "outstanding":{titulo:"Outstanding",color:"textPrimary",tamano:"caption",link:false, }
+    "outstanding":{titulo:"Outstanding",color:"textPrimary",tamano:"caption",link:false, },
+    "edit":{titulo:"Editar",color:"secondary",tamano:"h6",link:true, href:"/EditProcess"},
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
   const procesosSeleccionados = idSeleccionados.length === 0 ? [] : props.procesos.filter((i,index)=>idSeleccionados.includes(i.id)).map(i=>({name:i.name,created_at:i.created_at,status:i.status,below:i.kpis.below,normal:i.kpis.normal,outstanding:i.kpis.outstanding}));

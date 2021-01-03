@@ -1,4 +1,4 @@
-import { loginPopup, ssoSilent, acquireTokenSilent, isMicrosoftLogged, Microsoft, logout } from '../../rose/Msal';
+import { isMicrosoftLogged, logout } from '../../rose/Msal';
 
  
 
@@ -26,11 +26,6 @@ const useObtenerEstadoUsuarioTest = (props) => {
         }else{
             //2° revisar google
         }
-        {/*props.actualizarUser(Object.assign({},{
-          uid:"uid",
-          nombre: "yo",
-          correo: "mi@email.cl",
-        }));*/}
     }
     
 };

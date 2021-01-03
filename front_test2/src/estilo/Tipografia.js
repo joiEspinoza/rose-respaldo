@@ -1,4 +1,4 @@
-export default {
+ const tipografias = {
 	fontFamily: [
 		'Comfortaa',
 		'-apple-system',
@@ -13,3 +13,5 @@ export default {
 		'"Segoe UI Symbol"',
 	].join(','),
 };
+
+export default tipografias;

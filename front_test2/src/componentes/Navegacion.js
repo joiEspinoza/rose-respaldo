@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
-import { AppBar, Toolbar, IconButton, Typography } from '@material-ui/core';
-import { Build as BuildI } from '@material-ui/icons';
+import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
 
 const Navegacion = (props) => {

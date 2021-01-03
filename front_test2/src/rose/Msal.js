@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 //import { useHistory } from "react-router-dom";
 import * as Msal from "msal";
 import axios from 'axios';
@@ -37,7 +37,6 @@ const loginPopup = (actualizarUser, history) => {
             var nombre = response.account.name;
             var correo = response.account.userName;
             var accessToken = acquireTokenSilent();
-            var response = response;
             console.log(accessToken);
             axios.post("http://127.0.0.1:8000/social_auth/microsoft/",{
               "auth_token":accessToken,
