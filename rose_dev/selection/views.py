@@ -292,7 +292,7 @@ class ListTutorialsAPIView(generics.GenericAPIView):  #validated
 class SendMailAPIView(generics.GenericAPIView):
     serializer_class = EventSerializer
 
-    desc = 'Google params -> sender, to, cc, subject, message_text     to and cc with ";"\n Microsoft params -> content, subject, to, cc     to and cc as array [] '
+    desc = 'Google params -> sender, to, cc, subject, message_text     to and cc with ";"\n Microsoft params -> content, subject, to, cc     to and cc as array [] \ntype: mail or meeting'
 
     @swagger_auto_schema(operation_description=desc, operation_id='send_mail_candidate')
     def post(self, request, token):
@@ -377,7 +377,7 @@ class GetUserEventsAPIView(generics.GenericAPIView):  #validated
 class CreateEventAPIView(generics.GenericAPIView):  #validated
     serializer_class = EventSerializer
 
-    @swagger_auto_schema(operation_description="post to create events.\n info JSON: subject, content, start, end, attendees \n Datetime format for start and end in post request 2020-12-07T20:00:00\n attendees format ['mail1', 'mail2'] (microsoft and google)", operation_id='user_event_create')
+    @swagger_auto_schema(operation_description="post to create events.\n info JSON: subject, content, start, end, attendees \n Datetime format for start and end in post request 2020-12-07T20:00:00\n attendees format ['mail1', 'mail2'] (microsoft and google)\n type: mail or meeting", operation_id='user_event_create')
     def post(self, request, token):
 
         """
