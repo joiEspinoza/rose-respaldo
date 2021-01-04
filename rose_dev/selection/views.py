@@ -269,6 +269,8 @@ class CreateIssueAPIView(generics.GenericAPIView):  #validated
     @swagger_auto_schema(operation_description="Create issue", operation_id='issue_create')
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+        user = User.objects.get(email=serializer.initial_data['user'])
+        serializer.initial_data['user'] = user.id
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
