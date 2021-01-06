@@ -269,6 +269,8 @@ class CreateIssueAPIView(generics.GenericAPIView):  #validated
     @swagger_auto_schema(operation_description="Create issue", operation_id='issue_create')
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+        user = User.objects.get(email=serializer.initial_data['user'])
+        serializer.initial_data['user'] = user.id
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -290,7 +292,7 @@ class ListTutorialsAPIView(generics.GenericAPIView):  #validated
 class SendMailAPIView(generics.GenericAPIView):
     serializer_class = EventSerializer
 
-    desc = 'Google params -> sender, to, cc, subject, message_text     to and cc with ";"\n Microsoft params -> content, subject, to, cc     to and cc as array [] '
+    desc = 'Google params -> sender, to, cc, subject, message_text     to and cc with ";"\n Microsoft params -> content, subject, to, cc     to and cc as array [] \ntype: mail or meeting'
 
     @swagger_auto_schema(operation_description=desc, operation_id='send_mail_candidate')
     def post(self, request, token):
@@ -299,9 +301,10 @@ class SendMailAPIView(generics.GenericAPIView):
         args request: mail, sender, to, cc, subject, html message
         """
         serializer = self.serializer_class(data=request.data)
+        user = User.objects.get(email=serializer.initial_data['user'])
+        serializer.initial_data['user'] = user.id
         event = serializer.initial_data
         event_info = event['info']
-        user = User.objects.get(pk=event['user'])
         if user.auth_provider == 'google':
             try:
                 body = create_gmail(event_info['sender'], event_info['to'], event_info['cc'], event_info['subject'], event_info['content'])
@@ -374,7 +377,7 @@ class GetUserEventsAPIView(generics.GenericAPIView):  #validated
 class CreateEventAPIView(generics.GenericAPIView):  #validated
     serializer_class = EventSerializer
 
-    @swagger_auto_schema(operation_description="post to create events.\n info JSON: subject, content, start, end, attendees \n Datetime format for start and end in post request 2020-12-07T20:00:00\n attendees format ['mail1', 'mail2'] (microsoft and google)", operation_id='user_event_create')
+    @swagger_auto_schema(operation_description="post to create events.\n info JSON: subject, content, start, end, attendees \n Datetime format for start and end in post request 2020-12-07T20:00:00\n attendees format ['mail1', 'mail2'] (microsoft and google)\n type: mail or meeting", operation_id='user_event_create')
     def post(self, request, token):
 
         """
@@ -382,9 +385,10 @@ class CreateEventAPIView(generics.GenericAPIView):  #validated
         args request: subject, start, end, attendees
         """
         serializer = self.serializer_class(data=request.data)
+        user_id = User.objects.get(email=serializer.initial_data['user'])
+        serializer.initial_data['user'] = user_id.id
         event = serializer.initial_data
         event_info = event['info']
-        user_id = User.objects.get(pk=event['user'])
         user_timezone = UserConfig.objects.get(user=user_id, type="timezone")
         if user_id.auth_provider == 'microsoft':
             try:
