@@ -21,48 +21,66 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { uploadFile } from 'react-s3';
 import AWS from 'aws-sdk';
+import ReactS3Uploader from 'react-s3-uploader';
 
 
 
+var bucketName = 'rosev0';
+var bucketRegion = 'us-east-2';
+var IdentityPoolId = 'us-east-2:38d700f2-c99b-4c9e-9686-6ce21337d610';
 
-AWS.config.update({
-  region: 'us-east-2',
-  credentials: new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-2:38d700f2-c99b-4c9e-9686-6ce21337d610'
-  })
-})
+AWS.config.region = bucketRegion; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: IdentityPoolId,});
 
 
-var s3 = new AWS.S3({
-        params: {Bucket: 'rosev0'},
-        region: 'us-east-2',
+const s3 = new AWS.S3({
+  apiVersion: '2006-03-01',
+  params: {Bucket: bucketName}
 });
+//encodeURIComponent()
+const uploadFile2 = (file,ruta) => {
 
+s3.upload({
+        Key: ruta,
+        Body: file,
+        ACL: 'public-read'
+        }, function(err, data) {
+        if(err) {
+        console.log('error s3',err,data);
+        }
+        alert('Successfully Uploaded!');
+        }).on('httpUploadProgress', function (progress) {
+        var uploaded = parseInt((progress.loaded * 100) / progress.total);
+        console.log(uploaded);
+      });
+}
 
 const uploadFile22 = (file,ruta) => {
   
-  var upload = s3.ManagedUpload({
+  
+  var upload = new AWS.S3.ManagedUpload({
     params: {
-      Bucket: 'rosev0',
+      Bucket: bucketName,
       Key: ruta,
       Body: file,
-      ACL: "public-read",
+      ACL: "public-read"
     }
   });
+
   var promise = upload.promise();
+
   promise.then(
     function(data) {
       alert("Successfully uploaded photo.");
     },
     function(err) {
-      console.log(err);
-      return alert("There was an error uploading your photo: ");
+      return alert("There was an error uploading your photo: ", err.message);
     }
   );
   
 }
 
-const uploadFile2 = (file,ruta) => {
+const uploadFile222 = (file,ruta) => {
   var params = {
     Bucket: 'rosev0',
     Key: ruta,
@@ -103,7 +121,7 @@ const config = (string) => {
   return {
     bucketName: 'rosev0',
     dirName: string, /* optional */
-    region: 'us-west-2',
+    region: 'us-east-2',
     accessKeyId: 'AKIAJEN4JB3CITFUIUFQ',
     secretAccessKey: '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',
   }
@@ -141,6 +159,11 @@ const AddProcess = (props) => {
     evento.preventDefault();
     console.log(fileInput.current.files[0]);
   }
+
+  const onUpload = (e) =>{
+    console.log(e);
+  }
+
   const [requirements_exp, setRequirements_exp] = useState([]);
   const [requirements_idioms, setRequirements_idioms] = useState([]);
   const [requirements_skills, setRequirements_skills] = useState([]);
@@ -216,8 +239,10 @@ const AddProcess = (props) => {
               
               let configu = config(ruta);
               console.log(payload);
-              axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
-              //uploadFile2(cvs,ruta);
+
+              uploadFile(cvs,configu);
+
+              //axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
               //uploadFile(cvs, configu)
                 //.then(data => {
                 //  console.log("archivo exito",data);
@@ -413,6 +438,20 @@ const AddProcess = (props) => {
                             ref={fileInput}
           
                           />
+                          <ReactS3Uploader
+                            signingUrl="/s3/sign"
+                            signingUrlMethod="GET"
+                            accept=".zip,.rar,.7zip"
+                            s3path="/uploads/"
+                            onProgress={onUpload}
+                            onError={onUpload}
+                            onFinish={onUpload}
+                            
+                            uploadRequestHeaders={{ 'x-amz-acl': 'public-read' }}  // this is the default
+                            
+                            ref={fileInput}
+                            contentDisposition="auto"
+                            />
                       </Grid>
                       <Grid item>
                         <Box my={2}>
