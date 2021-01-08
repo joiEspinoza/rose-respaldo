@@ -25,8 +25,9 @@ const Google = (props) => {
                 uid:response.googleId,
                 nombre: response.profileObj.familyName,
                 correo: response.profileObj.email,
-                tokenId: response.tokenId,
+                token: response.tokenId,
                 response: response,
+                type:"google",
               }));
               response.reloadAuthResponse().then(i=>console.log("success on reload",i)).catch(i=>console.log("error",i));
               history.push("/");

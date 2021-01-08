@@ -19,11 +19,22 @@ const MicroSoftOld = (props) => {
           uid: data.account.accountIdentifier,
           nombre:data.account.name,
           correo: data.account.userName,
+          token: data.accessToken,
+          response: data,
+          type:"microsoft",
+        });
+        history.push("/");
+      }).catch(er=>{
+        console.log(er);
+        props.actualizarUser({
+          uid: data.account.accountIdentifier,
+          nombre:data.account.name,
+          correo: data.account.userName,
           accessToken: data.accessToken,
           response: data,
         });
         history.push("/");
-      }).catch(er=>console.log(er));
+      });
     }
   };
  	

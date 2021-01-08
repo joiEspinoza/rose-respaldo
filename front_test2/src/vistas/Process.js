@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import Tabla from '../componentes/table/Procesos';
 import Boton from '../componentes/Boton';
+import { NATabla, NATarjeta } from '../componentes/NA';
 import { DescargaExcelProcesos } from '../componentes/downloads/DescargaExcel';
 
 
@@ -29,13 +30,17 @@ const Dashboard = (props) => {
           container
           spacing={3}
         >
-          
-          
           <Grid
             item
             xs={12}
           >
-          {props.procesos !== undefined &&
+          {props.procesos === null ?
+            <>
+              <NATarjeta extendida={false} mensaje={"Sin registros, no disponible"} sizes={{mensaje:"h6"}}>
+                <NATabla  columnas={columnas} />
+              </NATarjeta>
+            </>
+          :
             <Tabla  data={props.procesos} columnas={columnas} idSeleccionados={idSeleccionados} definirIdSeleccionados={definirIdSeleccionados} seleccionarProceso={seleccionarProceso}/>
           }
           </Grid>
@@ -65,16 +70,20 @@ const Dashboard = (props) => {
             sm={4}
             lg={3}
           >
-            {idSeleccionados.length === 0 ? 
-              <Boton nombre={"Exportar Excel"} href={"#"} color={"secondary"} icon={"ExcelDocument"} />
-            :
-              <DescargaExcelProcesos
-                boton={<Boton nombre={"Exportar Excel"} href={"#"} color={"secondary"} icon={"ExcelDocument"}/>}
-                columnas={columnasExcel}
-                data={procesosSeleccionados}
+            <DescargaExcelProcesos
+              boton={
+                <Boton 
+                  desactivado={props.procesos === null && idSeleccionados.length === 0} 
+                  nombre={"Exportar Excel"} 
+                  href={"#"} 
+                  color={"secondary"} 
+                  icon={"ExcelDocument"}
+                />
+              }
+              columnas={columnasExcel}
+              data={procesosSeleccionados}
 
-              />
-            }
+            />
               
             
           </Grid>

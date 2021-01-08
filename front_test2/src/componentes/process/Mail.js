@@ -6,14 +6,16 @@ import { EditorState } from 'draft-js';
 import { convertToHTML, convertFromHTML } from 'draft-convert';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
 const Mail = (props) => {
-  const { setOpen, open, usermail, candidatemail } = props;
+  const { setOpen, open, user, candidatemail, token } = props;
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   return (
     <Dialogo setOpen={setOpen} open={open} titulo={"Nuevo Mensaje"} >
-    	<Formulario />
+    	<Formulario user={user} candidatemail={candidatemail} token={token} />
   	</Dialogo>
   );
 }
@@ -40,23 +42,52 @@ const Formulario = (props) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
+  const history = useHistory();
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item xs={12}>
         <Card className={classes.card}>
           <Formik
             initialValues={{
-              para: '',
+              para: props.candidatemail,
               cc: '',
               asunto: '',
             }}
             validationSchema={Yup.object().shape({
               para: Yup.string().email('Debe ser un email válido').max(255).required('El email es requirido'),
-              cc: Yup.string().email('Debe ser un email válido').max(255).required('El email es requirido'),
+              cc: Yup.string().email('Debe ser un email válido').max(255),
               asunto: Yup.string().max(255).required('Debe definir el asunto del email')
             })}
             onSubmit={(values, actions) => {
-              console.log({"para":values.para,"cc":values.cc,"asunto":values.asunto,"html":html});            
+              const datam = {
+                type:"mail",
+                user:props.user.correo,
+                info:{
+                  "to":[values.para],
+                  "cc":[values.cc],
+                  "subject":values.asunto,
+                  "content":html
+                },
+              };
+              const datag = {
+                type:"mail",
+                user:props.user.correo,
+                info:{
+                  "sender":props.user.correo,
+                  "to":values.para,
+                  "cc":values.cc,
+                  "subject":values.asunto,
+                  "message_text":html
+                },
+              };
+              const data = props.user.type === "google" ? datag : datam;
+              console.log(data);
+              axios.post(`http://127.0.0.1:8000/selection/sendmail/${props.user.token}`,data).then(r=>{
+                console.log(r);
+                history.push('/');
+              }).catch(r=>{
+                console.log(r);
+              });        
             }}
           >
             {({
@@ -88,21 +119,6 @@ const Formulario = (props) => {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        error={Boolean(touched.cc && errors.cc)}
-                        fullWidth
-                        helperText={touched.cc && errors.cc}
-                        label="Con copia"
-                        margin="normal"
-                        name="cc"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        type="email"
-                        value={values.cc}
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
                         error={Boolean(touched.asunto && errors.asunto)}
                         fullWidth
                         helperText={touched.asunto && errors.asunto}
@@ -113,6 +129,21 @@ const Formulario = (props) => {
                         onChange={handleChange}
                         type="text"
                         value={values.asunto}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        error={Boolean(touched.cc && errors.cc)}
+                        fullWidth
+                        helperText={touched.cc && errors.cc}
+                        label="Con copia"
+                        margin="normal"
+                        name="cc"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        type="email"
+                        value={values.cc}
                         variant="outlined"
                       />
                     </Grid>

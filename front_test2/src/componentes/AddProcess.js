@@ -24,7 +24,7 @@ import AWS from 'aws-sdk';
 import ReactS3Uploader from 'react-s3-uploader';
 
 
-
+{/*
 var bucketName = 'rosev0';
 var bucketRegion = 'us-east-2';
 var IdentityPoolId = 'us-east-2:38d700f2-c99b-4c9e-9686-6ce21337d610';
@@ -36,12 +36,28 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: Ide
 const s3 = new AWS.S3({
   apiVersion: '2006-03-01',
   params: {Bucket: bucketName}
-});
+});*/}
 //encodeURIComponent()
-const uploadFile2 = (file,ruta) => {
+
+AWS.config.update({
+  region : 'us-east-2',
+  accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
+  secretAccessKey: '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',
+});
+
+
+console.log("AWS",AWS);
+const s3 = new AWS.S3({
+ accessKeyId: 'AKIAI4IYUCNFNIWHMB4Q',
+ secretAccessKey: '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',
+ Bucket: 'rosev0'
+});
+
+const uploadFile1 = (file,ruta) => {
 
 s3.upload({
         Key: ruta,
+        Bucket: 'rosev0',
         Body: file,
         ACL: 'public-read'
         }, function(err, data) {
@@ -60,7 +76,7 @@ const uploadFile22 = (file,ruta) => {
   
   var upload = new AWS.S3.ManagedUpload({
     params: {
-      Bucket: bucketName,
+      Bucket: 'rosev0',
       Key: ruta,
       Body: file,
       ACL: "public-read"
@@ -80,7 +96,7 @@ const uploadFile22 = (file,ruta) => {
   
 }
 
-const uploadFile222 = (file,ruta) => {
+const uploadFile12 = (file,ruta) => {
   var params = {
     Bucket: 'rosev0',
     Key: ruta,
@@ -96,13 +112,19 @@ const uploadFile222 = (file,ruta) => {
           console.log("Exito papi",signedUrl);
 
           var instance = axios.create();
+          var confi = {
+            headers: {
+              'Content-Type': file.type,
+              'Access-Control-Allow-Origin': 'https://localhost:3000',
+            }
+          }
 
-          instance.put(signedUrl, file, {headers: {'Content-Type': file.type}})
+          instance.put(signedUrl, file, confi)
               .then(function (result) {
                   console.log(result);
               })
               .catch(function (err) {
-                  console.log(err.code);
+                  console.log(err);
               });
           return signedUrl;
       }
@@ -122,8 +144,8 @@ const config = (string) => {
     bucketName: 'rosev0',
     dirName: string, /* optional */
     region: 'us-east-2',
-    accessKeyId: 'AKIAJEN4JB3CITFUIUFQ',
-    secretAccessKey: '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',
+    accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
+    secretAccessKey: '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',
   }
 }
 
@@ -164,11 +186,9 @@ const AddProcess = (props) => {
     console.log(e);
   }
 
-  const [requirements_exp, setRequirements_exp] = useState([]);
   const [requirements_idioms, setRequirements_idioms] = useState([]);
   const [requirements_skills, setRequirements_skills] = useState([]);
   const [requirements_location, setRequirements_location] = useState([]);
-  const [desired_exp, setDesired_exp] = useState([]);
   const [desired_skills, setDesired_skills] = useState([]);
   const [desired_college, setDesired_college] = useState([]);
   const [desired_designation, setDesired_designation] = useState([]);
@@ -184,7 +204,7 @@ const AddProcess = (props) => {
         height="100%"
         justifyContent="center"
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Formik
             initialValues={{
               name: "Vamos",
@@ -195,7 +215,8 @@ const AddProcess = (props) => {
               subarea: "TI",
               industry: "TI",
               is_remote: false,
-              
+              requirements_exp: 1,
+              desired_exp: 1,
               file: null,
               
             }}
@@ -220,13 +241,13 @@ const AddProcess = (props) => {
                 "is_remote": values.is_remote,
                 "status": "In progress",
                 "requirements":{
-                  "exp": requirements_exp,
+                  "exp": values.requirements_exp,
                   "idioms": requirements_idioms,
                   "skills": requirements_skills,
                   "location": requirements_location,
                 },
                 "desired":{
-                  "exp": desired_exp,
+                  "exp": values.desired_exp,
                   "skills": desired_skills,
                   "college": desired_college,
                   "designation": desired_designation,
@@ -238,20 +259,17 @@ const AddProcess = (props) => {
               };
               
               let configu = config(ruta);
+
               console.log(payload);
-
-              uploadFile(cvs,configu);
-
-              //axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
-              //uploadFile(cvs, configu)
-                //.then(data => {
-                //  console.log("archivo exito",data);
-                //  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
-                //})
-                //.catch(err => {
-                //  console.error("error archivo",err);
-                //  axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{console.log(r);history.push('/');}).catch(e=>console.log(e));
-                //});
+              uploadFile(cvs,configu).then(e=>{
+                console.log("then aws bucket",e);
+                axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{
+                  console.log(r);
+                  history.push('/');
+                }).catch(r=>{
+                  console.log(r);
+                });
+              }).catch(e=>console.log("catch",e));
               
             }}
           >
@@ -386,7 +404,19 @@ const AddProcess = (props) => {
                       </Grid>
                       
                       <Grid item>
-                        <ArrayInputNumber data={requirements_exp} set={setRequirements_exp} label={"Experiencia"}/>
+                        <TextField
+                          error={Boolean(touched.requirements_exp && errors.requirements_exp)}
+                          fullWidth
+                          helperText={touched.requirements_exp && errors.requirements_exp}
+                          label="Experiencia mínima"
+                          type="number"
+                          margin="normal"
+                          name="requirements_exp"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.requirements_exp}
+                          variant="outlined"
+                        />
                       </Grid>
                       <Grid item>
                         <ArrayInput data={requirements_idioms} set={setRequirements_idioms} label={"Idiomas"}/>
@@ -406,7 +436,19 @@ const AddProcess = (props) => {
                         <Typography variant="h5">Requisitos Deseables</Typography>
                       </Grid>
                       <Grid item>
-                        <ArrayInputNumber data={desired_exp} set={setDesired_exp} label={"Experiencia"}/>
+                        <TextField
+                          error={Boolean(touched.desired_exp && errors.desired_exp)}
+                          fullWidth
+                          helperText={touched.desired_exp && errors.desired_exp}
+                          label="Experiencia deseada"
+                          type="number"
+                          margin="normal"
+                          name="desired_exp"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.desired_exp}
+                          variant="outlined"
+                        />
                       </Grid>
                       <Grid item>
                         <ArrayInput data={desired_skills} set={setDesired_skills} label={"Skills"}/>
@@ -438,7 +480,7 @@ const AddProcess = (props) => {
                             ref={fileInput}
           
                           />
-                          <ReactS3Uploader
+                          {/*<ReactS3Uploader
                             signingUrl="/s3/sign"
                             signingUrlMethod="GET"
                             accept=".zip,.rar,.7zip"
@@ -451,7 +493,7 @@ const AddProcess = (props) => {
                             
                             ref={fileInput}
                             contentDisposition="auto"
-                            />
+                            />*/}
                       </Grid>
                       <Grid item>
                         <Box my={2}>

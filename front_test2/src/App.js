@@ -28,6 +28,12 @@ const App = (props) => {
       requestTutoriales(props.cargarTutoriales).then(response=>{
         console.log("Respuesta verdadera",response);
       }).catch(e=>console.log(e));
+      requestEventos(props.usuario.correo,props.usuario.token,props.cargarEventos).then(response=>{
+        console.log("Respuesta verdadera",response);
+      }).catch(e=>console.log(e));
+      requestHistorico(props.usuario.correo,props.cargarHistorico).then(response=>{
+        console.log("Respuesta verdadera",response);
+      }).catch(e=>console.log(e));
     }
     
   },[props.usuario]);
@@ -62,6 +68,13 @@ const actualizarUsuario = (usuario) => {
     usuario: usuario,
   }
 }
+
+const cargarEventos = (newState) => {
+  return {
+      type: 'CARGAR_EVENTOS',
+      newState: newState,
+    }  
+}
 const cargarProcesos = (newState) => {
   return {
       type: 'CARGAR_PROCESOS',
@@ -71,6 +84,12 @@ const cargarProcesos = (newState) => {
 const cargarBienvenida = (newState) => {
   return {
       type: 'CARGAR_BIENVENIDA',
+      newState: newState,
+    }  
+}
+const cargarHistorico = (newState) => {
+  return {
+      type: 'CARGAR_HISTORICO',
       newState: newState,
     }  
 }
@@ -100,7 +119,6 @@ const requestsProcesos = (usuario, cargarProcesos) => {
       })
       .catch(error=>{
         console.log(error);
-        cargarProcesos(state);
         reject(false);
       });
     });
@@ -118,6 +136,36 @@ const requestsCandidatosProceso = (idProceso) => {
       .catch(error=>{
         console.log(error);
         reject(error);
+      });
+    });
+}
+
+const requestHistorico = (correo, cargar) => {
+    return new Promise((resolve, reject)=>{
+      axios.get(`http://127.0.0.1:8000/selection​/${correo}​/candidates​/`).then(response=>{
+        console.log(response);
+        cargar(response.data);
+
+        resolve(true);
+      })
+      .catch(error=>{
+        console.log(false);
+        reject("No se pudo cargar historico");
+      });
+    });
+}
+
+const requestEventos = (correo, token, cargar) => {
+    return new Promise((resolve, reject)=>{
+      axios.get(`http://127.0.0.1:8000/selection/events/${encodeURIComponent(correo)}/${encodeURIComponent(token)}`).then(response=>{
+        console.log(response);
+        cargar(response.data);
+
+        resolve(true);
+      })
+      .catch(error=>{
+        console.log(false);
+        reject("No se pudo cargar eventos");
       });
     });
 }
@@ -166,6 +214,8 @@ const mapDispatchToProps = despachar => {
         cargarProcesos: (newState) => despachar(cargarProcesos(newState)),
         cargarBienvenida: (newState) => despachar(cargarBienvenida(newState)),
         cargarTutoriales: (newState) => despachar(cargarTutoriales(newState)),
+        cargarEventos: (newState) => despachar(cargarEventos(newState)),
+        cargarHistorico: (newState) => despachar(cargarHistorico(newState)),
     }
 }
 

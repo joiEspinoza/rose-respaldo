@@ -35,6 +35,25 @@ function procesos(state = null, accion) {
   }
 }
 
+function eventos(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_EVENTOS':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
+function historico(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_HISTORICO':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
+
 function bienvenida(state = null, accion) {
   switch (accion.type) {
     case 'CARGAR_BIENVENIDA':
@@ -84,7 +103,7 @@ function candidato_viewprocess(state = 0, accion) {
 
 
 
-let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida });
+let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida, eventos, historico });
 
 
 export default reductorRaiz;
