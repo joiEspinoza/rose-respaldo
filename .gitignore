@@ -12,6 +12,6 @@ backend/python_test_code
 ROSE.sln
 backend/venv_rose
 backend/venv_r
-backend/linux_env2
-backend/linux_env
+linux_env2
+linux_env
 ~$ ADOLFO CM.txt
