@@ -2,6 +2,7 @@ import React from 'react';
 import Contenedor from '../contenedor';
 import KPIWelcome from '../componentes/welcome/KPIWelcome';
 import Bienvenida from '../componentes/welcome/Bienvenida';
+import { NATarjeta } from '../componentes/NA';
 import { connect } from 'react-redux';
 
 
@@ -9,7 +10,7 @@ const WelcomePage = (props) => {
   return ( 
     <Contenedor>
     	{props.bienvenida===null ? 
-        <p>No disponible</p>
+        <NATarjeta sizes={{mensaje:"h2",esqueleto1:"h1",esqueleto2:"h5"}}/>
       :
         <>
           <Bienvenida bienvenida={props.bienvenida.welcome_message}>

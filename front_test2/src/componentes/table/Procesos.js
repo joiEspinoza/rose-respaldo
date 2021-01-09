@@ -109,7 +109,8 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
                             <Typography
                               fontWeight= {400}
                               variant={columnas[nombreColumna].tamano}
-                              style={{ color:"white", backgroundColor:elemento[nombreColumna] === "In progress" ? theme.palette.info.main : theme.palette.primary.main }}
+                              style={{ color:"white", backgroundColor:elemento[nombreColumna] === "In progress" ? theme.palette.info.main : theme.palette.primary.main,
+                                  padding: theme.spacing(1), borderRadius:theme.spacing(1), }}
 
                             >
                               <Box fontWeight="fontWeightBold">

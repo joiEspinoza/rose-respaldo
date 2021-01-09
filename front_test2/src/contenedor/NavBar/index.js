@@ -37,7 +37,7 @@ const items = [
   },
 ];
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
     width: 256
   },
@@ -50,6 +50,10 @@ const useStyles = makeStyles(() => ({
     cursor: 'pointer',
     width: 64,
     height: 64
+  },
+  name: {
+    color: theme.palette.primary.main,
+    margin: theme.spacing(1),
   }
 }));
 
@@ -69,7 +73,6 @@ const NavBar = ({ onMobileClose, openMobile, usuario }) => {
       height="100%"
       display="flex"
       flexDirection="column"
-      bgcolor={"primary.main"}
     > 
       <Divider />
       <Box
@@ -77,14 +80,11 @@ const NavBar = ({ onMobileClose, openMobile, usuario }) => {
         display="flex"
         flexDirection="column"
         p={3}
-        bgcolor={"primary.main"}
       >
         {usuario.nombre.split(" ").map((item,index)=>(
           <Typography
           className={classes.name}
-          color="textPrimary"
           variant="h4"
-          style={{ margin:"3px", color:"white"}}
         >
           <Box fontWeight="fontWeightBold">
             {item}

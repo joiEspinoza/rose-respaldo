@@ -11,11 +11,12 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
+    borderRadius: theme.spacing(4),
   },
   
 }));
 
-const ProcessButton = ({ nombre, href, clickear }) => {
+const ProcessButton = ({ nombre, href, clickear, desactivado=false  }) => {
   const classes = useStyles();
 
   return (
@@ -26,6 +27,7 @@ const ProcessButton = ({ nombre, href, clickear }) => {
     component={RouterLink}
     className={classes.root}
     onClick={clickear}
+    disabled={desactivado}
     >
     {nombre}
     </Button>

@@ -16,6 +16,41 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
   },
   button: {
+    color: theme.palette.text.secondary,
+    fontWeight: theme.typography.fontWeightMedium,
+    justifyContent: 'flex-start',
+    letterSpacing: 0,
+    paddingLeft: theme.spacing(3),
+    textTransform: 'none',
+    width: '100%',
+    '&:hover':{
+      color: theme.palette.text.primary,
+    },
+  },
+  icon: {
+    marginRight: theme.spacing(1)
+  },
+  title: {
+    marginRight: 'auto'
+  },
+  active: {
+    color: theme.palette.primary.main,
+    '& $title': {
+      fontWeight: theme.typography.fontWeightMedium
+    },
+    '& $icon': {
+      color: theme.palette.primary.main
+    }
+  }
+}));
+
+const useStylesresp = makeStyles((theme) => ({
+  item: {
+    display: 'flex',
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  button: {
     color: theme.palette.primary.main,
     backgroundColor: theme.palette.roseclaro,
     fontWeight: theme.typography.fontWeightMedium,

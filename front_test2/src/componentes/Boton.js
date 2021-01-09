@@ -10,13 +10,15 @@ import { Icon } from '@fluentui/react/lib/Icon';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    height: '100%',
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
+    borderRadius: theme.spacing(4),
   },
   
 }));
 
-const ProcessButton = ({ nombre, href, color, icon }) => {
+const ProcessButton = ({ nombre, href, color, icon, desactivado=false }) => {
   const classes = useStyles();
 
   return (
@@ -29,6 +31,7 @@ const ProcessButton = ({ nombre, href, color, icon }) => {
     endIcon={<Icon style={{
       transform: 'scale(1.5)' // Tune it
     }} iconName={icon}  />}
+    disabled={desactivado}
     >
     {nombre} 
     </Button>

@@ -20,7 +20,22 @@ import Pdf from "react-to-pdf";
 
 const ref = React.createRef();
 
-const ViewProcess = (props) => {
+
+const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandidato }) => {
+  const render = procesos.filter(i=>i.id===proceso)[0].candidatos !== undefined;
+  console.log("render",render);
+  return(
+    <>{render ?
+      <Contenido usuario={usuario} procesos={procesos} proceso={proceso} candidato={candidato} seleccionarCandidato={seleccionarCandidato}/>
+    :
+      <Contenedor>{"Error"}</Contenedor>   
+    }</>
+  );
+}
+
+const Contenido = (props) => {
+  const render = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos !== undefined;
+  console.log("render",render);
   const candidatosProceso = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos;
   const candidatoCV = candidatosProceso[props.candidato];
   const [openMail, setOpenMail] = React.useState(false);
@@ -29,7 +44,7 @@ const ViewProcess = (props) => {
     "name":{titulo:"Nombre",color:"primary",tamano:"h6",link:false},
     //"profesion":{titulo:"Creado",color:"textPrimary",tamano:"body2",link:false, },
     //"universidad":{titulo:"Status",color:"textPrimary",tamano:"body2",link:false, },
-    "mail":{titulo:"Below",color:"textPrimary",tamano:"caption",link:false, },
+    "mail":{titulo:"Email",color:"textPrimary",tamano:"caption",link:false, },
     //"ciudad":{titulo:"Normal",color:"textPrimary",tamano:"caption",link:false, },
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
@@ -66,9 +81,11 @@ const ViewProcess = (props) => {
       </Grid>
       
       <Calendar setOpen={setOpenCalendar} open={openCalendar}/>
-      <Mail setOpen={setOpenMail} open={openMail} usermail={props.usuario.correo} candidatemail={candidatoCV.email}/>
+      <Mail setOpen={setOpenMail} open={openMail} user={props.usuario} candidatemail={candidatoCV.mail} token={props.usuario.token}/>
       {props.proceso}
       {props.candidato}
+      {props.usuario.correo}
+      {candidatoCV.mail}
     </Contenedor>
   );
 }

@@ -6,6 +6,8 @@ import { EditorState } from 'draft-js';
 import { convertToHTML, convertFromHTML } from 'draft-convert';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 import { 
   Card,
   Button,
@@ -17,6 +19,7 @@ import {
   } from '@material-ui/core';
 import Youtube from 'react-youtube';
 import { connect } from 'react-redux';
+import { NAHelp } from '../componentes/NA';
 
 const Help = (props) => {
   const [tutorial, setTutorial] = useState(true);
@@ -32,15 +35,21 @@ const Help = (props) => {
     <Contenedor>
     	<Grid container>
     		<Grid item xs={12}>
-    			<Grid container>
+    			<Grid container spacing={2}>
     				<Grid item xs={3}></Grid>
-    				<Grid item xs={3}><Boton nombre={"Ver Tutoriales"} href={"#"} clickear={irTutoriales} /></Grid>
+    				<Grid item xs={3}><Boton nombre={"Ver Tutoriales"} desactivado={props.tutoriales === null} href={"#"} clickear={irTutoriales} /></Grid>
     				<Grid item xs={3}><Boton nombre={"Crear Incidencia"} href={"#"} clickear={irIssues} /></Grid>
     				<Grid item xs={3}></Grid>
     			</Grid>
     		</Grid>
-    		<Grid item >
-    			{tutorial ? <Tutoriales tutoriales={props.tutoriales}/> : <Issue />}
+    		<Grid item xs={12}>
+    			{tutorial ? 
+            <>{props.tutoriales === null ?
+              <NAHelp mensaje="Tutoriales no disponibles"/>
+            :
+              <Tutoriales tutoriales={props.tutoriales}/> 
+            }</>
+          : <Issue />}
     		</Grid>
     	</Grid>
     </Contenedor>
@@ -196,6 +205,7 @@ const Issue = (props) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
+  const history = useHistory();
   return (
   	<Grid container className={classes.root} spacing={3}>
   		<Grid item xs={1}></Grid>
@@ -213,7 +223,18 @@ const Issue = (props) => {
               modulo: Yup.string().max(255).required('Debe definir el módulo del error')
             })}
             onSubmit={(values, actions) => {
-              console.log({"titulo":values.titulo,"email":values.email,"modulo":values.modulo,"html":html});            
+              const data = {
+                "name":values.titulo,
+                "user":values.email,
+                "module":values.modulo,
+                "code":"1",
+                "summary":html
+              };
+              axios.post(`http://127.0.0.1:8000/selection/issues/create/`,data).then(r=>{
+                console.log(r);
+              }).catch(r=>{
+                console.log(r);
+              });         
             }}
           >
             {({
@@ -263,7 +284,7 @@ const Issue = (props) => {
                         error={Boolean(touched.modulo && errors.modulo)}
                         fullWidth
                         helperText={touched.modulo && errors.modulo}
-                        label="Título del problema"
+                        label="Módulo del problema"
                         margin="normal"
                         name="modulo"
                         onBlur={handleBlur}
