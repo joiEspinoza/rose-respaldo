@@ -1,15 +1,17 @@
-models
-TXT second validation
+backend/models
+backend/TXT second validation
 front_test
-CVs
+backend/CVs
 __pycache__
 .vs
 .ipynb_checkpoints
 ROSE.py
 ROSE.pyproj
-datasets
-python_test_code
+backend/datasets
+backend/python_test_code
 ROSE.sln
-venv_rose
-venv_r
+backend/venv_rose
+backend/venv_r
+backend/linux_env2
+backend/linux_env
 ~$ ADOLFO CM.txt

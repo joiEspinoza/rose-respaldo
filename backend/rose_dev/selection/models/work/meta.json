@@ -1,0 +1,63 @@
+{
+  "lang":"es",
+  "pipeline":[
+    "ner"
+  ],
+  "spacy_version":">=2.3.5",
+  "speed":{
+    "nwords":98213,
+    "cpu":14039.1163777608,
+    "gpu":21964.1264603021
+  },
+  "accuracy":{
+    "ents_f":64.3781094527,
+    "ents_p":65.8189216684,
+    "ents_r":62.9990262902,
+    "ents_per_type":{
+      "skills":{
+        "p":55.8441558442,
+        "r":51.1904761905,
+        "f":53.4161490683
+      },
+      "years of experience":{
+        "p":76.9771528998,
+        "r":82.641509434,
+        "f":79.7088262056
+      },
+      "idioms":{
+        "p":74.7967479675,
+        "r":71.875,
+        "f":73.3067729084
+      },
+      "companies worked at":{
+        "p":59.0697674419,
+        "r":48.9402697495,
+        "f":53.5300316122
+      },
+      "designation":{
+        "p":63.0597014925,
+        "r":62.4768946396,
+        "f":62.7669452182
+      }
+    },
+    "token_acc":100.0
+  },
+  "vectors":{
+    "width":0,
+    "vectors":0,
+    "keys":0,
+    "name":"spacy_pretrained_vectors"
+  },
+  "name":"model0",
+  "version":"0.0.0",
+  "labels":{
+    "ner":[
+      "como",
+      "companies worked at",
+      "designation",
+      "idioms",
+      "skills",
+      "years of experience"
+    ]
+  }
+}
