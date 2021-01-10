@@ -10,8 +10,8 @@ ROSE.pyproj
 backend/datasets
 backend/python_test_code
 ROSE.sln
-backend/venv_rose
-backend/venv_r
+venv_rose
+venv_r
 linux_env2
 linux_env
 ~$ ADOLFO CM.txt
