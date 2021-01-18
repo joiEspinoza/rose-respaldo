@@ -39,8 +39,8 @@ class WelcomeAPIView(generics.GenericAPIView): #validated
 
         for sel in selections:
             resume = Candidate.objects.filter(selection = sel)
-            ct_resumes = 0 if resume.count() == None else resume.count()
-            ct_resumes = ct_resumes + ct_resumes
+            ct_r = 0 if resume.count() == None else resume.count()
+            ct_resumes = ct_resumes + ct_r
         """
         Estimating time using:
         - 30 seconds of fast-reading
