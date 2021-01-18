@@ -197,7 +197,7 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
                         state_country = location[1] == min_loc[0]
                         loc_ind = 1 if state_country == True else 0
                     elif len(min_loc) == 2:
-                        print(adress, location)
+                        #print(adress, location)
                         state_country = location[1] == min_loc[1]
                         state_region = location[0] == min_loc[0]
                         loc_ind = 1 if state_country == True and state_region == True else 0
@@ -279,6 +279,9 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
     desire_score = greatexp_score + greatscore_idiom + greatscore_skill + desig_score + college_score + companies_score + degree_score
 
     candidate_score = min_score + desire_score
+
+    #print scores for testing
+    """
     print('Candidate score: ' + str(candidate_score))
     print('         MIN exp: ' + str(minexp_score))
     print('         MIN idiom: ' + str(minscore_idiom))
@@ -290,6 +293,8 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
     print('         DES designation: ' + str(desig_score))
     print('         DES companies: ' + str(companies_score))
     print('         DES degree: ' + str(degree_score))
+    """
+
 
     cand_data = {
                                 "exp": experience,
@@ -320,10 +325,16 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
     if min_score == 0:
         low = True
         high = False
-    elif desig_score >= 10:
+        medium = False
+    elif candidate_score >= 10:
         high = True
         low = False
-    return cand, high, low
+        medium = False
+    else:
+        high = False
+        low = False
+        medium = True
+    return cand, high, low, medium
 
 
 ######################################################################################################
@@ -359,6 +370,7 @@ def create_candidates(path, sel_id, min_req, desire_req, remote_ind, scorer, mod
     rose_bucket = s3.Bucket(r'rosev0')
     low_ind = 0
     high_ind = 0
+    medium_ind = 0
     candidates = []
     for resume in rose_bucket.objects.filter(Prefix=path):
         key = resume.key
@@ -366,7 +378,7 @@ def create_candidates(path, sel_id, min_req, desire_req, remote_ind, scorer, mod
         buffer = io.BytesIO()
         buffer.write(body)
         ext = re.search('\.[a-z]+$', key)
-        print(key)
+        #print(key)
         ###body comes in binary stream, we have to decode it
         if ext == None:
             continue
@@ -398,7 +410,7 @@ def create_candidates(path, sel_id, min_req, desire_req, remote_ind, scorer, mod
             #replace special characters, linux problem reading path
             filename = str(split[-1]).replace('$','_').replace('#','_')
             pathdoc = 'selection/tmp/' + filename
-            print('trying download in ' + pathdoc)
+            #print('trying download in ' + pathdoc)
             rose_bucket.download_file(key, pathdoc)
             #doc_text = os.system('antiword "' + pathdoc + '"')
             try:
@@ -510,7 +522,7 @@ def create_candidates(path, sel_id, min_req, desire_req, remote_ind, scorer, mod
                             other_work.append([ent.label_, value])
                         results.append([ent.label_, value, text.index(value)])
             if scorer == 'scorer':
-                cand_json, high, low = score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, remote_ind,
+                cand_json, high, low, medium = score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, remote_ind,
                                                   years_ind, idioms, skills, comb, grad_ed, colleges, degrees, 
                                                   certif, names, locations, mails, phones, min_req, desire_req, sel_id)
                 match = re.findall('(\[])', str(cand_json))
@@ -522,7 +534,9 @@ def create_candidates(path, sel_id, min_req, desire_req, remote_ind, scorer, mod
                 high_ind = high_ind + 1
             if low:
                 low_ind = low_ind + 1
-    return candidates, high_ind, low_ind
+            if medium:
+                medium_ind = medium_ind + 1
+    return candidates, high_ind, low_ind, medium_ind
             #elif scorer == 'unsupervised':
 
 

@@ -17,6 +17,7 @@ RUN apt-get -y update
 
 #Installing python3.7 and pip3
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
+RUN apt-get install antiword
 
 #Installing requirements from python, pip and gunicorn for multiple workers
 #If we dont change requirements.txt then docker run will skip to last line
@@ -27,10 +28,10 @@ RUN pip install gunicorn
 RUN pip install -r requirements.txt
 
 #copy entrypoint and project
-COPY ./entrypoint.sh .
 COPY . .
 
 RUN python manage.py migrate
+
 
 
 # Collect static files
