@@ -309,7 +309,7 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
                                 "designation": desig_work,
                                 "college": colleges,
                                 "graduation": grad_ed,
-                                "certficiations": certif
+                                "certifications": certif
                             }
     ### ADD RANKING HERE
     cand_info = {

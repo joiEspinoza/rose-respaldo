@@ -110,7 +110,7 @@ DATABASES = {
         'NAME': 'rose_db',
         'USER': 'bgg1',
         'PASSWORD': 'Xns9txKRVzJKXkH',
-        'HOST': 'rose-db.c0ysgrul7vo2.us-east-2.rds.amazonaws.com',
+        'HOST': 'rose-dev.c0ysgrul7vo2.us-east-2.rds.amazonaws.com',
         'PORT': '3366',
         'CONN_MAX_AGE':None,
     }
