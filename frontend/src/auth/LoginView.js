@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   container: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: theme.palette.grisclaro,
     height: window.innerHeight,
   },
 }));

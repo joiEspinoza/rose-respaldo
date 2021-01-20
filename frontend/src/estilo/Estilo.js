@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import paleta from './Paleta';
-import tipografia from './Tipografia';
+import tipografia, { tablas as tipografiatablas } from './Tipografia';
 import tipografiaresponsiva from './TipografiaResponsiva';
 import puntos from './Breakpoints';
 import { connect } from 'react-redux';
@@ -72,7 +72,72 @@ const theme = (props) => {
   });
 }
 
+const tablas = (props) => {
+  return createMuiTheme({
+    palette: paleta,
+    typography: Object.assign({},tipografiatablas,tipografiaresponsiva),
+    breakpoints: puntos,
+    spacing: space,
+    overrides: {
+      //MuiCssBaseline styles
+      MuiCssBaseline: {
+        '@global': {
+          '@font-face':{
+            fontFamily: tipograf.fontFamily,
+          },
+        },
+      },
+      //MuiButton
+      MuiIconButton: {
+        root: {
+          margin: space[1],
+          padding: space[3],
+          color: paleta.primary.main,
+          '&:hover':{
+            color: paleta.primary.main,
+            backgroundColor: paleta.info.main,
+          },
+        },
+      },
+      MuiButton: {
+        root: {
+          margin: 1,
+          color: paleta.primary.main,
+          borderRadius: space[3],
+        },
+      },
+      //
+      MuiTextField: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: paleta.success.main,
+              borderWidth: space[0],
+              borderRadius: space[3],
+            },
+            '&:hover fieldset': {
+              borderColor: paleta.primary.main,
+              borderWidth: space[0],
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: paleta.primary.main,
+              borderWidth: space[0],
+            },
+          },
+        },
+      },
 
+    },
+  });
+}
+
+const TablaEstilo = (props) => {
+  return (
+    <ThemeProvider theme={tablas()}>
+      {props.children}
+    </ThemeProvider>
+  );
+}
 
 const Estilo = (props) => {
   return (
@@ -87,5 +152,5 @@ const mapStateToProps = estado => {
     estilo: estado.estilo,
   }
 }
-
+export { TablaEstilo };
 export default connect(mapStateToProps, null)(Estilo);

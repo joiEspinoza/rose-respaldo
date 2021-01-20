@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Contenedor from '../contenedor';
-import { KPI2 as KPI } from '../componentes/KPI';
+import { KPI3 as KPI } from '../componentes/KPI';
 import Boton from '../componentes/Boton';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import { Grid } from '@material-ui/core';
 import { DescargaExcelHistorico } from '../componentes/downloads/DescargaExcel';
 import Tabla from '../componentes/table/Historico';
 import { NAHistoric } from '../componentes/NA';
+import { TablaEstilo } from '../estilo/Estilo';
 
 import { Icon } from '@fluentui/react/lib/Icon';
 
@@ -72,6 +73,10 @@ const Contenido = (props) => {
     "ciudad":{titulo:"Ciudad",color:"textPrimary",tamano:"caption",link:false, },
   };
   var cont = document.getElementById("contenedor");
+  const icono = <Icon style={{
+      transform: 'scale(3)',
+      color:"white", // Tune it
+    }} iconName={"PlannerLogo"}  />;
   console.log(cont);
   const colu = [
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
@@ -104,7 +109,7 @@ const Contenido = (props) => {
             sm={4}
             lg={3}
           >
-          	<KPI nombre={"Cantidad de candidatos total"} cantidad={historicData.length} />
+          	<KPI nombre={"Cantidad de candidatos total"} cantidad={historicData.length} icon={icono}/>
           </Grid>
           <Grid
             item
@@ -134,10 +139,11 @@ const Contenido = (props) => {
             xs={12}
             style={{height:"300px"}}
           >
+            <TablaEstilo>
             
               <DataGrid onSelectionChange={onSelectionChange}
               columns={columns} pageSize={5} autoHeight rows={historicData} checkboxSelection />
-            
+            </TablaEstilo>
           </Grid>
           
           

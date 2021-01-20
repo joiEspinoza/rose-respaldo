@@ -2,7 +2,38 @@ import { combineReducers } from 'redux';
 
 
 
-
+function filtrosprocesos(state = [{valor:"ejemplo",variable:"name",tipo:"="}], accion) {
+  switch (accion.type) {
+    case 'ANADIR_FILTRO':
+      var newS = [...state];
+      newS.push(accion.nuevoFiltro);
+      console.log(newS);
+      return newS;
+    case 'CAMBIAR_ESTADO_FILTRO':
+      return [
+        ...state.slice(0,accion.index),
+        Object.assign({}, state[accion.index], {
+          estado: !state[accion.index]["estado"]
+        }),
+        ...state.slice(accion.index+1)
+      ];
+    case 'CAMBIAR_FILTRO_VARIABLE':
+      return [
+        ...state.slice(0,accion.indice),
+        accion.nuevoObjeto,
+        ...state.slice(accion.indice+1)
+      ];
+    case 'ELIMINAR_FILTRO':
+      return [
+        ...state.slice(0,accion.indice),
+        ...state.slice(accion.indice+1)
+      ];
+    case 'ELIMINAR_TODO':
+      return [];
+    default:
+      return state;
+  }
+}
 
 
 function usuario(state = null, accion) {
@@ -63,6 +94,15 @@ function bienvenida(state = null, accion) {
   }
 }
 
+function configuracion(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_CONFIGURACION':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
 function tutoriales(state = null, accion) {
   switch (accion.type) {
     case 'CARGAR_TUTORIALES':
@@ -103,7 +143,7 @@ function candidato_viewprocess(state = 0, accion) {
 
 
 
-let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida, eventos, historico });
+let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida, configuracion, eventos, historico, filtrosprocesos });
 
 
 export default reductorRaiz;

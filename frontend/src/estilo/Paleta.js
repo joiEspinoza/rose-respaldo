@@ -1,6 +1,6 @@
 const paleta = {
 	primary: {
-	  main: "#d3044c",//rosado
+	  main: "#b30049",//rojo
 	},
 	secondary: {
 	  main: "#044454",//verde
@@ -18,9 +18,9 @@ const paleta = {
 	  main: "#A6A6A6",//gris
 	},
 	roseclaro:"#FFE8F3",
-	gris: "#A6A6A6",
+	grisclaro: "#E6E6E6",
 	grisoscuro: "#707070",
-	
+	processdone: "#b30049",
 	background: {
       default: "#FFF9FC", //rosa claro
     },

@@ -18,11 +18,19 @@ const useStyles = makeStyles((theme) => ({
   root2: {
     height: '100%',
     borderRadius: theme.spacing(4),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.grisoscuro,
+    paddingTop: theme.spacing(2),
 
   },
   icono: {
     paddingTop: theme.spacing(6),
+  },
+  icono2: {
+    paddingTop: theme.spacing(3),
+  },
+  icono3: {
+    paddingLeft: theme.spacing(2),
+    paddingTop: theme.spacing(3),
   },
 }));
 
@@ -67,7 +75,7 @@ const KPI = ({ nombre, cantidad, icon }) => {
   );
 };
 
-const KPI2 = ({ nombre, cantidad }) => {
+const KPI2 = ({ nombre, cantidad, icon }) => {
   const classes = useStyles();
 
   return (
@@ -80,7 +88,52 @@ const KPI2 = ({ nombre, cantidad }) => {
           justify="space-between"
           spacing={3}
         >
-          <Grid item xs={8}>
+          <Grid item xs={7}>
+            <Typography
+              color="textSecondary"
+              gutterBottom
+              variant="body1"
+              align="center"
+              style={{ color: "white"}}
+            >
+              {nombre}
+            </Typography>
+            <Typography
+              color="textPrimary"
+              variant="h6"
+              align="center"
+              style={{ color: "white"}}
+            >
+              {cantidad}
+            </Typography>
+          </Grid>
+          <Grid item xs={1} ></Grid>
+          <Grid item xs={3} >
+              <div className={classes.icono2}>
+                {icon}
+              </div>
+          </Grid>
+          <Grid item xs={1} ></Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};
+
+const KPI3 = ({ nombre, cantidad, icon }) => {
+  const classes = useStyles();
+
+  return (
+    <Card
+      className={classes.root}
+    >
+      <CardContent>
+        <Grid
+          container
+          justify="space-between"
+          spacing={3}
+        >
+          <Grid item xs={6}>
             <Typography
               color="textSecondary"
               gutterBottom
@@ -90,7 +143,7 @@ const KPI2 = ({ nombre, cantidad }) => {
               {nombre}
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3} >
             <Typography
               color="textPrimary"
               variant="h3"
@@ -99,12 +152,18 @@ const KPI2 = ({ nombre, cantidad }) => {
               {cantidad}
             </Typography>
           </Grid>
+          <Grid item xs={2} >
+              <div className={classes.icono3}>
+                {icon}
+              </div>
+          </Grid>
+          <Grid item xs={1} ></Grid>
         </Grid>
       </CardContent>
     </Card>
   );
 };
 
-export { KPI2 };
+export { KPI2, KPI3 };
 
 export default KPI;

@@ -41,7 +41,7 @@ const Dashboard = (props) => {
               </NATarjeta>
             </>
           :
-            <Tabla  data={props.procesos} columnas={columnas} idSeleccionados={idSeleccionados} definirIdSeleccionados={definirIdSeleccionados} seleccionarProceso={seleccionarProceso}/>
+            <Tabla filtros={props.filtros} anadirFiltro={props.anadirFiltro} data={props.procesos} columnas={columnas} idSeleccionados={idSeleccionados} definirIdSeleccionados={definirIdSeleccionados} seleccionarProceso={seleccionarProceso}/>
           }
           </Grid>
 
@@ -97,7 +97,7 @@ const Process = (props) => {
   return (
     <Contenedor>
       <Dashboard procesosExportarExcel={props.procesosExportarExcel} procesos_exportar_excel={props.procesos_exportar_excel}
-      procesos={props.procesos} />
+      procesos={props.procesos} filtros={props.filtros} anadirFiltro={props.anadirFiltro}/>
     </Contenedor>
   );
 }
@@ -105,6 +105,12 @@ const seleccionarProceso = (newIndex) => {
   return {
     type: 'SELECCIONAR_PROCESO',
     newIndex: newIndex,
+  }
+}
+const anadirFiltro = (nuevoFiltro) => {
+  return {
+    type: 'ANADIR_FILTRO',
+    nuevoFiltro: nuevoFiltro,
   }
 }
 
@@ -119,12 +125,14 @@ const mapStateToProps = estado => {
   return {
     procesos: estado.procesos,
     procesos_exportar_excel: estado.procesos_exportar_excel,
+    filtros: estado.filtrosprocesos,
   }
 }
 
 const mapDispatchToProps = despachar => {
     return {
         procesosExportarExcel: (newState) => despachar(procesosExportarExcel(newState)),
+        anadirFiltro: (nuevoFiltro) => despachar(anadirFiltro(nuevoFiltro)),
     }
 }
 

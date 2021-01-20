@@ -8,13 +8,13 @@ import { AddProcess, EditProcess, Error, Help,
 import LoginView from '../auth/LoginView';
 import MicroSoft from '../rose/Microsoft';
 
-import AccountView from '../componentes/account';
+import AccountView from './account';
 
 
 const Cambiador = (props) => {
   return (
     <Switch>
-      <Route exact path={"/AccountView"} component={AccountView}/>
+      <Route exact path={"/Perfil"} component={AccountView}/>
 
       <Route exact path={"/AddProcess"} component={AddProcess}/>
       <Route exact path={"/EditProcess"} component={EditProcess}/>

@@ -17,6 +17,7 @@ const Google = (props) => {
   const responseGoogle=(response)=>{
     console.log(response);
     console.log(response.profileObj);
+    //agregar accesstoken para los eventos
     axios.post("http://127.0.0.1:8000/social_auth/google/",{
               "auth_token":response.tokenId,
             }).then(r=>{

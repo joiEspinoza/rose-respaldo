@@ -6,29 +6,32 @@ import {
 } from '@material-ui/core';
 import Page from '../Page';
 import Profile from './Profile';
-import ProfileDetails from './ProfileDetails';
+import Detalles from './Detalles';
+import Contenedor from '../../contenedor';
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
+    paddingTop: theme.spacing(7)
   }
 }));
 
-const Account = () => {
+const Perfil = (props) => {
   const classes = useStyles();
 
   return (
     <Page
-      className={classes.root}
+      
       title="Account"
     >
-      <Container maxWidth="lg">
+      <Contenedor>
         <Grid
           container
           spacing={3}
+          className={classes.root}
         >
           <Grid
             item
@@ -36,7 +39,7 @@ const Account = () => {
             md={6}
             xs={12}
           >
-            <Profile />
+            <Profile usuario={props.usuario} />
           </Grid>
           <Grid
             item
@@ -44,12 +47,23 @@ const Account = () => {
             md={6}
             xs={12}
           >
-            <ProfileDetails />
+            <Detalles usuario={props.usuario} configuracion={props.configuracion}/>
           </Grid>
         </Grid>
-      </Container>
+      </Contenedor>
     </Page>
   );
 };
 
-export default Account;
+const mapStateToProps = estado => {
+  return {
+    usuario: estado.usuario,
+    configuracion: estado.configuracion,
+  }
+}
+const mapDispatchToProps = despachar => {
+    return {
+        dispatch: (i) => despachar(i),
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Perfil);

@@ -11,7 +11,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import NavItem from './NavItem';
-
+import { NavLink as RouterLink } from 'react-router-dom';
 
 
 const items = [
@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
   name: {
     color: theme.palette.primary.main,
     margin: theme.spacing(1),
+    textDecoration: "none",
   }
 }));
 
@@ -80,11 +81,16 @@ const NavBar = ({ onMobileClose, openMobile, usuario }) => {
         display="flex"
         flexDirection="column"
         p={3}
+        
       >
         {usuario.nombre.split(" ").map((item,index)=>(
           <Typography
           className={classes.name}
           variant="h4"
+          component={RouterLink}
+          to={"/Perfil"}
+
+          
         >
           <Box fontWeight="fontWeightBold">
             {item}

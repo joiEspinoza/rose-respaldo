@@ -6,20 +6,28 @@ import Mail from '../componentes/process/Mail';
 import {
   Grid,
   Typography,
+  makeStyles,
   List,
   ListItem,
   IconButton,
 } from '@material-ui/core';
+import KPIs from '../componentes/process/KPIs';
+import Pdf from "react-to-pdf";
+import { useTheme } from '@material-ui/core/styles';
 import CalendarTodayTwoToneIcon from '@material-ui/icons/CalendarTodayTwoTone';
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
 import PictureAsPdfTwoToneIcon from '@material-ui/icons/PictureAsPdfTwoTone';
-import KPIs from '../componentes/process/KPIs';
-import Pdf from "react-to-pdf";
-
 
 
 const ref = React.createRef();
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '100%',
+    borderColor: theme.palette.grisoscuro,
+    borderWidth: theme.spacing(1),
+  },
+}));
 
 const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandidato }) => {
   const render = procesos.filter(i=>i.id===proceso)[0].candidatos !== undefined;
@@ -36,6 +44,7 @@ const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandida
 const Contenido = (props) => {
   const render = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos !== undefined;
   console.log("render",render);
+  const pro = props.procesos.filter(i=>i.id===props.proceso)[0];
   const candidatosProceso = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos;
   const candidatoCV = candidatosProceso[props.candidato];
   const [openMail, setOpenMail] = React.useState(false);
@@ -56,11 +65,11 @@ const Contenido = (props) => {
         <Grid item xs={12}>
           <KPIs columnas={columnasExcel}
             data={candidatosProceso}
+            nombre={pro.name}
+            fecha={pro.created_at}
           />
         </Grid>
-        <Grid item xs={12} onClick={()=>console.log(props.usuario)}>
-          {"Hola"}
-        </Grid>
+        <Grid item xs={12}><br/></Grid>
         <Grid item xs={12}>
           <Grid container>
             <Grid item xs={5}>
@@ -92,10 +101,13 @@ const Contenido = (props) => {
 
 
 const Lista = (props) => {
+  const theme = useTheme();
+  const classes = useStyles();
   return (
     <List
       component="nav"
-      style={{paddingTop:30, maxHeight: 400, overflow: 'auto'}}
+      className={classes.root}
+      style={{ maxHeight: 500, overflow: 'auto'}}
     >
     {props.candidatos.map((i,index)=>(
       <ListItem button >
@@ -104,12 +116,12 @@ const Lista = (props) => {
           <Grid item xs={7}>
             <Grid container spacing={2}>
               <Grid item xs={12} paddingTop={10}>
-                <Typography variant="h6">
+                <Typography variant="h4" style={{ color:theme.palette.primary.main }}>
                   {i.name}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="caption">
+                <Typography variant="caption" style={{ color:theme.palette.grisoscuro }}>
                   {i.mail}
                 </Typography>
               </Grid>
@@ -119,12 +131,13 @@ const Lista = (props) => {
           <Grid item xs={4}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Typography variant="body1">
-                  {i.info.data.location[0]}
+                <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
+                  {i.info.data.degree ? <>Titulo:{i.info.data.degree[0]}</>
+                    :<>{"No disponible"}</>}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="subtitle2">
+                <Typography variant="subtitle2" style={{ color:theme.palette.grisoscuro }}>
                   Exp: {i.info.data.exp}
                 </Typography>
               </Grid>
@@ -161,39 +174,49 @@ const Lista = (props) => {
 }
 
 const CV = (props) => {
-  
+  const pr = props.candidato.info.data;
+  const theme = useTheme();
+  const classes = useStyles();
   return (
     <div ref={ref}>
-      <Grid container>
+      <Grid container className={classes.root}>
+        <Grid item xs={1}></Grid>
+        <Grid item xs={10}>
+          <Typography variant="h3" style={{ color: theme.palette.primary.main }}>
+            {props.candidato.name}
+          </Typography>
+        </Grid>
+        <Grid item xs={1}></Grid>
         <Grid item xs={12}>
           <Grid container spacing={2} >
             <Grid item xs={1}>
             </Grid>
             <Grid item xs={5}>
-              <Typography variant="h6">
-                {props.candidato.name}
+              
+              <Typography variant="body1">
+                {"Correo: "}{props.candidato.mail}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.info.data.college.length > 0 && props.candidato.info.data.college[0]}
+                {"Teléfono: "}{pr.phone.length > 0 && pr.phone[0]}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.mail}
+                {"Título: "}{pr.degree.length > 0 && pr.degree[0]}
               </Typography>
-              <Typography variant="body1">
-                {props.candidato.info.data.location.length > 0 && props.candidato.info.data.location[0]}
-              </Typography>
-              <Typography variant="body1">
-                {props.candidato.info.data.phone.length > 0 && props.candidato.info.data.phone[0]}
-              </Typography>
+              
+              
+              
+              
             </Grid>
             <Grid item xs={5} >
               <br/>
-              
               <Typography variant="body1">
-                {props.candidato.info.data.graduation.length > 0 && props.candidato.info.data.graduation[0]}
+                {"Estudió en: "}{pr.college.length > 0 && pr.college[0]}
               </Typography>
               <Typography variant="body1">
-                {props.candidato.info.data.exp}
+                {"Egreso: "}{pr.graduation.length > 0 && pr.graduation[0]}
+              </Typography>
+              <Typography variant="body1">
+                {"Experiencia: "}{pr.exp}
               </Typography>
             </Grid>
             <Grid item xs={1}>
@@ -208,19 +231,33 @@ const CV = (props) => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} height="10px">
-          <br/>
-        </Grid>
-        <Grid item xs={1}>
-        </Grid>
+        <Grid item xs={12}><br/></Grid>
+        <Grid item xs={1}></Grid>
+        {pr.skills && <Grid item xs={10} >
+          <Typography variant={"h6"}>
+            {"Skills:"}
+          </Typography>
+          <Grid container spacing={1}>
+            {pr.skills.length > 0 && pr.skills.map(i=>(
+              <Grid item >
+                <Typography variant={"body2"}>
+                  {i}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>}
+        <Grid item xs={1}></Grid>
+        <Grid item xs={12}><br/></Grid>
+        <Grid item xs={1}></Grid>
         <Grid item xs={5}>
           <Grid container>
-            <Grid item xs={12}>
+            {pr.companies &&<Grid item xs={12}>
               <Typography variant={"subtitle2"}>
-                {"Trabajado en:"}
+                {"Empresas donde ha trabajado:"}
               </Typography>
               <List>
-                {props.candidato.info.data.companies.length > 0 && props.candidato.info.data.companies.map(i=>(
+                {pr.companies.length > 0 && pr.companies.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -228,44 +265,13 @@ const CV = (props) => {
                   </ListItem>
                 ))}
               </List>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant={"subtitle2"}>
-                {"Trabajado como:"}
-              </Typography>
-              <List>
-                {props.candidato.info.data.designation.length > 0 && props.candidato.info.data.designation.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
-                  </ListItem>
-                ))}
-              </List>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={5}>
-          <Grid item xs={12}>
-              <Typography variant={"subtitle2"}>
-                {"Skills:"}
-              </Typography>
-              <List>
-                {props.candidato.info.data.skills.length > 0 && props.candidato.info.data.skills.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
-                  </ListItem>
-                ))}
-              </List>
-            </Grid>
-            <Grid item xs={12}>
+            </Grid>}
+            {pr.idioms &&<Grid item xs={12}>
               <Typography variant={"subtitle2"}>
                 {"Idiomas:"}
               </Typography>
               <List>
-                {props.candidato.info.data.idioms.length > 0 && props.candidato.info.data.idioms.map(i=>(
+                {pr.idioms.length > 0 && pr.idioms.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -273,13 +279,31 @@ const CV = (props) => {
                   </ListItem>
                 ))}
               </List>
-            </Grid>
-            <Grid item xs={12}>
+            </Grid>}
+          </Grid>
+        </Grid>
+        <Grid item xs={5}>
+            {pr.designation && <Grid item xs={12}>
+              <Typography variant={"subtitle2"}>
+                {"Trabajado como:"}
+              </Typography>
+              <List>
+                {pr.designation.length > 0 && pr.designation.map(i=>(
+                  <ListItem>
+                    <Typography variant={"caption"}>
+                      {i}
+                    </Typography>
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>}
+            
+            {pr.certifications && <Grid item xs={12}>
               <Typography variant={"subtitle2"}>
                 {"Certificaciones:"}
               </Typography>
               <List>
-                {props.candidato.info.data.certficiations.length > 0 && props.candidato.info.data.certficiations.map(i=>(
+                {pr.certifications.length > 0 && pr.certifications.map(i=>(
                   <ListItem>
                     <Typography variant={"caption"}>
                       {i}
@@ -287,7 +311,7 @@ const CV = (props) => {
                   </ListItem>
                 ))}
               </List>
-            </Grid>
+            </Grid>}
         </Grid>
         <Grid item xs={1}>
         </Grid>

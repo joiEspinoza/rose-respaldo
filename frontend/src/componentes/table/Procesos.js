@@ -13,8 +13,9 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Paginacion, TituloColumnaSeleccionador, CeldaColumnaSeleccionador } from './Elementos';
+import { Paginacion, TituloColumnaSeleccionador, CeldaColumnaSeleccionador, FilaFiltros } from './Elementos';
 import { useTheme } from '@material-ui/core/styles';
+import { TablaEstilo } from '../../estilo/Estilo';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -22,14 +23,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2)
   }
 }));
-const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
+const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
   
   const classes = useStyles();
   const theme = useTheme();
   
   const [limite, definirLimite] = useState(7);
   const [pagina, definirPagina] = useState(0);
-
+  const [mostrar, setMostrar] = useState(false);
   const seleccionarTodos = (evento) => {
     let nuevosIdSeleccionados;
 
@@ -74,6 +75,7 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
     <Card
       className={classes.root}
     >
+      <TablaEstilo>
       
           <Table>
             <TableHead>
@@ -87,13 +89,15 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
                   seleccionarTodos={seleccionarTodos}
                 />
                 {Object.keys(columnas).map(nombreColumna=>(
-                  <TableCell>
+                  <TableCell onClick={()=>setMostrar(!mostrar)}>
                     {columnas[nombreColumna].titulo}
                   </TableCell>
                 ))}
               </TableRow>
+              {mostrar && <FilaFiltros filtros={filtros} anadirFiltro={anadirFiltro} mostrar={mostrar} setMostrar={setMostrar} col={Object.keys(columnas)}/>}
             </TableHead>
             <TableBody>
+
               {data.slice(limite*pagina, limite*(pagina+1)).map((elemento) => (
                 <TableRow
                   hover
@@ -109,7 +113,7 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
                             <Typography
                               fontWeight= {400}
                               variant={columnas[nombreColumna].tamano}
-                              style={{ color:"white", backgroundColor:elemento[nombreColumna] === "In progress" ? theme.palette.info.main : theme.palette.primary.main,
+                              style={{ color:"white", backgroundColor:elemento[nombreColumna] === "In progress" ? theme.palette.info.main : theme.palette.processdone,
                                   padding: theme.spacing(1), borderRadius:theme.spacing(1), }}
 
                             >
@@ -157,7 +161,7 @@ const Tabla = ({ className, data, idSeleccionados, definirIdSeleccionados, colum
           </Table>
       <Paginacion actual={data.length} cambiarPagina={cambiarPagina}
         cambiarLimite={cambiarLimite} pagina={pagina} limite={limite}/>  
-      
+      </TablaEstilo>
     </Card>
   );
 };

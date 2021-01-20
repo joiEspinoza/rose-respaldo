@@ -230,6 +230,7 @@ const Issue = (props) => {
                 "code":"1",
                 "summary":html
               };
+              console.log(data);
               axios.post(`http://127.0.0.1:8000/selection/issues/create/`,data).then(r=>{
                 console.log(r);
               }).catch(r=>{

@@ -8,9 +8,9 @@ const KPIWelcome = (props) => {
       nombre:"Cantidad de CVs",
       cantidad:props.data.resumes_ct,
       icon:<Icon style={{
-      transform: 'scale(7)',
-      color:"white", // Tune it
-    }} iconName={"TextDocumentShared"}  />,
+        transform: 'scale(7)',
+        color:"white", // Tune it
+      }} iconName={"EntitlementRedemption"}  />,
     },
     {
       nombre:"Tiempo ahorrado",
@@ -26,7 +26,7 @@ const KPIWelcome = (props) => {
       icon:<Icon style={{
       transform: 'scale(7)',
       color:"white", // Tune it
-    }} iconName={"Contact"}  />,
+    }} iconName={"ReminderPerson"}  />,
     },
   ];
   const forma = {
