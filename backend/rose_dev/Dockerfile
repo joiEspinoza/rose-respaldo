@@ -2,12 +2,7 @@ FROM python:3.8.3-slim-buster
 
 LABEL maintainer="Benjamín González Guerrero <bgonzalez@myfuture.ai>"
 
-WORKDIR /usr/src/app
-
-#setting environment variables for OAUTH 2.0
-ENV SOCIAL_SECRET=XM2RZ9r9bRr34uq8
-ENV GOOGLE_CLIENT_ID=374514394577-gn2bvmp9cjnsjn53aq0p575mdidpot47.apps.googleusercontent.com
-ENV GOOGLE_SECRET=cf3NcMsZkPJvKWicKfZo8sub
+WORKDIR /app/backend
 
 #source code
 COPY ./requirements.txt .
@@ -30,11 +25,8 @@ RUN pip install -r requirements.txt
 #copy entrypoint and project
 COPY . .
 
-RUN python manage.py migrate
+#Exec permissions to entrypoint
+RUN chmod 755 entrypoint.sh
 
 
-
-# Collect static files
-#RUN python manage.py collectstatic --noinput
-#CMD ["gunicorn" , "-b", "0.0.0.0:8000", "rose_dev.wsgi"]
-#ENTRYPOINT ["sh", "backend/wsgi-entrypoint.sh"]
+ENTRYPOINT ["sh","entrypoint.sh"]

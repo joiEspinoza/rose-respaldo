@@ -7,9 +7,9 @@ from authentication.models import User
 import random
 
 ### environment variables from social auth and apps
-os.environ['SOCIAL_SECRET'] = 'XM2RZ9r9bRr34uq8'
-os.environ['GOOGLE_CLIENT_ID'] = '374514394577-gn2bvmp9cjnsjn53aq0p575mdidpot47.apps.googleusercontent.com'
-os.environ['GOOGLE_SECRET'] = 'cf3NcMsZkPJvKWicKfZo8sub'
+#os.environ['SOCIAL_SECRET'] = 'XM2RZ9r9bRr34uq8'
+#os.environ['GOOGLE_CLIENT_ID'] = '374514394577-gn2bvmp9cjnsjn53aq0p575mdidpot47.apps.googleusercontent.com'
+#os.environ['GOOGLE_SECRET'] = 'cf3NcMsZkPJvKWicKfZo8sub'
 
 def generate_username(name):
 

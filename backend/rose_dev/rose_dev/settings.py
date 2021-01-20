@@ -16,7 +16,11 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+#os.environ['DB_NAME'] = 'rose_prod'
+#os.environ['DB_USER'] = 'bgg1'
+#os.environ['DB_PASS'] = 'Xns9txKRVzJKXkH'
+#os.environ['DB_HOST'] = 'rose-prod.c0ysgrul7vo2.us-east-2.rds.amazonaws.com'
+#os.environ['DB_PORT'] = '3306'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -107,11 +111,11 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rose_db',
-        'USER': 'bgg1',
-        'PASSWORD': 'Xns9txKRVzJKXkH',
-        'HOST': 'rose-dev.c0ysgrul7vo2.us-east-2.rds.amazonaws.com',
-        'PORT': '3366',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'CONN_MAX_AGE':None,
     }
 }
@@ -127,21 +131,6 @@ REST_FRAMEWORK = {
     )
 }
 
-#SIMPLE_JWT = {
-#    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=10),
-#    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
-#}
-#THIS IS FOR AN APP FOR JUST SOCIAL LOGIN
-
-#AUTHENTICATION_BACKENDS = [
-#    'django.contrib.auth.backends.ModelBackend',
-#
-    # `allauth` specific authentication methods, such as login by e-mail
-#    'allauth.account.auth_backends.AuthenticationBackend',
-#]
-
-# Password validation
-# https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {

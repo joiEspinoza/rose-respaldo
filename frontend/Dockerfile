@@ -2,7 +2,7 @@
 # Build React static files
 FROM node:13.10.1 as build
 
-LABEL maintainer="Benjamín González Guerrero <bgonzalez@mufuture.ai>"
+LABEL maintainer="Benjamín González Guerrero <bgonzalez@myfuture.ai>"
 
 WORKDIR /app/frontend
 
