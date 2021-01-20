@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import datetime
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -94,13 +95,9 @@ WSGI_APPLICATION = 'rose_dev.wsgi.application'
 
 
 # CORS WHITELIST
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:8080"
-]
-
-CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https://\w+\.netlify\.app$",
+    "http://127.0.0.1:3000"
 ]
 
 
@@ -113,8 +110,9 @@ DATABASES = {
         'NAME': 'rose_db',
         'USER': 'bgg1',
         'PASSWORD': 'Xns9txKRVzJKXkH',
-        'HOST': 'rose-db.c0ysgrul7vo2.us-east-2.rds.amazonaws.com',
+        'HOST': 'rose-dev.c0ysgrul7vo2.us-east-2.rds.amazonaws.com',
         'PORT': '3366',
+        'CONN_MAX_AGE':None,
     }
 }
 
@@ -183,6 +181,7 @@ USE_TZ = True
 #MEDIA_URL = '/media/'
 STATIC_URL = '/django_static/' 
 STATIC_ROOT = BASE_DIR / 'django_static'
+#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'django_static'),)
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'outlook.office365.com'

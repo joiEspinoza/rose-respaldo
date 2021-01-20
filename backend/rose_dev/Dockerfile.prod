@@ -1,0 +1,38 @@
+FROM python:3.8.3-slim-buster
+
+LABEL maintainer="Benjamín González Guerrero <bgonzalez@myfuture.ai>"
+
+WORKDIR /app/backend/rose_dev
+
+#setting environment variables for OAUTH 2.0
+ENV SOCIAL_SECRET=XM2RZ9r9bRr34uq8
+ENV GOOGLE_CLIENT_ID=374514394577-gn2bvmp9cjnsjn53aq0p575mdidpot47.apps.googleusercontent.com
+ENV GOOGLE_SECRET=cf3NcMsZkPJvKWicKfZo8sub
+
+#source code
+COPY ./requirements.txt .
+
+#Updating command, just like pip
+RUN apt-get -y update
+
+#Installing python3.7 and pip3
+RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
+RUN apt-get install antiword
+
+#Installing requirements from python, pip and gunicorn for multiple workers
+#If we dont change requirements.txt then docker run will skip to last line
+#Opposite: copy entire folder, if there is one change even if its not requirements.txt, the image will reconstruct entirely
+RUN pip install --upgrade pip
+RUN pip install mysqlclient
+RUN pip install gunicorn
+RUN pip install -r requirements.txt
+
+#copy project
+COPY . .
+
+WORKDIR /app/backend/rose_dev
+RUN python manage.py migrate
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
+

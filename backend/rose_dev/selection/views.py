@@ -39,8 +39,8 @@ class WelcomeAPIView(generics.GenericAPIView): #validated
 
         for sel in selections:
             resume = Candidate.objects.filter(selection = sel)
-            ct_resumes = 0 if resume.count() == None else resume.count()
-            ct_resumes = ct_resumes + ct_resumes
+            ct_r = 0 if resume.count() == None else resume.count()
+            ct_resumes = ct_resumes + ct_r
         """
         Estimating time using:
         - 30 seconds of fast-reading
@@ -195,14 +195,14 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         min_req = serializer.initial_data['requirements']
         desire_req = serializer.initial_data['desired']
         remote_ind = serializer.initial_data['is_remote']
-        candidates, high, low = create_candidates(S3_path, sel.pk, min_req, desire_req, remote_ind, 'scorer', 'whole')
+        candidates, high, low, med = create_candidates(S3_path, sel.pk, min_req, desire_req, remote_ind, 'scorer', 'whole')
         serializer_candidates = CandidateSerializer(data=candidates, many=True)
         serializer_candidates.is_valid(raise_exception=True)
         #serializer_candidates.errors
         serializer_candidates.save()
         selection = Selection.objects.get(pk=sel.pk)
         selection.status = 'Done'
-        selection.kpis = {"high": high, "medium": len(candidates)-high-low, "low": low}
+        selection.kpis = {"high": high, "medium": med, "low": low}
         selection.save()
         shutil.rmtree(r'selection/tmp/')
         os.mkdir(r'selection/tmp/')
