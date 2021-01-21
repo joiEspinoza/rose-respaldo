@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0',
                  'ec2-3-140-229-47.us-east-2.compute.amazonaws.com',
-                 'https://rosev0-api.myfuture.ai/']
+                 'rosev0-api.myfuture.ai']
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
