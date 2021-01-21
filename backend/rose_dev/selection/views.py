@@ -4,7 +4,7 @@ from authentication.models import User
 # Create your views here.
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import ConfigSerializer, GetEventsSerializer, EventSerializer, WelcomeSerializer, CustomSerializer, IssueSerializer, SelectionSerializer, CandidateSerializer
+from .serializers import ConfigColorsSerializer, ConfigSerializer, GetEventsSerializer, EventSerializer, WelcomeSerializer, CustomSerializer, IssueSerializer, SelectionSerializer, CandidateSerializer
 from rest_framework.response import Response
 from .models import Selection, Candidate, Issue, Custom, UserConfig, ChangeItem
 from django.contrib.sites.shortcuts import get_current_site
@@ -85,6 +85,43 @@ class UserConfigsAPIView(generics.GenericAPIView): #validated
         return Response(output, status=status.HTTP_200_OK)
 
 
+class CreateConfigColors(generics.GenericAPIView):
+    serializer_class = ConfigColorsSerializer
+
+    @swagger_auto_schema(operation_description="posting color for personalization", operation_id='user_colors')
+    def post(self, request):
+        """
+        Just available for posting colors configurations
+        """
+        serializer = self.serializer_class(data=request.data)
+        try:
+            user_obj = User.objects.get(email = serializer.initial_data['user_mail'])
+        except:
+            return Response({'error': 'Usuario no existe, probablemente el mail este incorrecto'}
+                            , status=status.HTTP_400_BAD_REQUEST)
+
+        json_1 = {
+               "user": user_obj.id,
+               "license_type": "rosev0",
+               "type": "primary_color",
+               "value": serializer.initial_data['primary_color']
+                }
+        json_2 = {
+               "user": user_obj.id,
+               "license_type": "rosev0",
+               "type": "secondary_color",
+               "value": serializer.initial_data['secondary_color']
+                }
+
+        colors = []
+        colors.append(json_1)
+        colors.append(json_2)
+        serializer_colors = ConfigSerializer(data=colors, many=True)
+        serializer_colors.is_valid(raise_exception=True)
+        serializer_colors.save()
+
+        return Response({'colors': colors}, status=status.HTTP_201_CREATED)
+
 
 class ListSelectionAPIView(generics.GenericAPIView):  #validated
     serializer_class = SelectionSerializer
@@ -143,24 +180,6 @@ class CreateCandidateAPIView(generics.GenericAPIView): #not complete
 
     @swagger_auto_schema(operation_description="Creates ranking of candidates from a selection", operation_id='candidate_create')
     def post(self, request):
-        """
-        after creating selection and aws S3 path we create and rank the candidates
-        selection = Selection.objects.get(pk=sel_id)
-        user_mail = User.objects.get(pk=selection.user.id).email
-        desired = selection.desired
-        require = selection.requirements
-        R_exp = require.exp
-        R_idioms = require.idioms
-        R_skills = require.skills
-        R_location = require.location
-        D_exp = desired.exp
-        D_idioms = desired.idioms
-        D_skills = desired.skills
-        D_location = desired.location
-        D_designations = desired.designation
-        D_colleges = desired.college
-        print(D_exp, D_skills, D_location, D_designations, D_colleges)
-        """
 
         serializer = self.serializer_class(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
@@ -186,7 +205,7 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         """
 
         serializer = self.serializer_class(data=request.data)
-        print(serializer.initial_data)
+        #print(serializer.initial_data)
         user = User.objects.get(email=serializer.initial_data['user'])
         serializer.initial_data['user'] = user.id
         serializer.is_valid(raise_exception=True)

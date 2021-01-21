@@ -114,18 +114,3 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
         return Response({'success': True, 'message': 'Password reset success', 'data': json}, status=status.HTTP_200_OK)
 
 
-
-"""
-class LogoutAPIView(generics.GenericAPIView):
-    serializer_class = LogoutSerializer
-
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def post(self, request):
-
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-"""

@@ -15,7 +15,6 @@ class WelcomeSerializer(serializers.Serializer):
     welcome_message = serializers.CharField()
 
 
-
 class SelectionSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -47,7 +46,12 @@ class ConfigSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserConfig
-        fields = ['type', 'value']
+        fields = '__all__'
+
+class ConfigColorsSerializer(serializers.Serializer):
+    primary_color = serializers.CharField()
+    secondary_color = serializers.CharField()
+    user_mail = serializers.CharField()
 
 class EventSerializer(serializers.ModelSerializer):
 

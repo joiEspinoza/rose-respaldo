@@ -16,11 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#os.environ['DB_NAME'] = 'rose_prod'
-#os.environ['DB_USER'] = 'bgg1'
-#os.environ['DB_PASS'] = 'Xns9txKRVzJKXkH'
-#os.environ['DB_HOST'] = 'rose-prod.c0ysgrul7vo2.us-east-2.rds.amazonaws.com'
-#os.environ['DB_PORT'] = '3306'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
