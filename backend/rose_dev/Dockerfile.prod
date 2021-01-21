@@ -2,7 +2,7 @@ FROM python:3.8.3-slim-buster
 
 LABEL maintainer="Benjamín González Guerrero <bgonzalez@myfuture.ai>"
 
-WORKDIR /app/backend
+WORKDIR /app/backend/rose_dev
 
 #source code
 COPY ./requirements.txt .
