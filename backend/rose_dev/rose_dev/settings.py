@@ -27,7 +27,7 @@ DEBUG = True
 
 #SITE_ID = 0
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0','ec2-18-191-211-240.us-east-2.compute.amazonaws.com']
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
