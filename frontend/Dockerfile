@@ -12,8 +12,8 @@ RUN apt-get install ssh rsync -y
 RUN apt-get install git -y
 
 COPY ./package.json .
-#COPY ./yarn.lock .
-RUN npm install 
+COPY ./yarn.lock .
+RUN yarn install 
 COPY . .
 #Exec permissions to entrypoint
 RUN chmod 755 entrypoint.sh
