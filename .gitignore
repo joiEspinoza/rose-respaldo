@@ -14,4 +14,10 @@ venv_rose
 venv_r
 linux_env2
 linux_env
+backend/rose_dev/prod-entrypoint.sh
+backend/rose_dev/Dockerfile.prod
+nginx
+frontend/Dockerfile.prod
+docker-compose-prod.yml
+docker-compose-dev.yml
 ~$ ADOLFO CM.txt

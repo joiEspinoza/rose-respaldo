@@ -10,7 +10,7 @@ COPY ./requirements.txt .
 #Updating command, just like pip
 RUN apt-get -y update
 
-#Installing python3.7 and pip3
+#Installing python3.7 and pip3, antiword and rsync
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
 RUN apt-get install antiword
 

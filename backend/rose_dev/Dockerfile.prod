@@ -10,9 +10,10 @@ COPY ./requirements.txt .
 #Updating command, just like pip
 RUN apt-get -y update
 
-#Installing python3.7 and pip3
+#Installing python3.7 and pip3, antiword and rsync
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
 RUN apt-get install antiword
+
 
 #Installing requirements from python, pip and gunicorn for multiple workers
 #If we dont change requirements.txt then docker run will skip to last line
@@ -21,6 +22,7 @@ RUN pip install --upgrade pip
 RUN pip install mysqlclient
 RUN pip install gunicorn
 RUN pip install -r requirements.txt
+
 
 #copy entrypoint and project
 COPY . .
