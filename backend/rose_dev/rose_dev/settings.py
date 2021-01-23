@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0',
                  'ec2-3-140-229-47.us-east-2.compute.amazonaws.com',
-                 'rosev0-api.myfuture.ai']
+                 'rosev0-api.myfuture.ai','rosev0-dev-api.myfuture.ai']
 
 
 AUTH_USER_MODEL = 'authentication.User'
@@ -101,6 +101,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     'https://rosev0.myfuture.ai',
+    'https://rosev0-dev.myfuture.ai',
 ]
 
 
