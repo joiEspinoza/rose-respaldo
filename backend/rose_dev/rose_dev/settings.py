@@ -165,7 +165,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-#STATIC_URL = '/static/'
+#redirect every http to https (for swagger mainly)
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 #MEDIA_URL = '/media/'
 STATIC_URL = '/django_static/' 
