@@ -26,7 +26,7 @@ urlpatterns = [
                                 namespace="social_auth")),
     path('selection/', include(('selection.urls', 'selection'),
                                 namespace="selection")),
-    path('api/', schema_view.with_ui('swagger',
+    path('/', schema_view.with_ui('swagger',
                                  cache_timeout=0), name='schema-swagger-ui'),
 
     path('api/api.json/', schema_view.without_ui(cache_timeout=0),

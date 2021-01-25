@@ -1,6 +1,4 @@
 image: python:3.8.3-slim-buster
-options:
-  docker: true
   
 pipelines:
   branches:
@@ -31,18 +29,21 @@ pipelines:
 
     master:
       - step:
+          services:
+            - docker
           script:
-          # install awscli
+          # update and install awscli
+            - apt update -y && apt upgrade -y && apt install curl -y
             - pip3 install awscli
+          # aws login
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
           # install docker compose
             - curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             - chmod +x /usr/local/bin/docker-compose
             - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             - docker-compose --version #check instalation
-          # aws login
-            - aws configure set aws_access_key_id "${AWS_KEY}"
-            - aws configure set aws_secret_access_key "${AWS_SECRET}"
-            - eval $(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 943423409941.dkr.ecr.us-east-2.amazonaws.com/rosev0)
           # docker
             - docker-compose build backend_master frontend_master
             - docker push ${AWS_ECR_FRONT}:master
