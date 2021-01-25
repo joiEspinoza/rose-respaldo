@@ -11,6 +11,10 @@ pipelines:
           script:
           # install awscli
             - pip3 install awscli
+          # aws login
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 943423409941.dkr.ecr.us-east-2.amazonaws.com/rosev0)
           # install docker compose
             - apt update -y && apt upgrade -y
             - apt install curl -y
@@ -18,10 +22,6 @@ pipelines:
             - chmod +x /usr/local/bin/docker-compose
             - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             - docker-compose --version #check instalation
-          # aws login
-            - aws configure set aws_access_key_id "${AWS_KEY}"
-            - aws configure set aws_secret_access_key "${AWS_SECRET}"
-            - eval $(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 943423409941.dkr.ecr.us-east-2.amazonaws.com/rosev0)
           # docker
             - docker-compose build backend_develop frontend_develop
             - docker push ${AWS_ECR_FRONT}:develop
