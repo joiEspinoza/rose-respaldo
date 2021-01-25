@@ -22,6 +22,7 @@ pipelines:
             - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             - docker-compose --version #check instalation
           # docker
+            - docker login --username AWS --password-stdin 943423409941.dkr.ecr.us-east-2.amazonaws.com/rosev0
             - docker-compose build backend_develop frontend_develop
             - docker push ${AWS_ECR_FRONT}:develop
             - docker push ${AWS_ECR_BACK}:develop
