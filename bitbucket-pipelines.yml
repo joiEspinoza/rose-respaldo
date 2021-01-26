@@ -9,6 +9,7 @@ pipelines:
           script:
           # update and install awscli
             - apt update -y && apt upgrade -y && apt install curl -y && apt install python3-pip -y && apt install openssh-server -y
+            - systemctl start redis
             - systemctl status ssh
             - ufw allow ssh
             - pip3 install awscli
