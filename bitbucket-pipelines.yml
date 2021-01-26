@@ -25,16 +25,19 @@ pipelines:
             - docker push ${AWS_ECR_BACK}:develop
       - step:
           image: atlassian/default-image:2
+          name: SSH and update container
           script:
             - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh develop'
 
     master:
       - step:
+          name: Build setup & AWS login
+          image: python:3.8.3-slim-buster
           services:
             - docker
           script:
           # update and install awscli
-            - apt update -y && apt upgrade -y && apt install curl -y && apt install openssh-server
+            - apt update -y && apt upgrade -y && apt install curl -y
             - pip3 install awscli
           # aws login
             - aws configure set aws_access_key_id "${AWS_KEY}"
@@ -50,5 +53,7 @@ pipelines:
             - docker push ${AWS_ECR_FRONT}:master
             - docker push ${AWS_ECR_BACK}:master
       - step:
+          image: atlassian/default-image:2
+          name: SSH and update container
           script:
             - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh master'
