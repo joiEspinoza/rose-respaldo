@@ -10,7 +10,7 @@ pipelines:
           # update and install awscli
             - apt update -y && apt upgrade -y && apt install curl -y
             - apt install openssh-server -y
-            - systemctl enable ssh
+            - service ssh start
             - systemctl status ssh
             - pip3 install awscli
           # aws login
