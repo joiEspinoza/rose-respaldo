@@ -8,7 +8,7 @@ pipelines:
             - docker
           script:
           # update and install awscli
-            - apt update -y && apt upgrade -y && apt install curl -y
+            - apt update -y && apt upgrade -y && apt install curl -y && apt install openssh-server
             - pip3 install awscli
           # aws login
             - aws configure set aws_access_key_id "${AWS_KEY}"
@@ -33,7 +33,7 @@ pipelines:
             - docker
           script:
           # update and install awscli
-            - apt update -y && apt upgrade -y && apt install curl -y
+            - apt update -y && apt upgrade -y && apt install curl -y && apt install openssh-server
             - pip3 install awscli
           # aws login
             - aws configure set aws_access_key_id "${AWS_KEY}"
