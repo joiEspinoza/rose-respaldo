@@ -23,9 +23,9 @@ pipelines:
             - docker-compose build backend_develop frontend_develop
             - docker push ${AWS_ECR_FRONT}:develop
             - docker push ${AWS_ECR_BACK}:develop
-      #- step:
-      #    script:
-      #      - ssh ${SSH_USER}@${SSH_HOST} '/root/claro-build/scripts/update.sh qa front'
+      - step:
+          script:
+            - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh develop'
 
     master:
       - step:
@@ -48,6 +48,6 @@ pipelines:
             - docker-compose build backend_master frontend_master
             - docker push ${AWS_ECR_FRONT}:master
             - docker push ${AWS_ECR_BACK}:master
-      #- step:
-      #    script:
-      #      - ssh ${SSH_USER}@${SSH_HOST} '/root/claro-build/scripts/update.sh qa front'
+      - step:
+          script:
+            - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh master'
