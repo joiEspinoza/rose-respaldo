@@ -1,4 +1,4 @@
-image: ubuntu:18.04
+image: python:3.8.3-slim-buster
   
 pipelines:
   branches:
@@ -8,15 +8,19 @@ pipelines:
             - docker
           script:
           # update and install awscli
-            - apt update -y && apt upgrade -y && apt install curl -y && apt install python3-pip -y && apt install openssh-server -y
-            - systemctl start redis
+            - apt update -y && apt upgrade -y && apt install curl -y
+            - apt install openssh-server -y
+            - systemctl enable ssh
             - systemctl status ssh
-            - ufw allow ssh
             - pip3 install awscli
           # aws login
             - aws configure set aws_access_key_id "${AWS_KEY}"
             - aws configure set aws_secret_access_key "${AWS_SECRET}"
             - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+      - step:
+          services:
+            - docker
+          scripts:
           # install docker compose
             - curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             - chmod +x /usr/local/bin/docker-compose
