@@ -2,7 +2,7 @@ FROM python:3.8.3-slim-buster
 
 LABEL maintainer="Benjamín González Guerrero <bgonzalez@myfuture.ai>"
 
-WORKDIR /app/backend
+WORKDIR /app/backend/rose_dev
 
 #source code
 COPY ./requirements.txt .
@@ -10,7 +10,7 @@ COPY ./requirements.txt .
 #Updating command, just like pip
 RUN apt-get -y update
 
-#Installing python3.7 and pip3
+#Installing python3.7 and pip3, antiword and rsync
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
 RUN apt-get install antiword
 

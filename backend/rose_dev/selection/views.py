@@ -43,10 +43,10 @@ class WelcomeAPIView(generics.GenericAPIView): #validated
             ct_resumes = ct_resumes + ct_r
         """
         Estimating time using:
-        - 30 seconds of fast-reading
-        - 18 hrs of screening (23 hours)
+        - 15 seconds of fast-reading
+        - 23 hrs of screening (23 hours)
         """
-        estimated_time = ct_resumes * 0.5 + ct_sel * 23.5 #minutes
+        estimated_time = ct_resumes * (15/3600) + ct_sel * 23 #hours
 
         json = {
             'selections_ct': ct_sel,

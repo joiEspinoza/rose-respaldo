@@ -1,0 +1,59 @@
+pipelines:
+  branches:
+    develop:
+      - step:
+          name: Build setup & AWS login
+          image: python:3.8.3-slim-buster
+          services:
+            - docker
+          script:
+          # update and install awscli
+            - apt update -y && apt upgrade -y && apt install curl -y
+            - pip3 install awscli
+          # aws login
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+          # install docker compose
+            - curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            - chmod +x /usr/local/bin/docker-compose
+            - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+            - docker-compose --version #check instalation
+          # docker
+            - docker-compose build backend_develop frontend_develop
+            - docker push ${AWS_ECR_FRONT}:develop
+            - docker push ${AWS_ECR_BACK}:develop
+      - step:
+          image: atlassian/default-image:2
+          name: SSH and update container
+          script:
+            - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh develop'
+
+    master:
+      - step:
+          name: Build setup & AWS login
+          image: python:3.8.3-slim-buster
+          services:
+            - docker
+          script:
+          # update and install awscli
+            - apt update -y && apt upgrade -y && apt install curl -y
+            - pip3 install awscli
+          # aws login
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+          # install docker compose
+            - curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            - chmod +x /usr/local/bin/docker-compose
+            - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+            - docker-compose --version #check instalation
+          # docker
+            - docker-compose build backend_master frontend_master
+            - docker push ${AWS_ECR_FRONT}:master
+            - docker push ${AWS_ECR_BACK}:master
+      - step:
+          image: atlassian/default-image:2
+          name: SSH and update container
+          script:
+            - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh master'

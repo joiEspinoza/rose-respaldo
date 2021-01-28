@@ -27,7 +27,10 @@ DEBUG = True
 
 #SITE_ID = 0
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0',
+                 'ec2-3-140-229-47.us-east-2.compute.amazonaws.com',
+                 'rosev0-api.myfuture.ai','rosev0-dev-api.myfuture.ai']
+
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
@@ -96,7 +99,9 @@ WSGI_APPLICATION = 'rose_dev.wsgi.application'
 # CORS WHITELIST
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    'https://rosev0.myfuture.ai',
+    'https://rosev0-dev.myfuture.ai',
 ]
 
 
@@ -159,7 +164,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-#STATIC_URL = '/static/'
+#redirect every http to https (for swagger mainly)
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 #MEDIA_URL = '/media/'
 STATIC_URL = '/django_static/' 
