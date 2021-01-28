@@ -37,10 +37,19 @@ const TopBar = ({
       {...rest}
     >
       <Toolbar>
+        <div 
+          style={{
+            height: '100%',
+            width: 'auto',
+            borderRadius: "3px",
+            backgroundColor:"white",
+          }}>
           <img src={rose_nav} alt="rose" style={{
-              height: '100%',
-              width: 'auto',
-            }} />
+            padding: '2px',
+            height: '100%',
+            width: 'auto',
+          }} />
+        </div>
         <Box flexGrow={1} />
         <Hidden mdDown>
           <IconButton color="inherit">

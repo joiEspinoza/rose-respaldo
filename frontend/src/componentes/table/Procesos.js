@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2)
   }
 }));
-const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
+const Tabla = ({ className, filtros, anadirFiltro, configuracion, eliminarFiltro, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
   
   const classes = useStyles();
   const theme = useTheme();
@@ -75,7 +75,7 @@ const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, defini
     <Card
       className={classes.root}
     >
-      <TablaEstilo>
+      <TablaEstilo configuracion={configuracion}>
       
           <Table>
             <TableHead>
@@ -94,7 +94,7 @@ const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, defini
                   </TableCell>
                 ))}
               </TableRow>
-              {mostrar && <FilaFiltros filtros={filtros} anadirFiltro={anadirFiltro} mostrar={mostrar} setMostrar={setMostrar} col={Object.keys(columnas)}/>}
+              {mostrar && <FilaFiltros filtros={filtros} anadirFiltro={anadirFiltro} eliminarFiltro={eliminarFiltro} mostrar={mostrar} setMostrar={setMostrar} col={Object.keys(columnas)}/>}
             </TableHead>
             <TableBody>
 
@@ -176,7 +176,7 @@ const seleccionarProceso = (newIndex) => {
 
 const mapStateToProps = estado => {
   return {
-    
+    configuracion: estado.configuracion,
   }
 }
 

@@ -10,7 +10,23 @@ import data from './componentes/DataProcesos';
 import './App.css';
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { initializeIcons } from '@uifabric/icons';
+import AWS from 'aws-sdk';
 initializeIcons();
+
+AWS.config.update({
+  region : 'us-east-2',
+  accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
+  secretAccessKey: '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',
+});
+
+const s3 = new AWS.S3({
+ accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
+ secretAccessKey: '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',
+ Bucket: 'rosev0',
+ region : 'us-east-2',
+});
+
+console.log("AWS",AWS);
 
 
 const App = (props) => {
@@ -37,6 +53,9 @@ const App = (props) => {
       requestHistorico(props.usuario.correo,props.cargarHistorico).then(response=>{
         console.log("Respuesta verdadera",response);
       }).catch(e=>console.log(e));
+      obtenerLogo(props.usuario.correo,props.cargarLogo).then(response=>{
+        console.log("Respuesta verdadera logo",response);
+      }).catch(e=>console.log("error logo",e));
     }
     
   },[props.usuario]);
@@ -105,6 +124,12 @@ const cargarHistorico = (newState) => {
 const cargarTutoriales = (newState) => {
   return {
       type: 'CARGAR_TUTORIALES',
+      newState: newState,
+    }  
+}
+const cargarLogo = (newState) => {
+  return {
+      type: 'CARGAR_LOGO',
       newState: newState,
     }  
 }
@@ -223,6 +248,24 @@ const requestTutoriales = (cargar) => {
     });
 }
 
+const obtenerLogo = (correo, cargar) => {
+  console.log("obtlogo",correo);
+  var email_cambiado = correo.replace("@","_");
+  console.log(email_cambiado);
+  var ruta = email_cambiado+'/icono';
+  return new Promise((resolve, reject)=>{
+    //s3.getObject({Key: ruta, Bucket:'rosev0'}, function(err, data) {
+    s3.listObjects({Prefix: ruta, Bucket:'rosev0'}, function(err, data) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }else{
+        console.log(data);
+        resolve(data);
+      }
+    });
+  });
+}
 
 const mapStateToProps = estado => {
   return {
@@ -241,6 +284,7 @@ const mapDispatchToProps = despachar => {
         cargarTutoriales: (newState) => despachar(cargarTutoriales(newState)),
         cargarEventos: (newState) => despachar(cargarEventos(newState)),
         cargarHistorico: (newState) => despachar(cargarHistorico(newState)),
+        cargarLogo: (newState) => despachar(cargarLogo(newState)),
     }
 }
 

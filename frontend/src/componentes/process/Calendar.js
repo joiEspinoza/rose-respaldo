@@ -19,6 +19,22 @@ const Calendar = (props) => {
   );
 }
 
+const fecha = () => {
+  let fecha = new Date();
+  let dia = fecha.getDate();
+  let mes = fecha.getMonth() + 1;
+  let ano = fecha.getFullYear();
+  if(mes < 10){
+    if(dia < 10){
+      return `${ano}-0${mes}-0${dia}T10:00:00`;
+    }else{
+      return `${ano}-0${mes}-${dia}T10:00:00`;
+    }
+  }else{
+    return `${ano}-${mes}-${dia}T10:00:00`;
+  }
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop: theme.spacing(1),
@@ -41,6 +57,7 @@ const Formulario = (props) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
+  const fechaa = fecha();
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item xs={12}>
@@ -51,7 +68,6 @@ const Formulario = (props) => {
               fecha1: '',
               fecha2: '',
               asunto: '',
-              teams: false,
             }}
             validationSchema={Yup.object().shape({
               nombre: Yup.string().max(255).required('Debe definir el nombre del evento'),
@@ -88,7 +104,7 @@ const Formulario = (props) => {
                         variant="outlined"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                       <TextField
                         error={Boolean(touched.fecha1 && errors.fecha1)}
                         fullWidth
@@ -96,16 +112,17 @@ const Formulario = (props) => {
                         InputProps={{
 				            startAdornment: <InputAdornment position="start">Inicio</InputAdornment>,
 				          }}
+                        
                         margin="normal"
                         name="fecha1"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        type="time"
+                        type="datetime-local"
                         value={values.fecha1}
                         variant="outlined"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                       <TextField
                         error={Boolean(touched.fecha2 && errors.fecha2)}
                         fullWidth
@@ -117,7 +134,7 @@ const Formulario = (props) => {
                         name="fecha2"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        type="time"
+                        type="datetime-local"
                         value={values.fecha2}
                         variant="outlined"
                       />
@@ -151,17 +168,10 @@ const Formulario = (props) => {
                 </CardContent>
                 <CardContent>
                 	<Grid container>
-	                	<Grid xs={2}>
-		                    <FormControlLabel
-		                      control={<Switch checked={values.teams} onChange={handleChange} name="teams" />}
-		                      label="¿En MS Teams?"
-		                      labelPlacement="top"
-		                    />
-	                  	</Grid>
 	                  	<Grid xs={6}></Grid>
-	                  	<Grid xs={4}>
+	                  	<Grid xs={6}>
 		                  <Button variant="contained" fullWidth type="submit" color="primary">
-		                    {"Enviar mail"}
+		                    {"Agendar"}
 		                  </Button>
 		                </Grid>
 		            </Grid>

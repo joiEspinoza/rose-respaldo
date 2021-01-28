@@ -12,10 +12,33 @@ import { connect } from 'react-redux';
 const space = [3, 4, 8, 16, 32, 64, 72, 96, 120, 148, 184];
 const tipograf = Object.assign({},tipografia,tipografiaresponsiva);
 
-const theme = (props) => {
-  console.log(props);
+const theme = (configuracion) => {
+  var colores = paleta;
+  if(configuracion!==null){
+    if(configuracion.primary_color!==undefined){
+      colores = Object.assign({},colores,{
+        primary: {main: configuracion.primary_color},
+        roseclaro:'#E6E6E6',
+        processdone:configuracion.primary_color,
+        background: {
+          default: '#E6E6E6'
+        },
+      });
+    }
+    if(configuracion.secondary_color!==undefined ){
+      colores = Object.assign({},colores,{
+        secondary: {main: configuracion.secondary_color},
+        info: {main: configuracion.secondary_color},
+        roseclaro:'#E6E6E6',
+        processdone:configuracion.primary_color,
+        background: {
+          default: '#E6E6E6'
+        },
+      });
+    }
+  }
   return createMuiTheme({
-    palette: paleta,
+    palette: colores,
     typography: tipograf,
     breakpoints: puntos,
     spacing: space,
@@ -33,17 +56,17 @@ const theme = (props) => {
         root: {
           margin: space[1],
           padding: space[3],
-          color: paleta.primary.main,
+          color: colores.primary.main,
           '&:hover':{
-            color: paleta.primary.main,
-            backgroundColor: paleta.info.main,
+            color: colores.primary.main,
+            backgroundColor: colores.info.main,
           },
         },
       },
       MuiButton: {
         root: {
           margin: 1,
-          color: paleta.primary.main,
+          color: colores.primary.main,
           borderRadius: space[3],
         },
       },
@@ -52,16 +75,16 @@ const theme = (props) => {
         root: {
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: paleta.success.main,
+              borderColor: colores.success.main,
               borderWidth: space[0],
               borderRadius: space[3],
             },
             '&:hover fieldset': {
-              borderColor: paleta.primary.main,
+              borderColor: colores.primary.main,
               borderWidth: space[0],
             },
             '&.Mui-focused fieldset': {
-              borderColor: paleta.primary.main,
+              borderColor: colores.primary.main,
               borderWidth: space[0],
             },
           },
@@ -72,9 +95,33 @@ const theme = (props) => {
   });
 }
 
-const tablas = (props) => {
+const tablas = (configuracion) => {
+var colores = paleta;
+  if(configuracion!==null){
+    if(configuracion.primary_color!==undefined){
+      colores = Object.assign({},colores,{
+        primary: {main: configuracion.primary_color},
+        roseclaro:'#E6E6E6',
+        processdone:configuracion.primary_color,
+        background: {
+          default: '#E6E6E6'
+        },
+      });
+    }
+    if(configuracion.secondary_color!==undefined ){
+      colores = Object.assign({},colores,{
+        secondary: {main: configuracion.secondary_color},
+        info: {main: configuracion.secondary_color},
+        roseclaro:'#E6E6E6',
+        processdone:configuracion.primary_color,
+        background: {
+          default: '#E6E6E6'
+        },
+      });
+    }
+  }
   return createMuiTheme({
-    palette: paleta,
+    palette: colores,
     typography: Object.assign({},tipografiatablas,tipografiaresponsiva),
     breakpoints: puntos,
     spacing: space,
@@ -92,17 +139,17 @@ const tablas = (props) => {
         root: {
           margin: space[1],
           padding: space[3],
-          color: paleta.primary.main,
+          color: colores.primary.main,
           '&:hover':{
-            color: paleta.primary.main,
-            backgroundColor: paleta.info.main,
+            color: colores.primary.main,
+            backgroundColor: colores.info.main,
           },
         },
       },
       MuiButton: {
         root: {
           margin: 1,
-          color: paleta.primary.main,
+          color: colores.primary.main,
           borderRadius: space[3],
         },
       },
@@ -111,16 +158,16 @@ const tablas = (props) => {
         root: {
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: paleta.success.main,
+              borderColor: colores.success.main,
               borderWidth: space[0],
               borderRadius: space[3],
             },
             '&:hover fieldset': {
-              borderColor: paleta.primary.main,
+              borderColor: colores.primary.main,
               borderWidth: space[0],
             },
             '&.Mui-focused fieldset': {
-              borderColor: paleta.primary.main,
+              borderColor: colores.primary.main,
               borderWidth: space[0],
             },
           },
@@ -133,7 +180,7 @@ const tablas = (props) => {
 
 const TablaEstilo = (props) => {
   return (
-    <ThemeProvider theme={tablas()}>
+    <ThemeProvider theme={tablas(props.configuracion)}>
       {props.children}
     </ThemeProvider>
   );
@@ -141,7 +188,7 @@ const TablaEstilo = (props) => {
 
 const Estilo = (props) => {
   return (
-    <ThemeProvider theme={theme(props.estilo)}>
+    <ThemeProvider theme={theme(props.configuracion)}>
       {props.children}
     </ThemeProvider>
   );
@@ -149,7 +196,7 @@ const Estilo = (props) => {
 
 const mapStateToProps = estado => {
   return {
-    estilo: estado.estilo,
+    configuracion: estado.configuracion,
   }
 }
 export { TablaEstilo };

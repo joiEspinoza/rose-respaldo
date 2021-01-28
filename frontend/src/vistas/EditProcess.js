@@ -442,8 +442,8 @@ const ArrayInput = ({ data, set, label }) => {
         <Grid container spacing={2}>
           {data.map((i,index)=>(
             <Grid item>
-              <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
-                <Button variant="outlined" color="primary" onClick={()=>actualizar(index)}>{i}</Button>
+              <Badge color="primary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
+                <Button variant="contained" color="secondary" onClick={()=>actualizar(index)}>{i}</Button>
               </Badge>
             </Grid>
           ))}

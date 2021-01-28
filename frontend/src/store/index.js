@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 
 
 
-function filtrosprocesos(state = [{valor:"ejemplo",variable:"name",tipo:"="}], accion) {
+function filtrosprocesos(state = [], accion) {
   switch (accion.type) {
     case 'ANADIR_FILTRO':
       var newS = [...state];
@@ -69,6 +69,15 @@ function procesos(state = null, accion) {
 function eventos(state = null, accion) {
   switch (accion.type) {
     case 'CARGAR_EVENTOS':
+      return accion.newState;
+    default:
+      return state;
+  }
+}
+
+function logo(state = null, accion) {
+  switch (accion.type) {
+    case 'CARGAR_LOGO':
       return accion.newState;
     default:
       return state;
@@ -143,7 +152,7 @@ function candidato_viewprocess(state = 0, accion) {
 
 
 
-let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida, configuracion, eventos, historico, filtrosprocesos });
+let reductorRaiz = combineReducers({ usuario, estilo, procesos, proceso, procesos_exportar_excel, candidato_viewprocess, tutoriales, bienvenida, configuracion, eventos, historico, filtrosprocesos, logo });
 
 
 export default reductorRaiz;

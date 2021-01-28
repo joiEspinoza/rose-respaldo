@@ -196,12 +196,12 @@ const CV = (props) => {
               <Typography variant="body1">
                 {"Correo: "}{props.candidato.mail}
               </Typography>
-              <Typography variant="body1">
+              {pr.phone.length > 0 && <Typography variant="body1">
                 {"Teléfono: "}{pr.phone.length > 0 && pr.phone[0]}
-              </Typography>
-              <Typography variant="body1">
+              </Typography>}
+              {pr.degree.length > 0 && <Typography variant="body1">
                 {"Título: "}{pr.degree.length > 0 && pr.degree[0]}
-              </Typography>
+              </Typography>}
               
               
               
@@ -209,13 +209,13 @@ const CV = (props) => {
             </Grid>
             <Grid item xs={5} >
               <br/>
-              <Typography variant="body1">
+              {pr.college.length > 0 && <Typography variant="body1">
                 {"Estudió en: "}{pr.college.length > 0 && pr.college[0]}
-              </Typography>
-              <Typography variant="body1">
+              </Typography>}
+              {pr.graduation.length > 0 && <Typography variant="body1">
                 {"Egreso: "}{pr.graduation.length > 0 && pr.graduation[0]}
-              </Typography>
-              <Typography variant="body1">
+              </Typography>}
+              <Typography>
                 {"Experiencia: "}{pr.exp}
               </Typography>
             </Grid>

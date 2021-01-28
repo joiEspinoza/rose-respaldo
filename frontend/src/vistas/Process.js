@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import Contenedor from '../contenedor';
 import {
@@ -23,7 +23,31 @@ const Dashboard = (props) => {
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
   const procesosSeleccionados = idSeleccionados.length === 0 ? [] : props.procesos.filter((i,index)=>idSeleccionados.includes(i.id)).map(i=>({name:i.name,created_at:i.created_at,status:i.status,below:i.kpis.below,normal:i.kpis.normal,outstanding:i.kpis.outstanding}));
-  console.log(idSeleccionados);
+  
+
+  const [filtrados, definirFiltrados] = useState([]);
+  const Filtrar = (filtros, data) => {
+    var salida = data;
+    var aux = [];
+    for (let filtro of filtros) {
+      var indice = 0;
+      for (let elemento of data) {
+        if(elemento[filtro.variable].includes(filtro.valor)){
+          aux.push(indice);
+        }
+        indice = indice + 1;
+      }
+      salida = salida.filter((i,index)=>aux.includes(index));
+      aux = [];
+    }
+    console.log(salida);
+    definirIdSeleccionados([]);
+    return salida;
+  }
+  useEffect(()=>{
+    const f = Filtrar(props.filtros,props.procesos);
+    definirFiltrados(f);
+  },[props.filtros]);
   return (
     
         <Grid
@@ -41,7 +65,7 @@ const Dashboard = (props) => {
               </NATarjeta>
             </>
           :
-            <Tabla filtros={props.filtros} anadirFiltro={props.anadirFiltro} data={props.procesos} columnas={columnas} idSeleccionados={idSeleccionados} definirIdSeleccionados={definirIdSeleccionados} seleccionarProceso={seleccionarProceso}/>
+            <Tabla filtros={props.filtros} anadirFiltro={props.anadirFiltro} eliminarFiltro={props.eliminarFiltro} data={filtrados} columnas={columnas} idSeleccionados={idSeleccionados} definirIdSeleccionados={definirIdSeleccionados} seleccionarProceso={seleccionarProceso}/>
           }
           </Grid>
 
@@ -97,7 +121,7 @@ const Process = (props) => {
   return (
     <Contenedor>
       <Dashboard procesosExportarExcel={props.procesosExportarExcel} procesos_exportar_excel={props.procesos_exportar_excel}
-      procesos={props.procesos} filtros={props.filtros} anadirFiltro={props.anadirFiltro}/>
+      procesos={props.procesos} filtros={props.filtros} anadirFiltro={props.anadirFiltro} eliminarFiltro={props.eliminarFiltro}/>
     </Contenedor>
   );
 }
@@ -114,6 +138,12 @@ const anadirFiltro = (nuevoFiltro) => {
   }
 }
 
+const eliminarFiltro = (index) => {
+  return {
+    type: 'ELIMINAR_FILTRO',
+    indice: index,
+  }
+}
 const procesosExportarExcel = (newState) => {
   return {
     type: 'DEFINIR_PROCESOS_EXPORTAR_EXCEL',
@@ -123,9 +153,9 @@ const procesosExportarExcel = (newState) => {
 
 const mapStateToProps = estado => {
   return {
-    procesos: estado.procesos,
+    procesos: estado.procesos.map((i,index)=>(Object.assign({},i,{index:index}))),
     procesos_exportar_excel: estado.procesos_exportar_excel,
-    filtros: estado.filtrosprocesos,
+    filtros: estado.filtrosprocesos.map((i,index)=>(Object.assign({},i,{index:index}))),
   }
 }
 
@@ -133,6 +163,7 @@ const mapDispatchToProps = despachar => {
     return {
         procesosExportarExcel: (newState) => despachar(procesosExportarExcel(newState)),
         anadirFiltro: (nuevoFiltro) => despachar(anadirFiltro(nuevoFiltro)),
+        eliminarFiltro: (index) => despachar(eliminarFiltro(index)),
     }
 }
 
