@@ -40,7 +40,7 @@ const MicroSoftOld = (props) => {
  	
   return (
     <MicrosoftLogin clientId={"d236c53d-05c9-41c5-aade-d26ed6bb6c6d"} authCallback={authHandler} 
-      redirectUri={"http://localhost:3000"} 
+      redirectUri={"https://rosev0-dev.myfuture.ai"} 
       graphScopes={["Calendars.ReadWrite.Shared","email","Mail.Send","offline_access","openid","profile","User.Read"]}
     >
       <IconButton aria-label="microsoft">
