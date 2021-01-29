@@ -50,7 +50,7 @@ class WelcomeAPIView(generics.GenericAPIView): #validated
 
         json = {
             'selections_ct': ct_sel,
-            'saved_time_min': estimated_time,
+            'saved_time_min': round(estimated_time,3),
             'resumes_ct': ct_resumes,
             'welcome_message': welcome_text
                 }
