@@ -234,7 +234,7 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         selection.save()
         shutil.rmtree(r'selection/tmp/')
         os.mkdir(r'selection/tmp/')
-        return Response({'created_data': serializer.data, 'candidates': candidates}, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ListSelectionCandidatesAPIView(generics.GenericAPIView): #validated
