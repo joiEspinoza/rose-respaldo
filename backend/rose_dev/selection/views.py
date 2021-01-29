@@ -96,29 +96,38 @@ class CreateConfigColors(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         try:
             user_obj = User.objects.get(email = serializer.initial_data['user_mail'])
+            primary = UserConfig.objects.get(user=user_obj, type='primary_color')
+            secondary = UserConfig.objects.get(user=user_obj, type='secondary_color')
         except:
             return Response({'error': 'Usuario no existe, probablemente el mail este incorrecto'}
                             , status=status.HTTP_400_BAD_REQUEST)
 
         json_1 = {
-               "user": user_obj.id,
-               "license_type": "rosev0",
-               "type": "primary_color",
-               "value": serializer.initial_data['primary_color']
+                "user": user_obj.id,
+                "license_type": "rosev0",
+                "type": "primary_color",
+                "value": serializer.initial_data['primary_color']
                 }
         json_2 = {
-               "user": user_obj.id,
-               "license_type": "rosev0",
-               "type": "secondary_color",
-               "value": serializer.initial_data['secondary_color']
+                "user": user_obj.id,
+                "license_type": "rosev0",
+                "type": "secondary_color",
+                "value": serializer.initial_data['secondary_color']
                 }
 
         colors = []
         colors.append(json_1)
         colors.append(json_2)
-        serializer_colors = ConfigSerializer(data=colors, many=True)
-        serializer_colors.is_valid(raise_exception=True)
-        serializer_colors.save()
+
+        if len(primary) and len(secondary) > 0:
+            primary.value = serializer.initial_data['primary_color']
+            secondary.value = serializer.initial_data['secondary_color']
+            primary.save()
+            secondary.save()
+        else:
+            serializer_colors = ConfigSerializer(data=colors, many=True)
+            serializer_colors.is_valid(raise_exception=True)
+            serializer_colors.save()
 
         return Response({'colors': colors}, status=status.HTTP_201_CREATED)
 
