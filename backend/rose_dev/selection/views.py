@@ -230,6 +230,7 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         selection = Selection.objects.get(pk=sel.pk)
         selection.status = 'Done'
         selection.kpis = {"high": high, "medium": med, "low": low}
+        serializer.data['kpis'] = {"high": high, "medium": med, "low": low}
         selection.save()
         shutil.rmtree('selection/tmp/')
         os.mkdir('selection/tmp/')
