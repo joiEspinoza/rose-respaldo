@@ -10,7 +10,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 class WelcomeSerializer(serializers.Serializer):
 
     selections_ct = serializers.IntegerField()
-    saved_time_min = serializers.DecimalField(max_digits=10, decimal_places=1)
+    saved_time_min = serializers.DecimalField(max_digits=10, decimal_places=10)
     resumes_ct = serializers.IntegerField()
     welcome_message = serializers.CharField()
 
