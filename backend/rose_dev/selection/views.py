@@ -212,7 +212,7 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
                 post selection (with kpis and everything) -> post candidates
         use serializer_class2
         """
-
+        os.mkdir(r'selection/tmp/')
         serializer = self.serializer_class(data=request.data)
         #print(serializer.initial_data)
         user = User.objects.get(email=serializer.initial_data['user'])
