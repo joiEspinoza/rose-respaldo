@@ -212,7 +212,7 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
                 post selection (with kpis and everything) -> post candidates
         use serializer_class2
         """
-        os.mkdir(r'selection/tmp/')
+        os.mkdir('selection/tmp/')
         serializer = self.serializer_class(data=request.data)
         #print(serializer.initial_data)
         user = User.objects.get(email=serializer.initial_data['user'])
@@ -232,8 +232,8 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         selection.status = 'Done'
         selection.kpis = {"high": high, "medium": med, "low": low}
         selection.save()
-        shutil.rmtree(r'selection/tmp/')
-        os.mkdir(r'selection/tmp/')
+        shutil.rmtree('selection/tmp/')
+        os.mkdir('selection/tmp/')
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
