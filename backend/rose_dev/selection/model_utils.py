@@ -269,6 +269,7 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
                     break
                 else:
                     pass
+
     ### CALCULATING CANDIDATE SCORE
     # if candidates achieves minimum requirements then we score else, score is 0
     if min_state == False or min_state2 == False or min_state3 == False or min_state4 == False:
