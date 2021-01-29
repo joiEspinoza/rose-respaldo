@@ -212,8 +212,8 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
                 post selection (with kpis and everything) -> post candidates
         use serializer_class2
         """
+
         serializer = self.serializer_class(data=request.data)
-        #print(serializer.initial_data)
         user = User.objects.get(email=serializer.initial_data['user'])
         serializer.initial_data['user'] = user.id
         serializer.is_valid(raise_exception=True)
