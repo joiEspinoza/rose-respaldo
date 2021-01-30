@@ -268,7 +268,7 @@ class ListUserCandidatesAPIView(generics.GenericAPIView):  #validated
             sel = Selection.objects.filter(user = user_obj)
             list = []
             for row in sel:
-                resumes = Candidate.objects.get(selection = row)
+                resumes = Candidate.objects.filter(selection = row)
                 for cand in resumes:
                     list.append(cand)
             if len(resumes) == 0:
