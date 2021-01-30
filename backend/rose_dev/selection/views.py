@@ -230,11 +230,11 @@ class CreateSelectionAPIView(generics.GenericAPIView): #not complete
         selection = Selection.objects.get(pk=sel.pk)
         selection.status = 'Done'
         selection.kpis = {"high": high, "medium": med, "low": low}
-        serializer.data['kpis'] = {"high": high, "medium": med, "low": low}
+        serializer.initial_data['kpis'] = {"high": high, "medium": med, "low": low}
         selection.save()
         shutil.rmtree('selection/tmp/')
         os.mkdir('selection/tmp/')
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.initial_data, status=status.HTTP_201_CREATED)
 
 
 class ListSelectionCandidatesAPIView(generics.GenericAPIView): #validated
@@ -266,8 +266,11 @@ class ListUserCandidatesAPIView(generics.GenericAPIView):  #validated
         try:
             user_obj = User.objects.get(email = mail)
             sel = Selection.objects.filter(user = user_obj)
+            list = []
             for row in sel:
-                resumes = Candidate.objects.filter(selection = row)
+                resumes = Candidate.objects.get(selection = row)
+                for cand in resumes:
+                    list.append(cand)
             if len(resumes) == 0:
                 return Response({'error': '¡Que raro! Usuario no cuenta con candidatos y sus CVs, creaste alguna selección?'}
                             , status=status.HTTP_400_BAD_REQUEST)
@@ -275,7 +278,7 @@ class ListUserCandidatesAPIView(generics.GenericAPIView):  #validated
             return Response({'error': 'No se encontraron datos para este usuario, inicia incidencia con código DATOS_USER_SEL'}
                             , status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.serializer_class(resumes, many=True)
+        serializer = self.serializer_class(list, many=True)
 
         return Response({'data': serializer.data}, status=status.HTTP_200_OK)
 
