@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateConfigColors, UserConfigsAPIView, CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
+from .views import CreateExcelAPIView, CreateConfigColors, UserConfigsAPIView, CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
 #from .views import CreateEventAPIView, GetUserEventsAPIView, CreateCandidateAPIView, WelcomeAPIView, ListTutorialsAPIView, ListUserCandidatesAPIView, ListSelectionAPIView, SelectionAPIView, CreateSelectionAPIView, ListSelectionCandidatesAPIView, CandidateAPIView, CreateIssueAPIView, IssueAPIView, SendMailAPIView
 #from .views import 
 
@@ -21,5 +21,6 @@ urlpatterns = [
     path('config/<str:mail>/', UserConfigsAPIView.as_view(), name="list configurations"),
     path('create_event/<str:token>', CreateEventAPIView.as_view(), name="create events"),
     path('colors/', CreateConfigColors.as_view(), name="add colors"),
+    path('create_excel/<str:type>', CreateExcelAPIView.as_view(), name="create excel"),
               ]
 

@@ -4,7 +4,7 @@ from authentication.models import User
 # Create your views here.
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-from .serializers import ConfigColorsSerializer, ConfigSerializer, GetEventsSerializer, EventSerializer, WelcomeSerializer, CustomSerializer, IssueSerializer, SelectionSerializer, CandidateSerializer
+from .serializers import CreateExcelSerializer, ConfigColorsSerializer, ConfigSerializer, GetEventsSerializer, EventSerializer, WelcomeSerializer, CustomSerializer, IssueSerializer, SelectionSerializer, CandidateSerializer
 from rest_framework.response import Response
 from .models import Selection, Candidate, Issue, Custom, UserConfig, ChangeItem
 from django.contrib.sites.shortcuts import get_current_site
@@ -16,10 +16,14 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.urls import reverse
 from django.shortcuts import redirect
-from django.http import HttpResponsePermanentRedirect
+from django.http import HttpResponsePermanentRedirect, HttpResponse
 import os
 import json
 import shutil
+import pandas as pd
+from io import BytesIO
+import xlsxwriter
+
 
 class WelcomeAPIView(generics.GenericAPIView): #validated
     
@@ -349,7 +353,7 @@ class ListTutorialsAPIView(generics.GenericAPIView):  #validated
 class SendMailAPIView(generics.GenericAPIView):
     serializer_class = EventSerializer
 
-    desc = 'Google params -> sender, to, cc, subject, message_text     to and cc with ";"\n Microsoft params -> content, subject, to, cc     to and cc as array [] \ntype: mail or meeting'
+    desc = 'url_arg: token \n params -> content, subject, to, cc     to and cc as array [] \ntype: mail'
 
     @swagger_auto_schema(operation_description=desc, operation_id='send_mail_candidate')
     def post(self, request, token):
@@ -480,5 +484,70 @@ class CreateEventAPIView(generics.GenericAPIView):  #validated
 
 
         
+class CreateExcelAPIView(generics.GenericAPIView):  #validated
+    serializer_class = CreateExcelSerializer
 
-     
+    @swagger_auto_schema(operation_description="post to create excel files, the possible types for agr in url are: selection, historic, candidate \n the payload is user (string_mail) and type_id (selection_id for candidates)", operation_id='create_excel')
+    def post(self, request, type):
+
+        """
+        args_url: type: selection, historic or candidate
+        args payload: null
+        """
+        serializer = self.serializer_class(data=request.data)
+        user_id = User.objects.get(email=serializer.initial_data['user'])
+        if serializer.initial_data['type_id'] == 0: #for selections and historic
+            if type == 'historic':
+                filename = 'Historico'
+                df_excel= pd.DataFrame(columns=['Nombre', 'Mail', 'Celular', 'Ubicación', 'Universidad', 'Título', 'Año egreso', 'Idiomas', 'Skills', 'Empresas pasadas', 'Cargos', 'Certificaciones'])
+
+                sel = Selection.objects.filter(user = user_id)
+                tmp_list = []
+                for row in sel:
+                    candidate = Candidate.objects.filter(selection = row)
+                    for cand in candidate:
+                        info = cand.info['data']
+                        tmp_list.append([cand.name, cand.mail, info['phone'], info['location'], info['college'], info['degree'], info['graduation'], info['idioms'], info['skills'], info['companies'], info['designation'], info['certifications']])
+                df_excel = df_excel.append(pd.DataFrame(tmp_list, columns = df_excel.columns))
+
+            elif type == 'selection':
+                filename = 'Selecciones'
+                df_excel = pd.DataFrame(columns=['Nombre', 'Descripción', 'Area', 'Vacantes', 'Mínimo', 'Requerido', 'Outstanding', 'Normal', 'Low'])
+
+                sel = Selection.objects.filter(user = user_id)
+                tmp_list = []
+                for row in sel:
+                    min = '{} - {} - {} - {}'.format(row.requirements['exp'], row.requirements['idioms'], row.requirements['skills'], row.requirements['location'])
+                    des = '{} - {} - {} - {} - {} - {}'.format(row.desired['exp'], row.desired['idioms'], row.desired['skills'], row.desired['degree'], row.desired['designation'], row.desired['college'])
+                    tmp_list.append([row.name, row.description, row.area, row.vacant, min, des, row.kpis['high'], row.kpis['medium'], row.kpis['low']])
+                df_excel = df_excel.append(pd.DataFrame(tmp_list, columns = df_excel.columns))
+                
+         
+        else: # for selection candidates
+            filename = 'Candidatos'
+            df_excel= pd.DataFrame(columns=['Nombre', 'Mail', 'Celular', 'Ubicación', 'Universidad', 'Título', 'Año egreso', 'Idiomas', 'Skills', 'Empresas pasadas', 'Cargos', 'Certificaciones'])
+            try:
+                sel = Selection.objects.get(id = serializer.initial_data['type_id'])
+                tmp_list = []
+                candidate = Candidate.objects.filter(selection = sel)
+                for cand in candidate:
+                    info = cand.info['data']
+                    tmp_list.append([cand.name, cand.mail, info['phone'], info['location'], info['college'], info['degree'], info['graduation'], info['idioms'], info['skills'], info['companies'], info['designation'], info['certifications']])
+                df_excel = df_excel.append(pd.DataFrame(tmp_list, columns = df_excel.columns))
+            except:
+                return Response({'error': 'Seleccion no se pudo encontrar o candidatos tienen error'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        excel_file = BytesIO()
+        xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter')
+        df_excel.to_excel(xlwriter, 'Datos')
+        xlwriter.save()
+        xlwriter.close()
+        # important step, rewind the buffer or when it is read() you'll get nothing
+        # but an error message when you try to open your zero length file in Excel
+        excel_file.seek(0)
+        # set the mime type so that the browser knows what to do with the file
+        response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        # set the file name in the Content-Disposition header
+        header = 'attachment; filename={}.xlsx'.format(filename)
+        response['Content-Disposition'] = header
+        return response

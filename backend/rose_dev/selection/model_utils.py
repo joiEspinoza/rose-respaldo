@@ -32,11 +32,6 @@ from docx import Document
 import spacy
 
 
-###CREDENTIALS
-os.environ['AWS_KEY'] = 'AKIAJEN4JB3CITFUIUFQ'
-os.environ['AWS_SECRET'] = '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'
-os.environ['MAPS_KEY'] = 'AIzaSyDcqd8cM4GLQBVOqgZfjnKFKTVuAkCobEw'
-
 googlemaps_reserved = ["!", "°", "-", "*" ,"'" ,"(" ,")" ,";" ,":" ,"@" ,"&" ,"=" ,"+" ,"$" ,"/" ,"?" ,"%" ,"#" ,"[" ,"]"]
 
 programmer = ['php', 'java', 'javascript', 'python', 'react', 'angular', 'node',

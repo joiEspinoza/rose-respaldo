@@ -62,3 +62,8 @@ class EventSerializer(serializers.ModelSerializer):
 
 class GetEventsSerializer(serializers.Serializer):
     events = serializers.JSONField()
+
+
+class CreateExcelSerializer(serializers.Serializer):
+    user = serializers.CharField()
+    type_id = serializers.IntegerField()
