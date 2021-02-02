@@ -61,7 +61,7 @@ const RegisterView = () => {
             }
             onSubmit={(values, actions) => {
               
-              axios.post('http://127.0.0.1:8000/auth/register/',{
+              axios.post('https://rosev0-dev-api.myfuture.ai/auth/register/',{
                 "email": values.email,
                 "username": values.firstName.concat(values.lastName),
                 "password": values.password,

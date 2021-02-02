@@ -11,7 +11,7 @@ const MicroSoftOld = (props) => {
   const authHandler = (err, data) => {
     console.log(err, data);
     if (err===null) {
-      axios.post("http://127.0.0.1:8000/social_auth/microsoft/",{
+      axios.post("https://rosev0-dev-api.myfuture.ai/social_auth/microsoft/",{
         "auth_token":data.accessToken,
       }).then(r=>{
         console.log(r);

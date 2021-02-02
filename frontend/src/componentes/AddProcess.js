@@ -38,7 +38,7 @@ const subirIterativo = (archivos,configu,iteracion,errores,payload) => {
       });
   }else{
     console.log("Todos subidos",errores);
-    axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{
+    axios.post("https://rosev0-dev-api.myfuture.ai/selection/create/",payload).then(r=>{
       console.log(r);
     }).catch(r=>{
       console.log(r);

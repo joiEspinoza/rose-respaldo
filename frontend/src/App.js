@@ -138,7 +138,7 @@ const cargarLogo = (newState) => {
 const requestsProcesos = (usuario, cargarProcesos) => {
     return new Promise((resolve, reject)=>{
       var state = data;
-      axios.get(`http://127.0.0.1:8000/selection/list/${usuario.correo}/`)
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/list/${usuario.correo}/`)
       .then(response=>{
         console.log(response);
         state = response.data.data;
@@ -162,7 +162,7 @@ const requestsProcesos = (usuario, cargarProcesos) => {
 const requestsCandidatosProceso = (idProceso) => {
     return new Promise((resolve, reject)=>{
       var candidatos;
-      axios.get(`http://127.0.0.1:8000/selection/${idProceso}/candidates/`)
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/${idProceso}/candidates/`)
       .then(response=>{
         console.log(response);
         candidatos = response.data.data;
@@ -177,7 +177,7 @@ const requestsCandidatosProceso = (idProceso) => {
 
 const requestHistorico = (correo, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection​/${correo}​/candidates​/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection​/${correo}​/candidates​/`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -192,7 +192,7 @@ const requestHistorico = (correo, cargar) => {
 
 const requestEventos = (correo, token, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/events/${encodeURIComponent(correo)}/${encodeURIComponent(token)}`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/events/${encodeURIComponent(correo)}/${encodeURIComponent(token)}`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -207,7 +207,7 @@ const requestEventos = (correo, token, cargar) => {
 
 const requestBienvenida = (correo, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/home/${correo}/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/home/${correo}/`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -222,7 +222,7 @@ const requestBienvenida = (correo, cargar) => {
 
 const requestConfiguracion = (correo, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/config/${correo}/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/config/${correo}/`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -237,7 +237,7 @@ const requestConfiguracion = (correo, cargar) => {
 
 const requestTutoriales = (cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/tutorials/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/tutorials/`).then(response=>{
         console.log(response);
         cargar(response.data);
         resolve(true);

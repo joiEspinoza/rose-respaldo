@@ -38,7 +38,7 @@ const Detalles = ({ usuario, configuracion, despachar, className, ...rest }) => 
   };
 
   const actualizarColores = () => {
-    axios.post("http://127.0.0.1:8000/selection/colors/",
+    axios.post("https://rosev0-dev-api.myfuture.ai/selection/colors/",
       {"primary_color":values.primarycolor,"secondary_color":values.secondarycolor,"user_mail":usuario.correo}
     ).then(r=>{
       console.log(r);

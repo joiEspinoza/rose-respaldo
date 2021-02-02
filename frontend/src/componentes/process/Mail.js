@@ -82,7 +82,7 @@ const Formulario = (props) => {
               };
               const data = props.user.type === "google" ? datag : datam;
               console.log(data);
-              axios.post(`http://127.0.0.1:8000/selection/sendmail/${props.user.token}`,data).then(r=>{
+              axios.post(`https://rosev0-dev-api.myfuture.ai/selection/sendmail/${props.user.token}`,data).then(r=>{
                 console.log(r);
                 history.push('/');
               }).catch(r=>{

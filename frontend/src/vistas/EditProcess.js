@@ -111,7 +111,7 @@ const AddProcess = (props) => {
                 };
                 
                 console.log(payload);
-                axios.patch(`http://127.0.0.1:8000/selection/${props.proceso["id"]}/`,payload).then(r=>{
+                axios.patch(`https://rosev0-dev-api.myfuture.ai/selection/${props.proceso["id"]}/`,payload).then(r=>{
                   console.log(r);
                   history.push('/');
                 }).catch(r=>{

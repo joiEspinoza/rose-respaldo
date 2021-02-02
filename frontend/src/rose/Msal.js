@@ -17,12 +17,12 @@ msalInstance.handleRedirectCallback((error, response) => {
 });
 var loginRequest = {
    scopes: ["Calendars.ReadWrite.Shared","email","Mail.Send","offline_access","openid","profile","User.Read"],
-   redirectUri:"http://localhost:3000/login/microsoft",
+   redirectUri:"https://rosev0-dev.myfuture.ai/login/microsoft",
 };
 
 var tokenRequest = {
     scopes: ["Calendars.ReadWrite.Shared","email","Mail.Send","offline_access","openid","profile","User.Read"],
-    redirectUri:"http://localhost:3000/login/microsoft",
+    redirectUri:"https://rosev0-dev.myfuture.ai/login/microsoft",
 };
 
 const ssoRequest = {
@@ -38,7 +38,7 @@ const loginPopup = (actualizarUser, history) => {
             var correo = response.account.userName;
             var accessToken = acquireTokenSilent();
             console.log(accessToken);
-            axios.post("http://127.0.0.1:8000/social_auth/microsoft/",{
+            axios.post("https://rosev0-dev-api.myfuture.ai/social_auth/microsoft/",{
               "auth_token":accessToken,
             }).then(r=>{
               console.log(r);
