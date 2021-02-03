@@ -109,6 +109,7 @@ const AddProcess = (props) => {
   const [desired_college, setDesired_college] = useState([]);
   const [desired_designation, setDesired_designation] = useState([]);
   const [desired_degree, setDesired_degree] = useState([]);
+  const [desired_idioms, setDesired_idioms] = useState([]);
   return (
     <Page
       className={classes.root}
@@ -164,6 +165,7 @@ const AddProcess = (props) => {
                 },
                 "desired":{
                   "exp": values.desired_exp,
+                  "idioms": desired_idioms,
                   "skills": desired_skills,
                   "college": desired_college,
                   "designation": desired_designation,
@@ -360,6 +362,9 @@ const AddProcess = (props) => {
                         />
                       </Grid>
                       <Grid item>
+                        <ArrayInput data={desired_idioms} set={setDesired_idioms} label={"Idiomas"}/>
+                      </Grid>
+                      <Grid item>
                         <ArrayInput data={desired_skills} set={setDesired_skills} label={"Skills"}/>
                       </Grid>
                       <Grid item>
@@ -505,7 +510,8 @@ const ArrayInputNumber = ({ data, set, label }) => {
 const ArrayInput = ({ data, set, label }) => {
   const [valor, setValor] = useState("");
   const definir = () => {
-    set([...data, valor.toLowerCase()]);
+    const splitedValue = valor.split(',').map(value => value.toLocaleLowerCase())
+    set([...data, ...splitedValue]);
     setValor("");
     console.log(data);
   }
@@ -537,7 +543,7 @@ const ArrayInput = ({ data, set, label }) => {
       {data.length !== 0 && <Grid item xs={12}>
         <Grid container spacing={2}>
           {data.map((i,index)=>(
-            <Grid item>
+            <Grid key={index} item>
               <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
                 <Button variant="outlined" color="primary" onClick={()=>actualizar(index)}>{i}</Button>
               </Badge>
