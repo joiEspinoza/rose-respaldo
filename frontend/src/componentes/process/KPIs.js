@@ -1,12 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux'
+
 import KPIContainer from './KPIContainer';
 import { Icon } from '@fluentui/react/lib/Icon';
 
 const KPIWelcome = (props) => {
+  const {
+    proceso: processId,
+    procesos: process,
+  } = props
+
+  const currentProcess = process.find(item => item.id === processId);
+  let kpis = {}
+
+  if (currentProcess)
+    kpis = currentProcess.kpis
+  
   const itemes = [
     {
       nombre:"Inferior",
-      cantidad:"10",
+      cantidad: kpis.low || 0,
       icon:<Icon style={{
         transform: 'scale(3.5)',
         color:"white",
@@ -14,7 +27,7 @@ const KPIWelcome = (props) => {
     },
     {
       nombre:"Normal",
-      cantidad:"20",
+      cantidad: kpis.medium || 0,
       icon:<Icon style={{
         transform: 'scale(3.5)',
         color:"white",
@@ -22,7 +35,7 @@ const KPIWelcome = (props) => {
     },
     {
       nombre:"Sobresaliente",
-      cantidad:"3",
+      cantidad: kpis.high || 0,
       icon:<Icon style={{
         transform: 'scale(3.5)',
         color:"white",
@@ -41,4 +54,4 @@ const KPIWelcome = (props) => {
 }
 
 
-export default KPIWelcome;
+export default connect(state => state)(KPIWelcome);

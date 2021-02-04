@@ -13,22 +13,14 @@ const Container = ({ forma, itemes, columnas, data, nombre, fecha }) => {
       container
       spacing={0}
     >
-      <Grid item xs={2}>
-        <Typography variant="h3" style={{ color:theme.palette.grisoscuro }}>
-          {nombre}
-        </Typography>
-        <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
-          {fecha.slice(0,10)}
-        </Typography>
-        
-      </Grid>
-      <Grid item xs={10}>
+      <Grid item xs={12}>
         <Grid
           container
           spacing={forma.spacing}
         >
-          {itemes.map(item=>(
+          {itemes.map((item, i)=>(
             <Grid
+              key={i}
               item
               xs={forma.xs}
               sm={forma.sm}
@@ -48,6 +40,14 @@ const Container = ({ forma, itemes, columnas, data, nombre, fecha }) => {
             />
           </Grid>
         </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h3" style={{ color:theme.palette.grisoscuro, marginTop: "1rem" }}>
+          {nombre}
+        </Typography>
+        <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
+          {fecha.slice(0,10)}
+        </Typography>
       </Grid>
     </Grid>
   );

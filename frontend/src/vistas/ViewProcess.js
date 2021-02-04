@@ -14,6 +14,8 @@ import {
 import KPIs from '../componentes/process/KPIs';
 import Pdf from "react-to-pdf";
 import { useTheme } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import CalendarTodayTwoToneIcon from '@material-ui/icons/CalendarTodayTwoTone';
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
 import PictureAsPdfTwoToneIcon from '@material-ui/icons/PictureAsPdfTwoTone';
@@ -27,11 +29,19 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.grisoscuro,
     borderWidth: theme.spacing(1),
   },
+  list: {
+    height: '70vh',
+    borderColor: theme.palette.grisoscuro,
+    borderWidth: theme.spacing(1),
+    overflowY: 'scroll',
+  },
+  item: {
+    minWidth: '100%'
+  }
 }));
 
 const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandidato }) => {
   const render = procesos.filter(i=>i.id===proceso)[0].candidatos !== undefined;
-  console.log("render",render);
   return(
     <>{render ?
       <Contenido usuario={usuario} procesos={procesos} proceso={proceso} candidato={candidato} seleccionarCandidato={seleccionarCandidato}/>
@@ -42,10 +52,8 @@ const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandida
 }
 
 const Contenido = (props) => {
-  const render = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos !== undefined;
-  console.log("render",render);
-  const pro = props.procesos.filter(i=>i.id===props.proceso)[0];
-  const candidatosProceso = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos;
+  const currentProcess = props.procesos.find(proc => proc.id === props.proceso)
+  const candidatosProceso = currentProcess.candidatos;
   const candidatoCV = candidatosProceso[props.candidato];
   const [openMail, setOpenMail] = React.useState(false);
   const [openCalendar, setOpenCalendar] = React.useState(false);
@@ -58,15 +66,14 @@ const Contenido = (props) => {
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
   const candidatosProcesoExcel = candidatosProceso.map(i=>({name:i.name,mail:i.mail}));
-  console.log(candidatosProcesoExcel);
   return (
     <Contenedor>
       <Grid container>
         <Grid item xs={12}>
           <KPIs columnas={columnasExcel}
             data={candidatosProceso}
-            nombre={pro.name}
-            fecha={pro.created_at}
+            nombre={currentProcess.name}
+            fecha={currentProcess.created_at}
           />
         </Grid>
         <Grid item xs={12}><br/></Grid>
@@ -106,69 +113,69 @@ const Lista = (props) => {
   return (
     <List
       component="nav"
-      className={classes.root}
-      style={{ maxHeight: 500, overflow: 'auto'}}
+      className={classes.list}
     >
-    {props.candidatos.map((i,index)=>(
-      <ListItem button >
-        <div onClick={()=>{props.seleccionarCandidato(index);}}>
-        <Grid container >
-          <Grid item xs={7}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} paddingTop={10}>
-                <Typography variant="h4" style={{ color:theme.palette.primary.main }}>
-                  {i.name}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="caption" style={{ color:theme.palette.grisoscuro }}>
-                  {i.mail}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
+      {props.candidatos.map((i, index) => (
+        <ListItem button key={index}>
+          <Card className={classes.item}>
+            <CardContent>
+              <div onClick={()=>{props.seleccionarCandidato(index);}}>
+                <Grid container >
+                  <Grid item xs={7}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} paddingTop={10}>
+                        <Typography variant="h4" style={{ color:theme.palette.primary.main }}>
+                          {i.name}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="caption" style={{ color:theme.palette.grisoscuro }}>
+                          {i.mail}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
 
-          <Grid item xs={4}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
-                  {i.info.data.degree ? <>Titulo:{i.info.data.degree[0]}</>
-                    :<>{"No disponible"}</>}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" style={{ color:theme.palette.grisoscuro }}>
-                  Exp: {i.info.data.exp}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
+                  <Grid item xs={4}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
+                          {i.info.data.degree ? <>Titulo:{i.info.data.degree[0]}</>
+                            :<>{"No disponible"}</>}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle2" style={{ color:theme.palette.grisoscuro }}>
+                          Exp: {i.info.data.exp} años
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
 
-          <Grid item xs={1}>
-            <Grid container>
-              <Grid item xs={12}>
-                <IconButton edge="end" aria-label="calendar"
-                  onClick={()=>props.setOpenCalendar(true)}
-                >
-                  <CalendarTodayTwoToneIcon color="primary" />
-                </IconButton>
-              </Grid>
-              <Grid item xs={12}>
-                <IconButton edge="end" aria-label="calendar"
-                  onClick={()=>props.setOpenMail(true)}
-                >
-                  <MailTwoToneIcon color="primary" />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-        
-        </div>
-      </ListItem>
-    ))}
-    
-    
+                  <Grid item xs={1}>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <IconButton edge="end" aria-label="calendar"
+                          onClick={()=>props.setOpenCalendar(true)}
+                        >
+                          <CalendarTodayTwoToneIcon color="primary" />
+                        </IconButton>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <IconButton edge="end" aria-label="calendar"
+                          onClick={()=>props.setOpenMail(true)}
+                        >
+                          <MailTwoToneIcon color="primary" />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </div>
+            </CardContent>
+          </Card>
+        </ListItem>
+      ))}
     </List>
   );
 }
@@ -182,7 +189,7 @@ const CV = (props) => {
       <Grid container className={classes.root}>
         <Grid item xs={1}></Grid>
         <Grid item xs={10}>
-          <Typography variant="h3" style={{ color: theme.palette.primary.main }}>
+          <Typography variant="h4" style={{ color: theme.palette.primary.main }}>
             {props.candidato.name}
           </Typography>
         </Grid>
