@@ -199,7 +199,6 @@ const NATarjeta = ({ className, children=<NADefaultChildrenKPI/>, sizes = {mensa
 };
 
 const NATabla = ({ className, columnas }) => {
-  
   const [limite, definirLimite] = useState(1);
   const [pagina, definirPagina] = useState(0);
 
@@ -226,8 +225,8 @@ const NATabla = ({ className, columnas }) => {
             <TableBody>
               <TableRow
               >
-                {Object.keys(columnas).map(nombreColumna=>(
-                  <TableCell>
+                {Object.keys(columnas).map((nombreColumna, index) => (
+                  <TableCell key={index}>
                     {typeof columnas[nombreColumna].href === 'undefined' ?
                       <>{nombreColumna === "status" ?
                         

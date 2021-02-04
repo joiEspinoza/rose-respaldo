@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 const Tabla = ({ className, filtros, anadirFiltro, configuracion, eliminarFiltro, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
-  
   const classes = useStyles();
   const theme = useTheme();
   
@@ -88,8 +87,8 @@ const Tabla = ({ className, filtros, anadirFiltro, configuracion, eliminarFiltro
                     } 
                   seleccionarTodos={seleccionarTodos}
                 />
-                {Object.keys(columnas).map(nombreColumna=>(
-                  <TableCell onClick={()=>setMostrar(!mostrar)}>
+                {Object.keys(columnas).map((nombreColumna, i)=>(
+                  <TableCell key={i} onClick={()=>setMostrar(!mostrar)}>
                     {columnas[nombreColumna].titulo}
                   </TableCell>
                 ))}
@@ -105,8 +104,8 @@ const Tabla = ({ className, filtros, anadirFiltro, configuracion, eliminarFiltro
                   selected={idSeleccionados.indexOf(elemento.id) !== -1}
                 >
                   <CeldaColumnaSeleccionador seleccion={(evento) => seleccionarUno(evento, elemento.id)} chequeado={idSeleccionados.indexOf(elemento.id) !== -1} />
-                  {Object.keys(columnas).map(nombreColumna=>(
-                    <TableCell>
+                  {Object.keys(columnas).map((nombreColumna, index) => (
+                    <TableCell key={index}>
                       {typeof columnas[nombreColumna].href === 'undefined' ?
                         <>{nombreColumna === "status" ?
                           
@@ -134,7 +133,7 @@ const Tabla = ({ className, filtros, anadirFiltro, configuracion, eliminarFiltro
                               color={columnas[nombreColumna].color}
                               variant={columnas[nombreColumna].tamano}
                             >
-                              {elemento[nombreColumna]===undefined ? "No definido" : elemento[nombreColumna]}
+                              {(elemento[nombreColumna]===undefined && elemento.kpis[nombreColumna]===undefined) ? "No definido" : (elemento[nombreColumna] || elemento.kpis[nombreColumna])}
                             </Typography>
                           }</>
                         }</>
