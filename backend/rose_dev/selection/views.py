@@ -367,8 +367,8 @@ class SendMailAPIView(generics.GenericAPIView):
         event = serializer.initial_data
         event_info = event['info']
         if user.auth_provider == 'google':
-            try:
-                body = create_gmail(event_info['sender'], event_info['to'], event_info['cc'], event_info['subject'], event_info['content'])
+
+                body = create_gmail(user.email, event_info['to'], event_info['cc'], event_info['subject'], event_info['content'])
                 send = send_gmail(token, user.email, body)
                 if send.status_code == 401:
                     return Response({'error': 'Se requiere un nuevo token'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -378,9 +378,6 @@ class SendMailAPIView(generics.GenericAPIView):
                     serializer.is_valid(raise_exception=True)
                     serializer.save()
                     return Response({'created_data': serializer.data}, status=status.HTTP_201_CREATED)
-            except:
-                return Response({'error': 'No se pudo enviar el mensaje, crear incidencia con código MAIL_VIEW_SEND'}, status=status.HTTP_400_BAD_REQUEST)
-
         if user.auth_provider == 'microsoft':
             #try:
                 send = send_outlook(token, event_info['content'], event_info['subject'], event_info['to'], event_info['cc'])
