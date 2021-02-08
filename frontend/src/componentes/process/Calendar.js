@@ -7,14 +7,16 @@ import { convertToHTML, convertFromHTML } from 'draft-convert';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Icon } from '@fluentui/react/lib/Icon';
+import * as moment from 'moment'
+import axios from 'axios';
 
 const Calendar = (props) => {
-  const { setOpen, open, usermail, candidatemail } = props;
+  const { setOpen, open, candidato, user } = props;
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   return (
     <Dialogo setOpen={setOpen} open={open} titulo={"Nueva calendarización"} >
-    	<Formulario />
+      <Formulario candidato={candidato} user={user} />
   	</Dialogo>
   );
 }
@@ -53,29 +55,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Formulario = (props) => {
+const Formulario = ({ user, candidato }) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
   const fechaa = fecha();
+  const today = moment();
+  const defaultStartDate = today.format().substr(0, 16)
+  const defaultEndDate = today.add('1', 'hours').format().substr(0, 16)
+  const accessToken = (user && user.response) ? user.response.accessToken : null
+
+  const onSubmit = (values) => {
+    const data = {
+      type: "meeting",
+      info: {
+        subject: values.asunto,
+        content: html,
+        start: values.fecha1,
+        end: values.fecha2,
+        attendees: candidato.mail
+      },
+      user: user.correo
+    }
+    axios
+      .post(`https://rosev0-dev-api.myfuture.ai/selection/sendmail/${accessToken}`, data)
+      .then(() => alert('Evento agregado al calendario exitosamente!'))
+      .catch(error => console.log(error));
+  }
+
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item xs={12}>
         <Card className={classes.card}>
           <Formik
             initialValues={{
-              nombre: '',
-              fecha1: '',
-              fecha2: '',
-              asunto: '',
+              nombre: 'Entrevista de selección',
+              fecha1: defaultStartDate,
+              fecha2: defaultEndDate,
+              asunto: `Entrevista con ${candidato.name}`,
             }}
             validationSchema={Yup.object().shape({
               nombre: Yup.string().max(255).required('Debe definir el nombre del evento'),
               asunto: Yup.string().max(255).required('Debe definir el asunto del email')
             })}
-            onSubmit={(values, actions) => {
-              console.log({"nombre":values.nombre,"fecha1":values.fecha1,"fecha2":values.fecha2,"asunto":values.asunto,"teams":values.teams,"html":html});            
-            }}
+            onSubmit={onSubmit}
           >
             {({
               errors,

@@ -96,8 +96,8 @@ const Contenido = (props) => {
         </Grid>
       </Grid>
       
-      <Calendar setOpen={setOpenCalendar} open={openCalendar}/>
-      <Mail setOpen={setOpenMail} open={openMail} user={props.usuario} candidatemail={candidatoCV.mail} token={props.usuario.token}/>
+      <Calendar setOpen={setOpenCalendar} user={props.usuario} open={openCalendar} candidato={candidatoCV} />
+      <Mail setOpen={setOpenMail} open={openMail} user={props.usuario} candidato={candidatoCV} candidatemail={candidatoCV.mail}/>
       {props.proceso}
       {props.candidato}
       {props.usuario.correo}
