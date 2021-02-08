@@ -20,7 +20,7 @@ pipelines:
             - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             - docker-compose --version #check instalation
           # docker
-            - docker-compose build backend_develop frontend_develop --no-cache
+            - docker-compose build --no-cache backend_develop frontend_develop 
             - docker tag ${AWS_ECR_FRONT}:develop ${AWS_ECR_FRONT}:develop_${BITBUCKET_BUILD_NUMBER}
             - docker tag ${AWS_ECR_BACK}:develop ${AWS_ECR_BACK}:develop_${BITBUCKET_BUILD_NUMBER}
             - docker push ${AWS_ECR_FRONT}:develop_${BITBUCKET_BUILD_NUMBER}
