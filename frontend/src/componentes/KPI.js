@@ -86,7 +86,7 @@ const KPI2 = ({ nombre, cantidad, icon }) => {
         <Grid
           container
           justify="space-between"
-          spacing={3}
+          spacing={0}
         >
           <Grid item xs={7}>
             <Typography
@@ -94,26 +94,27 @@ const KPI2 = ({ nombre, cantidad, icon }) => {
               gutterBottom
               variant="body1"
               align="center"
-              style={{ color: "white"}}
+              style={{ color: "white", overflow: 'hidden', textOverflow: 'ellipsis' }}
             >
               {nombre}
             </Typography>
             <Typography
               color="textPrimary"
-              variant="h6"
+              variant="h4"
               align="center"
               style={{ color: "white"}}
             >
               {cantidad}
             </Typography>
           </Grid>
-          <Grid item xs={1} ></Grid>
-          <Grid item xs={3} >
-              <div className={classes.icono2}>
-                {icon}
-              </div>
+          <Grid item xs={4} >
+            <Typography
+              align="center"
+              className={classes.icono2}
+            >
+              {icon}
+            </Typography>
           </Grid>
-          <Grid item xs={1} ></Grid>
         </Grid>
       </CardContent>
     </Card>

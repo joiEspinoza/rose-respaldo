@@ -78,7 +78,7 @@ const Contenido = (props) => {
         </Grid>
         <Grid item xs={12}><br/></Grid>
         <Grid item xs={12}>
-          <Grid container>
+          <Grid container spacing={1}>
             <Grid item xs={5}>
               <Lista 
                 seleccionarCandidato={props.seleccionarCandidato}
@@ -106,7 +106,6 @@ const Contenido = (props) => {
   );
 }
 
-
 const Lista = (props) => {
   const theme = useTheme();
   const classes = useStyles();
@@ -121,10 +120,10 @@ const Lista = (props) => {
             <CardContent>
               <div onClick={()=>{props.seleccionarCandidato(index);}}>
                 <Grid container >
-                  <Grid item xs={7}>
-                    <Grid container spacing={2}>
+                  <Grid item xs={12} md={7}>
+                    <Grid container spacing={1}>
                       <Grid item xs={12} paddingTop={10}>
-                        <Typography variant="h4" style={{ color:theme.palette.primary.main }}>
+                        <Typography variant="h5" style={{ color:theme.palette.primary.main }}>
                           {i.name}
                         </Typography>
                       </Grid>
@@ -136,7 +135,7 @@ const Lista = (props) => {
                     </Grid>
                   </Grid>
 
-                  <Grid item xs={4}>
+                  <Grid item xs={12} md={4}>
                     <Grid container spacing={2}>
                       <Grid item xs={12}>
                         <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
@@ -152,16 +151,16 @@ const Lista = (props) => {
                     </Grid>
                   </Grid>
 
-                  <Grid item xs={1}>
+                  <Grid item xs={12} md={1}>
                     <Grid container>
-                      <Grid item xs={12}>
+                      <Grid item justify="center" xs={6} md={12}>
                         <IconButton edge="end" aria-label="calendar"
                           onClick={()=>props.setOpenCalendar(true)}
                         >
                           <CalendarTodayTwoToneIcon color="primary" />
                         </IconButton>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item justify="center" xs={6} md={12}>
                         <IconButton edge="end" aria-label="calendar"
                           onClick={()=>props.setOpenMail(true)}
                         >
@@ -187,19 +186,14 @@ const CV = (props) => {
   return (
     <div ref={ref}>
       <Grid container className={classes.root}>
-        <Grid item xs={1}></Grid>
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <Typography variant="h4" style={{ color: theme.palette.primary.main }}>
             {props.candidato.name}
           </Typography>
         </Grid>
-        <Grid item xs={1}></Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} >
-            <Grid item xs={1}>
-            </Grid>
+          <Grid container spacing={1} >
             <Grid item xs={5}>
-              
               <Typography variant="body1">
                 {"Correo: "}{props.candidato.mail}
               </Typography>
@@ -209,11 +203,8 @@ const CV = (props) => {
               {pr.degree.length > 0 && <Typography variant="body1">
                 {"Título: "}{pr.degree.length > 0 && pr.degree[0]}
               </Typography>}
-              
-              
-              
-              
             </Grid>
+
             <Grid item xs={5} >
               <br/>
               {pr.college.length > 0 && <Typography variant="body1">
@@ -226,7 +217,7 @@ const CV = (props) => {
                 {"Experiencia: "}{pr.exp}
               </Typography>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
               <Pdf targetRef={ref} filename="code-example.pdf">
                 {({ toPdf }) => (
                   <IconButton edge="end" aria-label="pdf" onClick={toPdf}>
@@ -234,41 +225,31 @@ const CV = (props) => {
                   </IconButton>
                 )}
               </Pdf>
-              
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12}><br/></Grid>
-        <Grid item xs={1}></Grid>
-        {pr.skills && <Grid item xs={10} >
+        {pr.skills && <Grid item style={{marginTop: theme.spacing(4)}} xs={12} >
           <Typography variant={"h6"}>
             {"Skills:"}
           </Typography>
           <Grid container spacing={1}>
-            {pr.skills.length > 0 && pr.skills.map(i=>(
-              <Grid item >
-                <Typography variant={"body2"}>
-                  {i}
-                </Typography>
+            {pr.skills.length > 0 && pr.skills.map((i, index) => (
+              <Grid item key={index}>
+                <Typography variant={"body2"}> {i} </Typography>
               </Grid>
             ))}
           </Grid>
         </Grid>}
-        <Grid item xs={1}></Grid>
-        <Grid item xs={12}><br/></Grid>
-        <Grid item xs={1}></Grid>
-        <Grid item xs={5}>
+        <Grid item style={{marginTop: theme.spacing(4)}} xs={6}>
           <Grid container>
             {pr.companies &&<Grid item xs={12}>
               <Typography variant={"subtitle2"}>
                 {"Empresas donde ha trabajado:"}
               </Typography>
               <List>
-                {pr.companies.length > 0 && pr.companies.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.companies.length > 0 && pr.companies.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
@@ -278,28 +259,25 @@ const CV = (props) => {
                 {"Idiomas:"}
               </Typography>
               <List>
-                {pr.idioms.length > 0 && pr.idioms.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.idioms.length > 0 && pr.idioms.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
             </Grid>}
           </Grid>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item style={{marginTop: theme.spacing(4)}} xs={6}>
+          <Grid container>
             {pr.designation && <Grid item xs={12}>
               <Typography variant={"subtitle2"}>
                 {"Trabajado como:"}
               </Typography>
               <List>
-                {pr.designation.length > 0 && pr.designation.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.designation.length > 0 && pr.designation.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
@@ -310,17 +288,14 @@ const CV = (props) => {
                 {"Certificaciones:"}
               </Typography>
               <List>
-                {pr.certifications.length > 0 && pr.certifications.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.certifications.length > 0 && pr.certifications.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
             </Grid>}
-        </Grid>
-        <Grid item xs={1}>
+          </Grid>
         </Grid>
       </Grid>
     </div>
