@@ -18,9 +18,9 @@ const Container = ({ forma, itemes, columnas, data, nombre, fecha }) => {
           container
           spacing={forma.spacing}
         >
-          {itemes.map((item, i)=>(
+          {itemes.map((item, key)=>(
             <Grid
-              key={i}
+              key={key}
               item
               xs={forma.xs}
               sm={forma.sm}
