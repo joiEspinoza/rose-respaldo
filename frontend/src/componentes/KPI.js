@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
     height: 'auto',
     borderRadius: theme.spacing(4),
     backgroundColor: theme.palette.secondary.main,
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   },
   root2: {
     height: '100%',
