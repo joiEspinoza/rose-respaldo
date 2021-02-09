@@ -15,7 +15,7 @@ const Mail = (props) => {
   const html = convertToHTML(editorState.getCurrentContent());
   return (
     <Dialogo setOpen={setOpen} open={open} titulo={"Nuevo Mensaje"} >
-    	<Formulario user={user} candidatemail={candidatemail} candidato={candidato} />
+    	<Formulario user={user} candidatemail={candidatemail} setOpenModal={setOpen} candidato={candidato} />
   	</Dialogo>
   );
 }
@@ -61,7 +61,7 @@ const Formulario = (props) => {
               asunto: Yup.string().max(255).required('Debe definir el asunto del email')
             })}
             onSubmit={(values, actions) => {
-              const datam = {
+              const data = {
                 type:"mail",
                 user:props.user.correo,
                 info:{
@@ -71,21 +71,9 @@ const Formulario = (props) => {
                   "content":html
                 },
               };
-              const datag = {
-                type:"mail",
-                user:props.user.correo,
-                info:{
-                  "sender":props.user.correo,
-                  "to":values.para,
-                  "cc":values.cc,
-                  "subject":values.asunto,
-                  "message_text":html
-                },
-              };
-              const data = props.user.type === "google" ? datag : datam;
               axios.post(`https://rosev0-dev-api.myfuture.ai/selection/sendmail/${accessToken}`,data).then(r=>{
-                console.log(r);
-                history.push('/');
+                alert('Correo enviado exitosamente!')
+                props.setOpenModal(false)
               }).catch(r=>{
                 console.log(r);
               });        

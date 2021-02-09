@@ -16,7 +16,7 @@ const Calendar = (props) => {
   const html = convertToHTML(editorState.getCurrentContent());
   return (
     <Dialogo setOpen={setOpen} open={open} titulo={"Nueva calendarización"} >
-      <Formulario candidato={candidato} user={user} />
+      <Formulario candidato={candidato} user={user} setModalOpen={setOpen} />
   	</Dialogo>
   );
 }
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Formulario = ({ user, candidato }) => {
+const Formulario = ({ user, candidato, setModalOpen }) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
@@ -78,8 +78,11 @@ const Formulario = ({ user, candidato }) => {
       user: user.correo
     }
     axios
-      .post(`https://rosev0-dev-api.myfuture.ai/selection/sendmail/${accessToken}`, data)
-      .then(() => alert('Evento agregado al calendario exitosamente!'))
+      .post(`https://rosev0-dev-api.myfuture.ai/selection/create_event/${accessToken}`, data)
+      .then(() => {
+        alert('Evento agregado al calendario exitosamente!')
+        setModalOpen(false)
+      })
       .catch(error => console.log(error));
   }
 
