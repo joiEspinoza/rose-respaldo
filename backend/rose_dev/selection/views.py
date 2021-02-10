@@ -485,15 +485,14 @@ class CreateExcelAPIView(generics.GenericAPIView):  #validated
     serializer_class = CreateExcelSerializer
 
     @swagger_auto_schema(operation_description="post to create excel files, the possible types for agr in url are: selection, historic, candidate \n the payload is user (string_mail) and type_id (selection_id for candidates)", operation_id='create_excel')
-    def post(self, request, type):
+    def get(self, request, type, id, mail):
 
         """
         args_url: type: selection, historic or candidate
         args payload: null
         """
-        serializer = self.serializer_class(data=request.data)
-        user_id = User.objects.get(email=serializer.initial_data['user'])
-        if serializer.initial_data['type_id'] == 0: #for selections and historic
+        user_id = User.objects.get(email=mail)
+        if type != 'candidate': #for selections and historic
             if type == 'historic':
                 filename = 'Historico'
                 df_excel= pd.DataFrame(columns=['Nombre', 'Mail', 'Celular', 'Ubicación', 'Universidad', 'Título', 'Año egreso', 'Idiomas', 'Skills', 'Empresas pasadas', 'Cargos', 'Certificaciones'])
@@ -524,7 +523,7 @@ class CreateExcelAPIView(generics.GenericAPIView):  #validated
             filename = 'Candidatos'
             df_excel= pd.DataFrame(columns=['Nombre', 'Mail', 'Celular', 'Ubicación', 'Universidad', 'Título', 'Año egreso', 'Idiomas', 'Skills', 'Empresas pasadas', 'Cargos', 'Certificaciones'])
             try:
-                sel = Selection.objects.get(id = serializer.initial_data['type_id'])
+                sel = Selection.objects.get(id = id)
                 tmp_list = []
                 candidate = Candidate.objects.filter(selection = sel)
                 for cand in candidate:
@@ -542,6 +541,7 @@ class CreateExcelAPIView(generics.GenericAPIView):  #validated
         # important step, rewind the buffer or when it is read() you'll get nothing
         # but an error message when you try to open your zero length file in Excel
         excel_file.seek(0)
+        return response
         # set the mime type so that the browser knows what to do with the file
         response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         # set the file name in the Content-Disposition header

@@ -21,6 +21,6 @@ urlpatterns = [
     path('config/<str:mail>/', UserConfigsAPIView.as_view(), name="list configurations"),
     path('create_event/<str:token>', CreateEventAPIView.as_view(), name="create events"),
     path('colors/', CreateConfigColors.as_view(), name="add colors"),
-    path('create_excel/<str:type>', CreateExcelAPIView.as_view(), name="create excel"),
+    path('create_excel/<str:type>/<int:id>/<str:mail>', CreateExcelAPIView.as_view(), name="create excel"),
               ]
 
