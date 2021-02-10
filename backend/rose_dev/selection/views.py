@@ -541,7 +541,6 @@ class CreateExcelAPIView(generics.GenericAPIView):  #validated
         # important step, rewind the buffer or when it is read() you'll get nothing
         # but an error message when you try to open your zero length file in Excel
         excel_file.seek(0)
-        return response
         # set the mime type so that the browser knows what to do with the file
         response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         # set the file name in the Content-Disposition header
