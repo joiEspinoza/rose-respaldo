@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { Icon } from '@fluentui/react/lib/Icon';
-import rose_nav from '../images/rose_nav.jpg';
+import rose_nav from '../images/roseLogo.png';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -41,8 +41,6 @@ const TopBar = ({
           style={{
             height: '100%',
             width: 'auto',
-            borderRadius: "3px",
-            backgroundColor:"white",
           }}>
           <img src={rose_nav} alt="rose" style={{
             padding: '2px',
