@@ -151,8 +151,8 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
     desire_degree = desire_req['degree']
     if len(desire_degree) > 0:
         degree_score = 0
-        for degree in desire_degree:
-            for inf_degree in degrees:
+        for degree.lower() in desire_degree:
+            for unidecode.unidecode(inf_degree.lower()) in degrees:
                 inf_degree_c = re.sub('(ing)[^a-zA-Z]','ingenieria',unidecode.unidecode(inf_degree.lower()))
                 degree_score = 1 if SequenceMatcher(None, inf_degree_c, 
                                                     unidecode.unidecode(degree.lower())).ratio() >= 0.7 else 0

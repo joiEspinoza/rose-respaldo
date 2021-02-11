@@ -144,7 +144,7 @@ class ListSelectionAPIView(generics.GenericAPIView):  #validated
         
         try:
             user_obj = User.objects.get(email = mail)
-            selections = Selection.objects.filter(user =  user_obj)
+            selections = Selection.objects.filter(user =  user_obj).order_by('-created_at')
             if len(selections) == 0:
                 return Response({'Respuesta': '¡Agrega una selección o proceso para empezar!'}
                             , status=status.HTTP_400_BAD_REQUEST)
@@ -245,11 +245,10 @@ class ListSelectionCandidatesAPIView(generics.GenericAPIView): #validated
     serializer_class = CandidateSerializer
     queryset= ''
     @swagger_auto_schema(operation_description="List candidates of specific selection", operation_id='list_selection_candidates')
-    def get(self, request, pk):
-        
+    def get(self, request, pk):      
         try:
             sel = Selection.objects.get(pk = pk)
-            resumes = Candidate.objects.filter(selection = sel)
+            resumes = Candidate.objects.filter(selection = sel).order_by("-info__rank")
             if len(resumes) == 0:
                 return Response({'error': '¡Que raro! Selección no cuenta con candidatos y sus CVs, creaste bien la selección?'}
                             , status=status.HTTP_400_BAD_REQUEST)
