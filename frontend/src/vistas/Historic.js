@@ -211,14 +211,14 @@ const Historic = (props) => {
           </NAHistoric>
         </Contenedor>
       :
-        <Contenido configuracion={props.configuracion} />
+        <Contenido configuracion={props.configuracion} user={props.user} />
       }
     </>
   );
 }
 
 
-const Contenido = (props) => {
+const Contenido = ({ configuracion, user}) => {
   const [idSeleccionados, definirIdSeleccionados] = useState([]);
   const columnas = {
     "nombre":{titulo:"Nombre",color:"primary",tamano:"h6",link:false},
@@ -231,8 +231,15 @@ const Contenido = (props) => {
   const icono = <Icon style={{
       transform: 'scale(3)',
       color:"white", // Tune it
-    }} iconName={"PlannerLogo"}  />;
-  console.log(cont);
+  }} iconName={"PlannerLogo"} />;
+
+  const getIcon = (iconName) => (
+    <Icon
+      style={{ transform: 'scale(3)', color: "white" }}
+      iconName={iconName}
+    ></Icon>
+  )
+
   const colu = [
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
     { field: 'profesion', headerName: 'Profesion', flex: 1 },
@@ -246,6 +253,11 @@ const Contenido = (props) => {
   
   const onSelectionChange = (e) => {
     definirIdSeleccionados(e.rowIds.map(i=>Number(i)-1));
+  }
+
+  const downloadReport = () => {
+    const url = `https://rosev0-dev-api.myfuture.ai/selection/create_excel/historic/0/${user.correo}`
+    window.open(url, '_blank')
   }
 
   return (
@@ -281,20 +293,16 @@ const Contenido = (props) => {
             sm={4}
             lg={3}
           >
-            <DescargaExcelHistorico
-                boton={<Boton nombre={"Exportar Excel"} href={"#"} color={"secondary"} desactivado={idSeleccionados.length === 0} icon={"ExcelDocument"}/>}
-                columnas={columnasExcel}
-                data={candidatosSeleccionados}
-
-              />
-            
+            <div onClick={downloadReport}>
+              <KPI nombre={"Exportar Excel"} icon={getIcon("ExcelDocument")} />
+            </div>
           </Grid>
           <Grid
             item
             xs={12}
             style={{height:"300px"}}
           >
-            <TablaEstilo configuracion={props.configuracion}>
+            <TablaEstilo configuracion={configuracion}>
             
               <DataGrid onSelectionChange={onSelectionChange}
               columns={columns} pageSize={5} autoHeight rows={historicData} checkboxSelection />
@@ -311,6 +319,7 @@ const Contenido = (props) => {
 const mapStateToProps = estado => {
   return {
     configuracion: estado.configuracion,
+    user: estado.usuario,
   }
 }
 

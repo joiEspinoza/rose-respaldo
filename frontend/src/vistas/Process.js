@@ -85,6 +85,11 @@ const Dashboard = (props) => {
 
     history.push('/AddProcess')
   }
+
+  const downloadReport = () => {
+    const url = `https://rosev0-dev-api.myfuture.ai/selection/create_excel/selection/0/${props.user.correo}`
+    window.open(url, '_blank')
+  }
   
   return (
     
@@ -143,22 +148,19 @@ const Dashboard = (props) => {
             sm={4}
             lg={3}
           >
-            <DescargaExcelProcesos
-              boton={
-                <Boton 
-                  desactivado={props.procesos === null && idSeleccionados.length === 0} 
-                  nombre={"Exportar Excel"} 
-                  href={"#"} 
-                  color={"secondary"} 
-                  icon={"ExcelDocument"}
-                />
-              }
-              columnas={columnasExcel}
-              data={procesosSeleccionados}
-
-            />
-              
-            
+            <Button
+              variant="contained"
+              color={"secondary"}
+              className={classes.root}
+              onClick={downloadReport}
+              disabled={props.procesos === null && idSeleccionados.length === 0}
+              endIcon={
+                <Icon
+                  style={{ transform: 'scale(1.5)' }} 
+                  iconName={"ExcelDocument"} />
+              }>
+              {"Exportar Excel"} 
+            </Button>
           </Grid>
           
         </Grid>
@@ -177,6 +179,7 @@ const Process = (props) => {
         anadirFiltro={props.anadirFiltro}
         eliminarFiltro={props.eliminarFiltro}
         config={props.config}
+        user={props.user}
       />
     </Contenedor>
   );
@@ -213,6 +216,7 @@ const mapStateToProps = estado => {
     procesos_exportar_excel: estado.procesos_exportar_excel,
     filtros: estado.filtrosprocesos.map((i, index) => (Object.assign({}, i, { index: index }))),
     config: estado.configuracion,
+    user: estado.usuario,
   }
 }
 

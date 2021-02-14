@@ -49,7 +49,15 @@ const KPIWelcome = (props) => {
   };
 
   return ( 
-    <KPIContainer forma={forma} nombre={props.nombre} fecha={props.fecha} itemes={itemes} columnas={props.columnas} data={props.data}/>
+    <KPIContainer
+      forma={forma}
+      nombre={props.nombre}
+      user={props.usuario}
+      fecha={props.fecha}
+      itemes={itemes}
+      processId={processId}
+      columnas={props.columnas}
+      data={props.data} />
   );
 }
 

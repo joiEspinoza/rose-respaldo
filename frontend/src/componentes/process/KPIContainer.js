@@ -1,13 +1,25 @@
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { KPI2 as KPI } from '../KPI';
+import KPI, { KPI2 } from '../KPI';
 import Boton from '../Boton';
 import { DescargaExcelCandidatos } from '../downloads/DescargaExcel';
 import { useTheme } from '@material-ui/core/styles';
+import { Icon } from '@fluentui/react/lib/Icon';
 
-
-const Container = ({ forma, itemes, columnas, data, nombre, fecha }) => {
+const Container = ({ forma, itemes, columnas, data, nombre, fecha, user, processId }) => {
   const theme = useTheme();
+  const getIcon = (iconName) => (
+    <Icon
+      style={{ transform: 'scale(3)', color: "white" }}
+      iconName={iconName}
+    ></Icon>
+  )
+
+  const downloadReport = () => {
+    const url = `https://rosev0-dev-api.myfuture.ai/selection/create_excel/candidate/${processId}/${user.correo}`
+    window.open(url, '_blank')
+  }
+  
   return ( 
     <Grid
       container
@@ -25,19 +37,17 @@ const Container = ({ forma, itemes, columnas, data, nombre, fecha }) => {
               xs={forma.xs}
               sm={forma.sm}
             >
-              <KPI nombre={item.nombre} cantidad={item.cantidad} icon={item.icon}/>
+              <KPI2 nombre={item.nombre} cantidad={item.cantidad} icon={item.icon}/>
             </Grid>
           ))}
           <Grid
               item
               xs={forma.xs}
               sm={forma.sm}
-            >
-            <DescargaExcelCandidatos
-              boton={<Boton nombre={"Exportar Excel"} href={"#"} color={"secondary"} desactivado={false} icon={"ExcelDocument"}/>}
-              columnas={columnas} data={data}
-
-            />
+          >
+            <div onClick={downloadReport} style={{cursor: "pointer"}}>
+              <KPI nombre={"Exportar Excel"} cantidad={"Listado"}  icon={getIcon("ExcelDocument")} />
+            </div>
           </Grid>
         </Grid>
       </Grid>

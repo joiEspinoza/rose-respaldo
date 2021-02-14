@@ -59,10 +59,9 @@ const Formulario = ({ user, candidato, setModalOpen }) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
-  const fechaa = fecha();
   const today = moment();
-  const defaultStartDate = today.format().substr(0, 16)
-  const defaultEndDate = today.add('1', 'hours').format().substr(0, 16)
+  const defaultStartDate = today.format().substr(0, 19)
+  const defaultEndDate = today.add('1', 'hours').format().substr(0, 19)
   const accessToken = (user && user.response) ? user.response.accessToken : null
 
   const onSubmit = (values) => {
@@ -73,7 +72,7 @@ const Formulario = ({ user, candidato, setModalOpen }) => {
         content: html,
         start: values.fecha1,
         end: values.fecha2,
-        attendees: candidato.mail
+        attendees: [candidato.mail]
       },
       user: user.correo
     }
