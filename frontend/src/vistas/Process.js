@@ -1,16 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 import Contenedor from '../contenedor';
 import {
   Grid,
+  Button,
+  makeStyles,
 } from '@material-ui/core';
+import { Icon } from '@fluentui/react/lib/Icon';
 import Tabla from '../componentes/table/Procesos';
 import Boton from '../componentes/Boton';
 import { NATabla, NATarjeta } from '../componentes/NA';
 import { DescargaExcelProcesos } from '../componentes/downloads/DescargaExcel';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    height: '100%',
+    paddingTop: '40px',
+    paddingBottom: '40px',
+    borderRadius: theme.spacing(4),
+  },
+  
+}));
 
 const Dashboard = (props) => {
+  const history = useHistory();
+  const classes = useStyles();
   const [idSeleccionados, definirIdSeleccionados] = useState([]);
   const columnas = {
     "name": { titulo: "Nombre", color: "primary", tamano: "h6", link: true, href: "/ViewProcess" },
@@ -58,7 +74,18 @@ const Dashboard = (props) => {
   useEffect(()=>{
     const f = Filtrar(props.filtros,props.procesos);
     definirFiltrados(f);
-  },[props.filtros]);
+  }, [props.filtros]);
+
+  const createNewProcess = () => {
+    const { threshold } = props.config || {}
+    if (props.procesos.length >= parseInt(threshold, 10)) {
+      alert(`Se acabaron tus procesos de selección (${threshold}), escribe a rose@myfuture.ai para adquirir más!`)
+      return
+    }
+
+    history.push('/AddProcess')
+  }
+  
   return (
     
         <Grid
@@ -96,7 +123,18 @@ const Dashboard = (props) => {
             sm={4}
             lg={3}
           >
-            <Boton nombre={"Nuevo Proceso"} href={"/AddProcess"} color={"secondary"} icon={"CircleAddition"}/>
+            <Button
+              variant="contained"
+              color={"secondary"}
+              className={classes.root}
+              onClick={createNewProcess}
+              endIcon={
+                <Icon
+                  style={{ transform: 'scale(1.5)' }} 
+                  iconName={"CircleAddition"} />
+              }>
+              {"Nuevo Proceso"} 
+            </Button>
           </Grid>
           <Grid
             item
@@ -131,8 +169,15 @@ const Process = (props) => {
   
   return (
     <Contenedor>
-      <Dashboard procesosExportarExcel={props.procesosExportarExcel} procesos_exportar_excel={props.procesos_exportar_excel}
-      procesos={props.procesos} filtros={props.filtros} anadirFiltro={props.anadirFiltro} eliminarFiltro={props.eliminarFiltro}/>
+      <Dashboard
+        procesosExportarExcel={props.procesosExportarExcel}
+        procesos_exportar_excel={props.procesos_exportar_excel}
+        procesos={props.procesos}
+        filtros={props.filtros}
+        anadirFiltro={props.anadirFiltro}
+        eliminarFiltro={props.eliminarFiltro}
+        config={props.config}
+      />
     </Contenedor>
   );
 }
@@ -166,7 +211,8 @@ const mapStateToProps = estado => {
   return {
     procesos: estado.procesos.map((i,index)=>(Object.assign({},i,{index:index}))),
     procesos_exportar_excel: estado.procesos_exportar_excel,
-    filtros: estado.filtrosprocesos.map((i,index)=>(Object.assign({},i,{index:index}))),
+    filtros: estado.filtrosprocesos.map((i, index) => (Object.assign({}, i, { index: index }))),
+    config: estado.configuracion,
   }
 }
 

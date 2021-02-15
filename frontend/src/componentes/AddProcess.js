@@ -88,7 +88,14 @@ const useStyles = makeStyles((theme) => ({
 
 const AddProcess = (props) => {
   const classes = useStyles();
-  let history = useHistory();
+  const history = useHistory();
+  const { config: userConfig, process } = props
+
+  if (process.length >= parseInt(userConfig.threshold, 10)) {
+    alert(`Se acabaron tus procesos de selección (${userConfig.threshold}), escribe a rose@myfuture.ai para adquirir más!`)
+    history.push('/Process')
+  }
+  
   const fileInput = useRef();
   const handleFile = evento => {
     evento.preventDefault();
@@ -570,6 +577,8 @@ const Icono = ({ nombre }) => {
 const mapStateToProps = estado => {
   return {
     usuario: estado.usuario,
+    config: estado.configuracion,
+    process: estado.procesos,
   }
 }
 
