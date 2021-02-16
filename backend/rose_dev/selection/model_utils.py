@@ -156,7 +156,8 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
                 inf_degree_c = re.sub('(ing)[^a-zA-Z]','ingenieria',unidecode.unidecode(inf_degree.lower()))
                 degree_score = 1 if SequenceMatcher(None, inf_degree_c, 
                                                     unidecode.unidecode(degree.lower())).ratio() >= 0.7 else 0
-            
+    else:
+        degree_score = 0
     ### SETTING LOCATION INDICATOR - is the candidate inside the minimum region
     min_locs = min_req['location']
     if len(min_locs) > 0:
