@@ -8,7 +8,7 @@ const KPIWelcome = (props) => {
       nombre:"Cantidad de CVs",
       cantidad:props.data.resumes_ct,
       icon:<Icon style={{
-        transform: 'scale(7)',
+        transform: 'scale(5)',
         color:"white", // Tune it
       }} iconName={"EntitlementRedemption"}  />,
     },
@@ -16,7 +16,7 @@ const KPIWelcome = (props) => {
       nombre:"Tiempo ahorrado",
       cantidad:props.data.saved_time_min,
       icon:<Icon style={{
-      transform: 'scale(7)',
+      transform: 'scale(5)',
       color:"white", // Tune it
     }} iconName={"Clock"}  />,
     },
@@ -24,7 +24,7 @@ const KPIWelcome = (props) => {
       nombre:"Procesos completados",
       cantidad:props.data.selections_ct,
       icon:<Icon style={{
-      transform: 'scale(7)',
+      transform: 'scale(5)',
       color:"white", // Tune it
     }} iconName={"ReminderPerson"}  />,
     },
@@ -32,7 +32,7 @@ const KPIWelcome = (props) => {
   const forma = {
     spacing:3,
     xs:12,
-    sm:4,
+    sm: 4,
   };
 
   return ( 

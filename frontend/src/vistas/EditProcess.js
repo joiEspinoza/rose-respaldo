@@ -111,7 +111,7 @@ const AddProcess = (props) => {
                 };
                 
                 console.log(payload);
-                axios.patch(`http://127.0.0.1:8000/selection/${props.proceso["id"]}/`,payload).then(r=>{
+                axios.patch(`https://rosev0-dev-api.myfuture.ai/selection/${props.proceso["id"]}/`,payload).then(r=>{
                   console.log(r);
                   history.push('/');
                 }).catch(r=>{
@@ -442,8 +442,8 @@ const ArrayInput = ({ data, set, label }) => {
         <Grid container spacing={2}>
           {data.map((i,index)=>(
             <Grid item>
-              <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
-                <Button variant="outlined" color="primary" onClick={()=>actualizar(index)}>{i}</Button>
+              <Badge color="primary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
+                <Button variant="contained" color="secondary" onClick={()=>actualizar(index)}>{i}</Button>
               </Badge>
             </Grid>
           ))}

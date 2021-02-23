@@ -47,7 +47,7 @@ const Perfil = (props) => {
             md={6}
             xs={12}
           >
-            <Detalles usuario={props.usuario} configuracion={props.configuracion}/>
+            <Detalles usuario={props.usuario} configuracion={props.configuracion} despachar={props.dispatch}/>
           </Grid>
         </Grid>
       </Contenedor>

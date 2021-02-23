@@ -32,11 +32,6 @@ from docx import Document
 import spacy
 
 
-###CREDENTIALS
-os.environ['AWS_KEY'] = 'AKIAJEN4JB3CITFUIUFQ'
-os.environ['AWS_SECRET'] = '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'
-os.environ['MAPS_KEY'] = 'AIzaSyDcqd8cM4GLQBVOqgZfjnKFKTVuAkCobEw'
-
 googlemaps_reserved = ["!", "°", "-", "*" ,"'" ,"(" ,")" ,";" ,":" ,"@" ,"&" ,"=" ,"+" ,"$" ,"/" ,"?" ,"%" ,"#" ,"[" ,"]"]
 
 programmer = ['php', 'java', 'javascript', 'python', 'react', 'angular', 'node',
@@ -161,7 +156,8 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
                 inf_degree_c = re.sub('(ing)[^a-zA-Z]','ingenieria',unidecode.unidecode(inf_degree.lower()))
                 degree_score = 1 if SequenceMatcher(None, inf_degree_c, 
                                                     unidecode.unidecode(degree.lower())).ratio() >= 0.7 else 0
-            
+    else:
+        degree_score = 0
     ### SETTING LOCATION INDICATOR - is the candidate inside the minimum region
     min_locs = min_req['location']
     if len(min_locs) > 0:
@@ -269,6 +265,7 @@ def score_candidate(comp_work, desig_work, years_work, other_work, desig_ind, re
                     break
                 else:
                     pass
+
     ### CALCULATING CANDIDATE SCORE
     # if candidates achieves minimum requirements then we score else, score is 0
     if min_state == False or min_state2 == False or min_state3 == False or min_state4 == False:

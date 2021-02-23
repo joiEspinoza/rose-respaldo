@@ -14,6 +14,8 @@ import {
 import KPIs from '../componentes/process/KPIs';
 import Pdf from "react-to-pdf";
 import { useTheme } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import CalendarTodayTwoToneIcon from '@material-ui/icons/CalendarTodayTwoTone';
 import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
 import PictureAsPdfTwoToneIcon from '@material-ui/icons/PictureAsPdfTwoTone';
@@ -27,11 +29,19 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.grisoscuro,
     borderWidth: theme.spacing(1),
   },
+  list: {
+    height: '70vh',
+    borderColor: theme.palette.grisoscuro,
+    borderWidth: theme.spacing(1),
+    overflowY: 'scroll',
+  },
+  item: {
+    minWidth: '100%'
+  }
 }));
 
 const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandidato }) => {
   const render = procesos.filter(i=>i.id===proceso)[0].candidatos !== undefined;
-  console.log("render",render);
   return(
     <>{render ?
       <Contenido usuario={usuario} procesos={procesos} proceso={proceso} candidato={candidato} seleccionarCandidato={seleccionarCandidato}/>
@@ -42,10 +52,8 @@ const ViewProcess = ({ usuario, procesos, proceso, candidato, seleccionarCandida
 }
 
 const Contenido = (props) => {
-  const render = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos !== undefined;
-  console.log("render",render);
-  const pro = props.procesos.filter(i=>i.id===props.proceso)[0];
-  const candidatosProceso = props.procesos.filter(i=>i.id===props.proceso)[0].candidatos;
+  const currentProcess = props.procesos.find(proc => proc.id === props.proceso)
+  const candidatosProceso = currentProcess.candidatos;
   const candidatoCV = candidatosProceso[props.candidato];
   const [openMail, setOpenMail] = React.useState(false);
   const [openCalendar, setOpenCalendar] = React.useState(false);
@@ -58,20 +66,19 @@ const Contenido = (props) => {
   };
   const columnasExcel = Object.keys(columnas).map(col => ({label:columnas[col].titulo,value:col}));
   const candidatosProcesoExcel = candidatosProceso.map(i=>({name:i.name,mail:i.mail}));
-  console.log(candidatosProcesoExcel);
   return (
     <Contenedor>
       <Grid container>
         <Grid item xs={12}>
           <KPIs columnas={columnasExcel}
             data={candidatosProceso}
-            nombre={pro.name}
-            fecha={pro.created_at}
+            nombre={currentProcess.name}
+            fecha={currentProcess.created_at}
           />
         </Grid>
         <Grid item xs={12}><br/></Grid>
         <Grid item xs={12}>
-          <Grid container>
+          <Grid container spacing={1}>
             <Grid item xs={5}>
               <Lista 
                 seleccionarCandidato={props.seleccionarCandidato}
@@ -89,8 +96,8 @@ const Contenido = (props) => {
         </Grid>
       </Grid>
       
-      <Calendar setOpen={setOpenCalendar} open={openCalendar}/>
-      <Mail setOpen={setOpenMail} open={openMail} user={props.usuario} candidatemail={candidatoCV.mail} token={props.usuario.token}/>
+      <Calendar setOpen={setOpenCalendar} user={props.usuario} open={openCalendar} candidato={candidatoCV} />
+      <Mail setOpen={setOpenMail} open={openMail} user={props.usuario} candidato={candidatoCV} candidatemail={candidatoCV.mail}/>
       {props.proceso}
       {props.candidato}
       {props.usuario.correo}
@@ -99,76 +106,75 @@ const Contenido = (props) => {
   );
 }
 
-
 const Lista = (props) => {
   const theme = useTheme();
   const classes = useStyles();
   return (
     <List
       component="nav"
-      className={classes.root}
-      style={{ maxHeight: 500, overflow: 'auto'}}
+      className={classes.list}
     >
-    {props.candidatos.map((i,index)=>(
-      <ListItem button >
-        <div onClick={()=>{props.seleccionarCandidato(index);}}>
-        <Grid container >
-          <Grid item xs={7}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} paddingTop={10}>
-                <Typography variant="h4" style={{ color:theme.palette.primary.main }}>
-                  {i.name}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="caption" style={{ color:theme.palette.grisoscuro }}>
-                  {i.mail}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
+      {props.candidatos.map((i, index) => (
+        <ListItem button key={index}>
+          <Card className={classes.item}>
+            <CardContent>
+              <div onClick={()=>{props.seleccionarCandidato(index);}}>
+                <Grid container >
+                  <Grid item xs={12} md={7}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={12} paddingTop={10}>
+                        <Typography variant="h5" style={{ color:theme.palette.primary.main }}>
+                          {i.name}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="caption" style={{ color:theme.palette.grisoscuro }}>
+                          {i.mail}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
 
-          <Grid item xs={4}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
-                  {i.info.data.degree ? <>Titulo:{i.info.data.degree[0]}</>
-                    :<>{"No disponible"}</>}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" style={{ color:theme.palette.grisoscuro }}>
-                  Exp: {i.info.data.exp}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="body1" style={{ color:theme.palette.grisoscuro }}>
+                          {i.info.data.degree ? <>Titulo:{i.info.data.degree[0]}</>
+                            :<>{"No disponible"}</>}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle2" style={{ color:theme.palette.grisoscuro }}>
+                          Exp: {i.info.data.exp} años
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
 
-          <Grid item xs={1}>
-            <Grid container>
-              <Grid item xs={12}>
-                <IconButton edge="end" aria-label="calendar"
-                  onClick={()=>props.setOpenCalendar(true)}
-                >
-                  <CalendarTodayTwoToneIcon color="primary" />
-                </IconButton>
-              </Grid>
-              <Grid item xs={12}>
-                <IconButton edge="end" aria-label="calendar"
-                  onClick={()=>props.setOpenMail(true)}
-                >
-                  <MailTwoToneIcon color="primary" />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-        
-        </div>
-      </ListItem>
-    ))}
-    
-    
+                  <Grid item xs={12} md={1}>
+                    <Grid container>
+                      <Grid item justify="center" xs={6} md={12}>
+                        <IconButton edge="end" aria-label="calendar"
+                          onClick={()=>props.setOpenCalendar(true)}
+                        >
+                          <CalendarTodayTwoToneIcon color="primary" />
+                        </IconButton>
+                      </Grid>
+                      <Grid item justify="center" xs={6} md={12}>
+                        <IconButton edge="end" aria-label="calendar"
+                          onClick={()=>props.setOpenMail(true)}
+                        >
+                          <MailTwoToneIcon color="primary" />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </div>
+            </CardContent>
+          </Card>
+        </ListItem>
+      ))}
     </List>
   );
 }
@@ -180,46 +186,38 @@ const CV = (props) => {
   return (
     <div ref={ref}>
       <Grid container className={classes.root}>
-        <Grid item xs={1}></Grid>
-        <Grid item xs={10}>
-          <Typography variant="h3" style={{ color: theme.palette.primary.main }}>
+        <Grid item xs={12}>
+          <Typography variant="h4" style={{ color: theme.palette.primary.main }}>
             {props.candidato.name}
           </Typography>
         </Grid>
-        <Grid item xs={1}></Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} >
-            <Grid item xs={1}>
-            </Grid>
+          <Grid container spacing={1} >
             <Grid item xs={5}>
-              
               <Typography variant="body1">
                 {"Correo: "}{props.candidato.mail}
               </Typography>
-              <Typography variant="body1">
+              {pr.phone.length > 0 && <Typography variant="body1">
                 {"Teléfono: "}{pr.phone.length > 0 && pr.phone[0]}
-              </Typography>
-              <Typography variant="body1">
+              </Typography>}
+              {pr.degree.length > 0 && <Typography variant="body1">
                 {"Título: "}{pr.degree.length > 0 && pr.degree[0]}
-              </Typography>
-              
-              
-              
-              
+              </Typography>}
             </Grid>
+
             <Grid item xs={5} >
               <br/>
-              <Typography variant="body1">
+              {pr.college.length > 0 && <Typography variant="body1">
                 {"Estudió en: "}{pr.college.length > 0 && pr.college[0]}
-              </Typography>
-              <Typography variant="body1">
+              </Typography>}
+              {pr.graduation.length > 0 && <Typography variant="body1">
                 {"Egreso: "}{pr.graduation.length > 0 && pr.graduation[0]}
-              </Typography>
-              <Typography variant="body1">
+              </Typography>}
+              <Typography>
                 {"Experiencia: "}{pr.exp}
               </Typography>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={2}>
               <Pdf targetRef={ref} filename="code-example.pdf">
                 {({ toPdf }) => (
                   <IconButton edge="end" aria-label="pdf" onClick={toPdf}>
@@ -227,41 +225,31 @@ const CV = (props) => {
                   </IconButton>
                 )}
               </Pdf>
-              
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12}><br/></Grid>
-        <Grid item xs={1}></Grid>
-        {pr.skills && <Grid item xs={10} >
+        {pr.skills && <Grid item style={{marginTop: theme.spacing(4)}} xs={12} >
           <Typography variant={"h6"}>
             {"Skills:"}
           </Typography>
           <Grid container spacing={1}>
-            {pr.skills.length > 0 && pr.skills.map(i=>(
-              <Grid item >
-                <Typography variant={"body2"}>
-                  {i}
-                </Typography>
+            {pr.skills.length > 0 && pr.skills.map((i, index) => (
+              <Grid item key={index}>
+                <Typography variant={"body2"}> {i} </Typography>
               </Grid>
             ))}
           </Grid>
         </Grid>}
-        <Grid item xs={1}></Grid>
-        <Grid item xs={12}><br/></Grid>
-        <Grid item xs={1}></Grid>
-        <Grid item xs={5}>
+        <Grid item style={{marginTop: theme.spacing(4)}} xs={6}>
           <Grid container>
             {pr.companies &&<Grid item xs={12}>
               <Typography variant={"subtitle2"}>
                 {"Empresas donde ha trabajado:"}
               </Typography>
               <List>
-                {pr.companies.length > 0 && pr.companies.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.companies.length > 0 && pr.companies.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
@@ -271,28 +259,25 @@ const CV = (props) => {
                 {"Idiomas:"}
               </Typography>
               <List>
-                {pr.idioms.length > 0 && pr.idioms.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.idioms.length > 0 && pr.idioms.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
             </Grid>}
           </Grid>
         </Grid>
-        <Grid item xs={5}>
+        <Grid item style={{marginTop: theme.spacing(4)}} xs={6}>
+          <Grid container>
             {pr.designation && <Grid item xs={12}>
               <Typography variant={"subtitle2"}>
                 {"Trabajado como:"}
               </Typography>
               <List>
-                {pr.designation.length > 0 && pr.designation.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.designation.length > 0 && pr.designation.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
@@ -303,17 +288,14 @@ const CV = (props) => {
                 {"Certificaciones:"}
               </Typography>
               <List>
-                {pr.certifications.length > 0 && pr.certifications.map(i=>(
-                  <ListItem>
-                    <Typography variant={"caption"}>
-                      {i}
-                    </Typography>
+                {pr.certifications.length > 0 && pr.certifications.map((i, key) => (
+                  <ListItem key={key}>
+                    <Typography variant={"caption"}> {i} </Typography>
                   </ListItem>
                 ))}
               </List>
             </Grid>}
-        </Grid>
-        <Grid item xs={1}>
+          </Grid>
         </Grid>
       </Grid>
     </div>

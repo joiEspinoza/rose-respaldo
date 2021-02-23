@@ -13,8 +13,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 
-const Filtro = ({ variable, mostrar, filtros, anadirFiltro }) => {
-  const f = ["a",10];
+const Filtro = ({ variable, mostrar, filtros, anadirFiltro, eliminarFiltro }) => {
   const [texto, setTexto] = useState("");
   return (
 
@@ -25,31 +24,26 @@ const Filtro = ({ variable, mostrar, filtros, anadirFiltro }) => {
             <TextField
               label={"Filtro"}
               variant="outlined"
+              size="small"
               onChange={(e)=>setTexto(e.target.value)}
               value={texto}
             />
           </Grid>
           <Grid item xs={4}>
-            <Select
+            <Button
               autoWidth={true}
-              variant="outlined"
-              onChange={(e)=>{anadirFiltro({tipo:e.target.value,valor:texto,variable:variable});setTexto("");}}
-            >
-              <MenuItem value={"="}>{"="}</MenuItem>
-              <MenuItem value={">"}>{">"}</MenuItem>
-              <MenuItem value={"<"}>{"<"}</MenuItem>
-            </Select>
+              variant="contained"
+              onClick={(e)=>{anadirFiltro({valor:texto,variable:variable});setTexto("");}}
+              color="primary"
+            >+
+            </Button>
           </Grid>
         </Grid>
       </Grid>
-      <Grid item>
-        {"Valores"}
+      <Grid item style={{ paddingTop: "12px"}}>
         <Grid container>
-          {f.map((i,index)=>(
-            <Opcion valor={i} />
-          ))}
           {filtros.map((i,index)=>(
-            <Opcion valor={i.valor.concat(" | ",i.tipo)} />
+            <Opcion valor={i.valor} indice={i.index} eliminarFiltro={eliminarFiltro} />
           ))}
         </Grid>
       </Grid>
@@ -60,19 +54,20 @@ const Filtro = ({ variable, mostrar, filtros, anadirFiltro }) => {
   );
 }
 
-const Opcion = ({ valor }) => {
+const Opcion = ({ valor, eliminarFiltro, indice }) => {
   
   return(
   <Grid item >
-    <Badge color="secondary" as="button" badgeContent={"X"} >
-      <Button variant="caption" >
+    <Badge color="secondary" as="button" badgeContent={"X"} color="primary"
+      onClick={()=>eliminarFiltro(indice)}>
+      <Button variant="contained" color="secondary">
         <Typography variant="caption" >{valor}</Typography>
       </Button>
     </Badge>
   </Grid>
   );
 }
-const FilaFiltros = ({ col, mostrar, setMostrar, filtros, anadirFiltro }) => {
+const FilaFiltros = ({ col, mostrar, setMostrar, filtros, anadirFiltro, eliminarFiltro }) => {
   
   return (
     <TableRow
@@ -87,11 +82,12 @@ const FilaFiltros = ({ col, mostrar, setMostrar, filtros, anadirFiltro }) => {
         />
       </TableCell>
       {col.map((i,index)=>(
-        <TableCell>
-          {i}
-
-          <Filtro variable={i} mostrar={mostrar} filtros={filtros.filter(f => f["variable"] === i)} anadirFiltro={anadirFiltro} />
-        </TableCell>
+        <TableCell>{i==="edit" ?
+          <></>
+        :
+          <Filtro variable={i} mostrar={mostrar} filtros={filtros.filter(f => f["variable"] === i)} anadirFiltro={anadirFiltro} eliminarFiltro={eliminarFiltro}/>
+        }</TableCell>
+        
       ))}
       
     </TableRow>

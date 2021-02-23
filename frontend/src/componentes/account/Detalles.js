@@ -13,6 +13,7 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
+import axios from 'axios';
 
 
 
@@ -20,13 +21,13 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const Detalles = ({ usuario, configuracion, className, ...rest }) => {
+const Detalles = ({ usuario, configuracion, despachar, className, ...rest }) => {
   const classes = useStyles();
   const [values, setValues] = useState({
     threshold: configuracion.threshold,
     timezone: configuracion.timezone,
-    primarycolor: '',
-    secondarycolor: '',
+    primarycolor: configuracion.primary_color===undefined ? '' : configuracion.primary_color,
+    secondarycolor: configuracion.secondary_color===undefined ? '' : configuracion.secondary_color,
   });
 
   const handleChange = (event) => {
@@ -35,6 +36,18 @@ const Detalles = ({ usuario, configuracion, className, ...rest }) => {
       [event.target.name]: event.target.value
     });
   };
+
+  const actualizarColores = () => {
+    axios.post("https://rosev0-dev-api.myfuture.ai/selection/colors/",
+      {"primary_color":values.primarycolor,"secondary_color":values.secondarycolor,"user_mail":usuario.correo}
+    ).then(r=>{
+      console.log(r);
+      despachar({
+        type: 'CARGAR_CONFIGURACION',
+        newState: Object.assign({},configuracion,{primary_color:values.primarycolor,secondary_color:values.secondarycolor}),
+      });
+    }).catch(r=>{console.log(r);});
+  }
 
   return (
     <form
@@ -113,6 +126,7 @@ const Detalles = ({ usuario, configuracion, className, ...rest }) => {
           <Button
             color="primary"
             variant="contained"
+            onClick={actualizarColores}
           >
             Actualizar colores
           </Button>

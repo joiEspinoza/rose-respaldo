@@ -28,13 +28,12 @@ def create_gmail(sender, to, cc, subject, message_text):
     Returns:
     An object containing a base64url encoded email object.
     """
-    print(sender + ', ' + to + ', ' + subject + ', ' + message_text)
+    #print(sender + ', ' + to + ', ' + subject + ', ' + message_text)
     message = MIMEText(message_text, 'html')
-    message['to'] = to
+    message['to'] = ';'.join(to)
     message['from'] = sender
     message['subject'] = subject
-    message['cc'] = cc
-    pprint(message)
+    message['cc'] = ';'.join(cc)
     return {'raw': base64.urlsafe_b64encode(message.as_string().encode('utf-8')).decode('utf-8')}
 
 def send_gmail(access_token, user_id, message_in):
@@ -54,8 +53,6 @@ def send_gmail(access_token, user_id, message_in):
     send = requests.post(endpoint, headers=headers, data=json.dumps(message_in))
     #pprint(message_in)
     #message = (service.users().messages().send(userId=user_id, body=message_in).execute())
-    print(send.status_code)
-    print(send.text)
     #print ('Message Id: %s' % message['id'])
     return send
 
@@ -92,7 +89,7 @@ def send_outlook(access_token, content, subject, to, cc):
                 "ccRecipients": [ast.literal_eval(s) for s in cc_json],
                 }
             }
-    print(json.dumps(body))
+    #print(json.dumps(body))
     send = requests.post(endpoint,headers=headers, data=json.dumps(body))
     return send
 
@@ -106,7 +103,7 @@ def get_outlookevents(access_token, tz):
     headers = {"Authorization": "Bearer "+ access_token, "content-type": "application/json", "Prefer": my_tz}
     #print(json.dumps(body))
     get_events = requests.get(endpoint,headers=headers)
-    print(get_events.json()['value'])
+    #print(get_events.json()['value'])
     return get_events
 #access_token = 'eyJ0eXAiOiJKV1QiLCJub25jZSI6IjN6cDdMTEhyRElHSmllNzFxY1o5UlhabkVzVjhmanhtZVJmNU40YmpoclUiLCJhbGciOiJSUzI1NiIsIng1dCI6ImtnMkxZczJUMENUaklmajRydDZKSXluZW4zOCIsImtpZCI6ImtnMkxZczJUMENUaklmajRydDZKSXluZW4zOCJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9kODE1YmI0OC1jY2U4LTRhNzktODcxZS0zNzdlN2U4Yjk1YjkvIiwiaWF0IjoxNjA3MjIyMDYxLCJuYmYiOjE2MDcyMjIwNjEsImV4cCI6MTYwNzIyNTk2MSwiYWNjdCI6MCwiYWNyIjoiMSIsImFjcnMiOlsidXJuOnVzZXI6cmVnaXN0ZXJzZWN1cml0eWluZm8iLCJ1cm46bWljcm9zb2Z0OnJlcTEiLCJ1cm46bWljcm9zb2Z0OnJlcTIiLCJ1cm46bWljcm9zb2Z0OnJlcTMiLCJjMSIsImMyIiwiYzMiLCJjNCIsImM1IiwiYzYiLCJjNyIsImM4IiwiYzkiLCJjMTAiLCJjMTEiLCJjMTIiLCJjMTMiLCJjMTQiLCJjMTUiLCJjMTYiLCJjMTciLCJjMTgiLCJjMTkiLCJjMjAiLCJjMjEiLCJjMjIiLCJjMjMiLCJjMjQiLCJjMjUiXSwiYWlvIjoiRTJSZ1lPRE9MbTBKQ0hWWHZOZjBYSHp0TXJXNXo4SzljbGxZT3o0MWk3Mlk5RVQ5b2hnQSIsImFtciI6WyJwd2QiXSwiYXBwX2Rpc3BsYXluYW1lIjoiR3JhcGggZXhwbG9yZXIgKG9mZmljaWFsIHNpdGUpIiwiYXBwaWQiOiJkZThiYzhiNS1kOWY5LTQ4YjEtYThhZC1iNzQ4ZGE3MjUwNjQiLCJhcHBpZGFjciI6IjAiLCJmYW1pbHlfbmFtZSI6IkdvbnrDoWxleiIsImdpdmVuX25hbWUiOiJCZW5qYW1pbiIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjIwMC44Ni4yNDcuMjEiLCJuYW1lIjoiQmVuamFtaW4gR29uesOhbGV6Iiwib2lkIjoiMjQ0ODk5NWQtNDc1MC00MGU4LTllMGItYTEwNmIxZGZhMTJjIiwicGxhdGYiOiIzIiwicHVpZCI6IjEwMDMyMDAwNERDQzE3QkYiLCJyaCI6IjAuQUFBQVNMc1YyT2pNZVVxSEhqZC1mb3VWdWJYSWk5NzUyYkZJcUsyM1NOcHlVR1EwQU5RLiIsInNjcCI6IkFjY2Vzc1Jldmlldy5SZWFkLkFsbCBBY2Nlc3NSZXZpZXcuUmVhZFdyaXRlLkFsbCBBZ3JlZW1lbnQuUmVhZC5BbGwgQWdyZWVtZW50LlJlYWRXcml0ZS5BbGwgQWdyZWVtZW50QWNjZXB0YW5jZS5SZWFkIEFncmVlbWVudEFjY2VwdGFuY2UuUmVhZC5BbGwgQ2FsZW5kYXJzLlJlYWRXcml0ZSBDb250YWN0cy5SZWFkV3JpdGUgRmlsZXMuUmVhZFdyaXRlLkFsbCBNYWlsLlJlYWRXcml0ZSBNYWlsLlNlbmQgTm90ZXMuUmVhZFdyaXRlLkFsbCBvcGVuaWQgUGVvcGxlLlJlYWQgcHJvZmlsZSBTaXRlcy5SZWFkV3JpdGUuQWxsIFRhc2tzLlJlYWRXcml0ZSBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRCYXNpYy5BbGwgVXNlci5SZWFkV3JpdGUgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiI1OERHaDNOQ0FNRWRLRzMyYkp2TDhUbVUtVDJFRk9VdGlaTjBad0RacnZnIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6IlNBIiwidGlkIjoiZDgxNWJiNDgtY2NlOC00YTc5LTg3MWUtMzc3ZTdlOGI5NWI5IiwidW5pcXVlX25hbWUiOiJiZ29uemFsZXpAbXlmdXR1cmUuYWkiLCJ1cG4iOiJiZ29uemFsZXpAbXlmdXR1cmUuYWkiLCJ1dGkiOiJKVEl4dWlSckxVcUdWUUpsS3NDbkFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IklDenV5QXQ1TVR0blZaaEJfVjV2TWhXNER2ZWNsSkRsOFFYams2Vy1FdWcifSwieG1zX3RjZHQiOjE1NjEwNDM5MDd9.NrJEVTCR8eRhPdf1kcQUoKArH_RRe9xiBtpAqUu-tWyCz1bgQno80YNPjFQEuHykuFXtZPPJUNozIX0k3Eo-tuew87zUUF7iJS5DH7rT2K4HLPvua4rSAYMhy950NvTXh3E2VTi10ep0APUORGTnIZwT8ru2dtrCBv7WlqyRDS-umjbwGK4YpPypzP1yihV20WqjE-QyF7EEt5XgLKNkV7OfwqRnJYzRVm8c7lzs3OTJBMjDoJt8frrB0JSRlWNo_Eb101IxRGp6sbTwAyJEo6VVrtYKGEFFjfIHOMwH7DVo9_Rg1TI-FexLRU_ubJ1eX1A-q7roGFZLY4rIzmZqaA'
 #get_outlookevents(access_token)
@@ -139,7 +136,7 @@ def create_outlook_event(access_token, subject, content, start, end, attendees, 
             "attendees": [ast.literal_eval(s) for s in attendees_json]
             }
 
-    print(json.dumps(body))
+    #print(json.dumps(body))
     send = requests.post(endpoint,headers=headers, data=json.dumps(body))
     return send
 #access_token = 'eyJ0eXAiOiJKV1QiLCJub25jZSI6IlJJZVB2eVh3V1FIZ1J6c2Jubk5tZ2tsLU5ZMVJpWmw4Q19XZjZTN3BPOWMiLCJhbGciOiJSUzI1NiIsIng1dCI6ImtnMkxZczJUMENUaklmajRydDZKSXluZW4zOCIsImtpZCI6ImtnMkxZczJUMENUaklmajRydDZKSXluZW4zOCJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9kODE1YmI0OC1jY2U4LTRhNzktODcxZS0zNzdlN2U4Yjk1YjkvIiwiaWF0IjoxNjA3MjI1NjY0LCJuYmYiOjE2MDcyMjU2NjQsImV4cCI6MTYwNzIyOTU2NCwiYWNjdCI6MCwiYWNyIjoiMSIsImFjcnMiOlsidXJuOnVzZXI6cmVnaXN0ZXJzZWN1cml0eWluZm8iLCJ1cm46bWljcm9zb2Z0OnJlcTEiLCJ1cm46bWljcm9zb2Z0OnJlcTIiLCJ1cm46bWljcm9zb2Z0OnJlcTMiLCJjMSIsImMyIiwiYzMiLCJjNCIsImM1IiwiYzYiLCJjNyIsImM4IiwiYzkiLCJjMTAiLCJjMTEiLCJjMTIiLCJjMTMiLCJjMTQiLCJjMTUiLCJjMTYiLCJjMTciLCJjMTgiLCJjMTkiLCJjMjAiLCJjMjEiLCJjMjIiLCJjMjMiLCJjMjQiLCJjMjUiXSwiYWlvIjoiRTJSZ1lKaTlUMlpUUUtlVHdSdlBmcXZDeXpmTFpnZHZtQi8yM1VLbDBOL0dNcVRZZHo4QSIsImFtciI6WyJwd2QiXSwiYXBwX2Rpc3BsYXluYW1lIjoiR3JhcGggZXhwbG9yZXIgKG9mZmljaWFsIHNpdGUpIiwiYXBwaWQiOiJkZThiYzhiNS1kOWY5LTQ4YjEtYThhZC1iNzQ4ZGE3MjUwNjQiLCJhcHBpZGFjciI6IjAiLCJmYW1pbHlfbmFtZSI6IkdvbnrDoWxleiIsImdpdmVuX25hbWUiOiJCZW5qYW1pbiIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjIwMC44Ni4yNDcuMjEiLCJuYW1lIjoiQmVuamFtaW4gR29uesOhbGV6Iiwib2lkIjoiMjQ0ODk5NWQtNDc1MC00MGU4LTllMGItYTEwNmIxZGZhMTJjIiwicGxhdGYiOiIzIiwicHVpZCI6IjEwMDMyMDAwNERDQzE3QkYiLCJyaCI6IjAuQUFBQVNMc1YyT2pNZVVxSEhqZC1mb3VWdWJYSWk5NzUyYkZJcUsyM1NOcHlVR1EwQU5RLiIsInNjcCI6IkFjY2Vzc1Jldmlldy5SZWFkLkFsbCBBY2Nlc3NSZXZpZXcuUmVhZFdyaXRlLkFsbCBBZ3JlZW1lbnQuUmVhZC5BbGwgQWdyZWVtZW50LlJlYWRXcml0ZS5BbGwgQWdyZWVtZW50QWNjZXB0YW5jZS5SZWFkIEFncmVlbWVudEFjY2VwdGFuY2UuUmVhZC5BbGwgQ2FsZW5kYXJzLlJlYWRXcml0ZSBDb250YWN0cy5SZWFkV3JpdGUgRmlsZXMuUmVhZFdyaXRlLkFsbCBNYWlsLlJlYWRXcml0ZSBNYWlsLlNlbmQgTm90ZXMuUmVhZFdyaXRlLkFsbCBvcGVuaWQgUGVvcGxlLlJlYWQgcHJvZmlsZSBTaXRlcy5SZWFkV3JpdGUuQWxsIFRhc2tzLlJlYWRXcml0ZSBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRCYXNpYy5BbGwgVXNlci5SZWFkV3JpdGUgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiI1OERHaDNOQ0FNRWRLRzMyYkp2TDhUbVUtVDJFRk9VdGlaTjBad0RacnZnIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6IlNBIiwidGlkIjoiZDgxNWJiNDgtY2NlOC00YTc5LTg3MWUtMzc3ZTdlOGI5NWI5IiwidW5pcXVlX25hbWUiOiJiZ29uemFsZXpAbXlmdXR1cmUuYWkiLCJ1cG4iOiJiZ29uemFsZXpAbXlmdXR1cmUuYWkiLCJ1dGkiOiJQN0dncjE5STdFbTNSdmJJN2tyTkFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IklDenV5QXQ1TVR0blZaaEJfVjV2TWhXNER2ZWNsSkRsOFFYams2Vy1FdWcifSwieG1zX3RjZHQiOjE1NjEwNDM5MDd9.ELIuesWPDSk5A0XJwihEwnpVKRQtEC-mfIrMp4nTKpmFM-mm4pAu0Tp3iDLreGgos2UUETo246esP4a8Xben4nG1saTnodj5MoZXufwymA-QIzzZs_xsj3UJGI-JaKdh5UJhMoN2zUbn6_bDw-TsxAJRnm9oV2iW599JjwIVFGm4ylYgKe-X6on142bPZo3TTVPhPreFlJRAgzg1vWKIM8mSsicuaR5UWP9Tf6FKbrZzWkTTBBAL1YheISJ1b8k6IalEtkRyck01DwvY9zJf5HlPQIEv4zkkWlidwDyPvxQVcSH6oMFL7Vx2DvucyCF8tozhJs0mhd4csGLk6pRxtA'
@@ -172,8 +169,8 @@ def get_gmailevents(access_token, tz):
     getcalendars = requests.get(endpoint, headers=headers, params=params)
     #pprint(message_in)
     #message = (service.users().messages().send(userId=user_id, body=message_in).execute())
-    print(getcalendars.status_code)
-    print(getcalendars.text)
+    #print(getcalendars.status_code)
+    #print(getcalendars.text)
     #print ('Message Id: %s' % message['id'])
     return getcalendars
 
@@ -205,7 +202,7 @@ def create_gmail_event(access_token, subject, content, start, end, attendees, ti
             "attendees": [ast.literal_eval(s) for s in attendees_json]
             }
     params = {"sendUpdates": "all"}
-    print(json.dumps(body))
+    #print(json.dumps(body))
     send = requests.post(endpoint,headers=headers, data=json.dumps(body), params=params)
     return send
 

@@ -10,12 +10,12 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 const Mail = (props) => {
-  const { setOpen, open, user, candidatemail, token } = props;
+  const { setOpen, open, user, candidatemail, candidato } = props;
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   return (
     <Dialogo setOpen={setOpen} open={open} titulo={"Nuevo Mensaje"} >
-    	<Formulario user={user} candidatemail={candidatemail} token={token} />
+    	<Formulario user={user} candidatemail={candidatemail} setOpenModal={setOpen} candidato={candidato} />
   	</Dialogo>
   );
 }
@@ -43,6 +43,8 @@ const Formulario = (props) => {
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
   const history = useHistory();
+  const accessToken = (props.user && props.user.response) ? props.user.response.accessToken : null
+
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item xs={12}>
@@ -51,7 +53,7 @@ const Formulario = (props) => {
             initialValues={{
               para: props.candidatemail,
               cc: '',
-              asunto: '',
+              asunto: `Proceso de selección (${props.candidato.name})`,
             }}
             validationSchema={Yup.object().shape({
               para: Yup.string().email('Debe ser un email válido').max(255).required('El email es requirido'),
@@ -59,7 +61,7 @@ const Formulario = (props) => {
               asunto: Yup.string().max(255).required('Debe definir el asunto del email')
             })}
             onSubmit={(values, actions) => {
-              const datam = {
+              const data = {
                 type:"mail",
                 user:props.user.correo,
                 info:{
@@ -69,22 +71,9 @@ const Formulario = (props) => {
                   "content":html
                 },
               };
-              const datag = {
-                type:"mail",
-                user:props.user.correo,
-                info:{
-                  "sender":props.user.correo,
-                  "to":values.para,
-                  "cc":values.cc,
-                  "subject":values.asunto,
-                  "message_text":html
-                },
-              };
-              const data = props.user.type === "google" ? datag : datam;
-              console.log(data);
-              axios.post(`http://127.0.0.1:8000/selection/sendmail/${props.user.token}`,data).then(r=>{
-                console.log(r);
-                history.push('/');
+              axios.post(`https://rosev0-dev-api.myfuture.ai/selection/sendmail/${accessToken}`,data).then(r=>{
+                alert('Correo enviado exitosamente!')
+                props.setOpenModal(false)
               }).catch(r=>{
                 console.log(r);
               });        

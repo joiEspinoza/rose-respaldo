@@ -7,16 +7,34 @@ import { convertToHTML, convertFromHTML } from 'draft-convert';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Icon } from '@fluentui/react/lib/Icon';
+import * as moment from 'moment'
+import axios from 'axios';
 
 const Calendar = (props) => {
-  const { setOpen, open, usermail, candidatemail } = props;
+  const { setOpen, open, candidato, user } = props;
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   return (
     <Dialogo setOpen={setOpen} open={open} titulo={"Nueva calendarización"} >
-    	<Formulario />
+      <Formulario candidato={candidato} user={user} setModalOpen={setOpen} />
   	</Dialogo>
   );
+}
+
+const fecha = () => {
+  let fecha = new Date();
+  let dia = fecha.getDate();
+  let mes = fecha.getMonth() + 1;
+  let ano = fecha.getFullYear();
+  if(mes < 10){
+    if(dia < 10){
+      return `${ano}-0${mes}-0${dia}T10:00:00`;
+    }else{
+      return `${ano}-0${mes}-${dia}T10:00:00`;
+    }
+  }else{
+    return `${ano}-${mes}-${dia}T10:00:00`;
+  }
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -37,29 +55,52 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Formulario = (props) => {
+const Formulario = ({ user, candidato, setModalOpen }) => {
   const [editorState, setEditorState] =useState(EditorState.createEmpty());
   const html = convertToHTML(editorState.getCurrentContent());
   const classes = useStyles();
+  const today = moment();
+  const defaultStartDate = today.format().substr(0, 19)
+  const defaultEndDate = today.add('1', 'hours').format().substr(0, 19)
+  const accessToken = (user && user.response) ? user.response.accessToken : null
+
+  const onSubmit = (values) => {
+    const data = {
+      type: "meeting",
+      info: {
+        subject: values.asunto,
+        content: html,
+        start: values.fecha1,
+        end: values.fecha2,
+        attendees: [candidato.mail]
+      },
+      user: user.correo
+    }
+    axios
+      .post(`https://rosev0-dev-api.myfuture.ai/selection/create_event/${accessToken}`, data)
+      .then(() => {
+        alert('Evento agregado al calendario exitosamente!')
+        setModalOpen(false)
+      })
+      .catch(error => console.log(error));
+  }
+
   return (
     <Grid container className={classes.root} spacing={3}>
       <Grid item xs={12}>
         <Card className={classes.card}>
           <Formik
             initialValues={{
-              nombre: '',
-              fecha1: '',
-              fecha2: '',
-              asunto: '',
-              teams: false,
+              nombre: 'Entrevista de selección',
+              fecha1: defaultStartDate,
+              fecha2: defaultEndDate,
+              asunto: `Entrevista con ${candidato.name}`,
             }}
             validationSchema={Yup.object().shape({
               nombre: Yup.string().max(255).required('Debe definir el nombre del evento'),
               asunto: Yup.string().max(255).required('Debe definir el asunto del email')
             })}
-            onSubmit={(values, actions) => {
-              console.log({"nombre":values.nombre,"fecha1":values.fecha1,"fecha2":values.fecha2,"asunto":values.asunto,"teams":values.teams,"html":html});            
-            }}
+            onSubmit={onSubmit}
           >
             {({
               errors,
@@ -88,7 +129,7 @@ const Formulario = (props) => {
                         variant="outlined"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                       <TextField
                         error={Boolean(touched.fecha1 && errors.fecha1)}
                         fullWidth
@@ -96,16 +137,17 @@ const Formulario = (props) => {
                         InputProps={{
 				            startAdornment: <InputAdornment position="start">Inicio</InputAdornment>,
 				          }}
+                        
                         margin="normal"
                         name="fecha1"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        type="time"
+                        type="datetime-local"
                         value={values.fecha1}
                         variant="outlined"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                       <TextField
                         error={Boolean(touched.fecha2 && errors.fecha2)}
                         fullWidth
@@ -117,7 +159,7 @@ const Formulario = (props) => {
                         name="fecha2"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        type="time"
+                        type="datetime-local"
                         value={values.fecha2}
                         variant="outlined"
                       />
@@ -151,17 +193,10 @@ const Formulario = (props) => {
                 </CardContent>
                 <CardContent>
                 	<Grid container>
-	                	<Grid xs={2}>
-		                    <FormControlLabel
-		                      control={<Switch checked={values.teams} onChange={handleChange} name="teams" />}
-		                      label="¿En MS Teams?"
-		                      labelPlacement="top"
-		                    />
-	                  	</Grid>
 	                  	<Grid xs={6}></Grid>
-	                  	<Grid xs={4}>
+	                  	<Grid xs={6}>
 		                  <Button variant="contained" fullWidth type="submit" color="primary">
-		                    {"Enviar mail"}
+		                    {"Agendar"}
 		                  </Button>
 		                </Grid>
 		            </Grid>

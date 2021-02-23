@@ -1,49 +1,67 @@
-image: python:3.8.3-slim-buster
-options:
-  docker: true
-  
 pipelines:
   branches:
     develop:
       - step:
+          name: Build setup & AWS login
+          image: python:3.8.3-slim-buster
+          services:
+            - docker
           script:
-          # install awscli
+          # update and install awscli
+            - apt update -y && apt upgrade -y && apt install curl -y
             - pip3 install awscli
+          # aws login
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
           # install docker compose
             - curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             - chmod +x /usr/local/bin/docker-compose
             - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             - docker-compose --version #check instalation
-          # aws login
-            - aws configure set aws_access_key_id "${AWS_KEY}"
-            - aws configure set aws_secret_access_key "${AWS_SECRET}"
-            - eval $(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 943423409941.dkr.ecr.us-east-2.amazonaws.com/rosev0)
           # docker
-            - docker-compose build backend_develop frontend_develop
+            - docker-compose build --no-cache backend_develop frontend_develop 
+            - docker tag ${AWS_ECR_FRONT}:develop ${AWS_ECR_FRONT}:develop_${BITBUCKET_BUILD_NUMBER}
+            - docker tag ${AWS_ECR_BACK}:develop ${AWS_ECR_BACK}:develop_${BITBUCKET_BUILD_NUMBER}
+            - docker push ${AWS_ECR_FRONT}:develop_${BITBUCKET_BUILD_NUMBER}
             - docker push ${AWS_ECR_FRONT}:develop
+            - docker push ${AWS_ECR_BACK}:develop_${BITBUCKET_BUILD_NUMBER}
             - docker push ${AWS_ECR_BACK}:develop
-      #- step:
-      #    script:
-      #      - ssh ${SSH_USER}@${SSH_HOST} '/root/claro-build/scripts/update.sh qa front'
+      - step:
+          image: atlassian/default-image:2
+          name: SSH and update container
+          script:
+            - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh develop'
 
     master:
       - step:
+          name: Build setup & AWS login
+          image: python:3.8.3-slim-buster
+          services:
+            - docker
           script:
-          # install awscli
+          # update and install awscli
+            - apt update -y && apt upgrade -y && apt install curl -y
             - pip3 install awscli
+          # aws login
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
           # install docker compose
             - curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             - chmod +x /usr/local/bin/docker-compose
             - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             - docker-compose --version #check instalation
-          # aws login
-            - aws configure set aws_access_key_id "${AWS_KEY}"
-            - aws configure set aws_secret_access_key "${AWS_SECRET}"
-            - eval $(aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 943423409941.dkr.ecr.us-east-2.amazonaws.com/rosev0)
           # docker
             - docker-compose build backend_master frontend_master
+            - docker tag ${AWS_ECR_FRONT}:master ${AWS_ECR_FRONT}:master_${BITBUCKET_BUILD_NUMBER}
+            - docker tag ${AWS_ECR_BACK}:master ${AWS_ECR_BACK}:master_${BITBUCKET_BUILD_NUMBER}
+            - docker push ${AWS_ECR_FRONT}:master_${BITBUCKET_BUILD_NUMBER}
             - docker push ${AWS_ECR_FRONT}:master
+            - docker push ${AWS_ECR_BACK}:master_${BITBUCKET_BUILD_NUMBER}
             - docker push ${AWS_ECR_BACK}:master
-      #- step:
-      #    script:
-      #      - ssh ${SSH_USER}@${SSH_HOST} '/root/claro-build/scripts/update.sh qa front'
+      - step:
+          image: atlassian/default-image:2
+          name: SSH and update container
+          script:
+            - ssh ${SSH_USER}@${SSH_HOST} '/home/ec2-user/rose/update.sh master'

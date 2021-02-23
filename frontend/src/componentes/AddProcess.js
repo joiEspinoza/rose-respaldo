@@ -20,122 +20,31 @@ import Page from './Page';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { uploadFile } from 'react-s3';
-import AWS from 'aws-sdk';
-import ReactS3Uploader from 'react-s3-uploader';
 
 
-{/*
-var bucketName = 'rosev0';
-var bucketRegion = 'us-east-2';
-var IdentityPoolId = 'us-east-2:38d700f2-c99b-4c9e-9686-6ce21337d610';
-
-AWS.config.region = bucketRegion; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: IdentityPoolId,});
 
 
-const s3 = new AWS.S3({
-  apiVersion: '2006-03-01',
-  params: {Bucket: bucketName}
-});*/}
-//encodeURIComponent()
-
-AWS.config.update({
-  region : 'us-east-2',
-  accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
-  secretAccessKey: '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',
-});
-
-
-console.log("AWS",AWS);
-const s3 = new AWS.S3({
- accessKeyId: 'AKIAI4IYUCNFNIWHMB4Q',
- secretAccessKey: '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',
- Bucket: 'rosev0'
-});
-
-const uploadFile1 = (file,ruta) => {
-
-s3.upload({
-        Key: ruta,
-        Bucket: 'rosev0',
-        Body: file,
-        ACL: 'public-read'
-        }, function(err, data) {
-        if(err) {
-        console.log('error s3',err,data);
-        }
-        alert('Successfully Uploaded!');
-        }).on('httpUploadProgress', function (progress) {
-        var uploaded = parseInt((progress.loaded * 100) / progress.total);
-        console.log(uploaded);
+const subirIterativo = (archivos,configu,iteracion,errores,payload) => {
+  if(iteracion<archivos.length){
+    uploadFile(archivos[iteracion],configu)
+      .then(e=>{
+        console.log("Subido",archivos[iteracion].name);
+        subirIterativo(archivos,configu,iteracion+1,errores,payload);
+      })
+      .catch(e=>{
+        console.log("Error",archivos[iteracion].name);
+        errores.push(archivos[iteracion].name);
+        subirIterativo(archivos,configu,iteracion,errores,payload);
       });
+  }else{
+    console.log("Todos subidos",errores);
+    axios.post("https://rosev0-dev-api.myfuture.ai/selection/create/",payload).then(r=>{
+      console.log(r);
+    }).catch(r=>{
+      console.log(r);
+    });
+  }
 }
-
-const uploadFile22 = (file,ruta) => {
-  
-  
-  var upload = new AWS.S3.ManagedUpload({
-    params: {
-      Bucket: 'rosev0',
-      Key: ruta,
-      Body: file,
-      ACL: "public-read"
-    }
-  });
-
-  var promise = upload.promise();
-
-  promise.then(
-    function(data) {
-      alert("Successfully uploaded photo.");
-    },
-    function(err) {
-      return alert("There was an error uploading your photo: ", err.message);
-    }
-  );
-  
-}
-
-const uploadFile12 = (file,ruta) => {
-  var params = {
-    Bucket: 'rosev0',
-    Key: ruta,
-    Expires: 60,
-    ContentType: file.type,
-    ACL: "public-read"
-  };
-  s3.getSignedUrl('putObject', params, function(err, signedUrl){
-     if (err) {
-          console.log("error papi",err);
-          return err;
-      } else {
-          console.log("Exito papi",signedUrl);
-
-          var instance = axios.create();
-          var confi = {
-            headers: {
-              'Content-Type': file.type,
-              'Access-Control-Allow-Origin': 'https://localhost:3000',
-            }
-          }
-
-          instance.put(signedUrl, file, confi)
-              .then(function (result) {
-                  console.log(result);
-              })
-              .catch(function (err) {
-                  console.log(err);
-              });
-          return signedUrl;
-      }
-  });
-  
-  
-}
-
-
-
-
 
 
  
@@ -157,7 +66,11 @@ const fecha = () => {
   let mes = fecha.getMonth() + 1;
   let ano = fecha.getFullYear();
   if(mes < 10){
-    return `${dia}-0${mes}-${ano}`;
+    if(dia < 10){
+      return `0${dia}-0${mes}-${ano}`;
+    }else{
+      return `${dia}-0${mes}-${ano}`;
+    }
   }else{
     return `${dia}-${mes}-${ano}`;
   }
@@ -175,7 +88,14 @@ const useStyles = makeStyles((theme) => ({
 
 const AddProcess = (props) => {
   const classes = useStyles();
-  let history = useHistory();
+  const history = useHistory();
+  const { config: userConfig, process } = props
+
+  if (process.length >= parseInt(userConfig.threshold, 10)) {
+    alert(`Se acabaron tus procesos de selección (${userConfig.threshold}), escribe a rose@myfuture.ai para adquirir más!`)
+    history.push('/Process')
+  }
+  
   const fileInput = useRef();
   const handleFile = evento => {
     evento.preventDefault();
@@ -186,6 +106,9 @@ const AddProcess = (props) => {
     console.log(e);
   }
 
+  const [hacerSubida, definirS] = useState(false);
+  const [hacerRequest, definirR] = useState(false);
+
   const [requirements_idioms, setRequirements_idioms] = useState([]);
   const [requirements_skills, setRequirements_skills] = useState([]);
   const [requirements_location, setRequirements_location] = useState([]);
@@ -193,6 +116,7 @@ const AddProcess = (props) => {
   const [desired_college, setDesired_college] = useState([]);
   const [desired_designation, setDesired_designation] = useState([]);
   const [desired_degree, setDesired_degree] = useState([]);
+  const [desired_idioms, setDesired_idioms] = useState([]);
   return (
     <Page
       className={classes.root}
@@ -229,8 +153,8 @@ const AddProcess = (props) => {
               var date = fecha();
               var email_cambiado = props.usuario.correo.replace("@","_");
               var name_cambiado = values.name.replaceAll(" ","_");
-              const cvs = fileInput.current.files[0];
-              var ruta = `${email_cambiado}/${date}*${name_cambiado}*input/`;
+              const cvs = fileInput.current.files;
+              var ruta = `${email_cambiado}/${date}*${name_cambiado}*input`;
               var payload = {
                 "name": values.name,
                 "vacant": values.vacant,
@@ -248,6 +172,7 @@ const AddProcess = (props) => {
                 },
                 "desired":{
                   "exp": values.desired_exp,
+                  "idioms": desired_idioms,
                   "skills": desired_skills,
                   "college": desired_college,
                   "designation": desired_designation,
@@ -259,17 +184,10 @@ const AddProcess = (props) => {
               };
               
               let configu = config(ruta);
-
-              console.log(payload);
-              uploadFile(cvs,configu).then(e=>{
-                console.log("then aws bucket",e);
-                axios.post("http://127.0.0.1:8000/selection/create/",payload).then(r=>{
-                  console.log(r);
-                  history.push('/');
-                }).catch(r=>{
-                  console.log(r);
-                });
-              }).catch(e=>console.log("catch",e));
+              definirS(true);
+              subirIterativo(cvs,configu,0,[],payload);
+              
+              
               
             }}
           >
@@ -451,6 +369,9 @@ const AddProcess = (props) => {
                         />
                       </Grid>
                       <Grid item>
+                        <ArrayInput data={desired_idioms} set={setDesired_idioms} label={"Idiomas"}/>
+                      </Grid>
+                      <Grid item>
                         <ArrayInput data={desired_skills} set={setDesired_skills} label={"Skills"}/>
                       </Grid>
                       <Grid item>
@@ -473,13 +394,25 @@ const AddProcess = (props) => {
                       <br/><br/><br/><br/>
                       <Grid item xs={12}>
                         
-                          Subir CV's
-                          <input
-                            type="file"
-                            name="file"
-                            ref={fileInput}
-          
-                          />
+                          
+                          <Button
+                            color="primary"
+                            fullWidth
+                            variant="contained"
+                            component="label"
+                            size="large"
+                            style={{ "min-height": "150px", "min-width": "200px" }}
+                          >
+                            Subir CV's
+                            <input
+                              type="file"
+                              name="file"
+                              hidden
+                              multiple="multiple"
+                              ref={fileInput}
+            
+                            />
+                          </Button>
                           {/*<ReactS3Uploader
                             signingUrl="/s3/sign"
                             signingUrlMethod="GET"
@@ -551,7 +484,7 @@ const ArrayInputNumber = ({ data, set, label }) => {
     setValor(e.target.value);
   }
   return (
-    <Grid container direction="column" spacing={3}>
+    <Grid container direction="column" spacing={1}>
       <Grid item xs={12}>
         <Grid container direction="row" spacing={0}>
           <Grid item xs={10}>
@@ -565,7 +498,7 @@ const ArrayInputNumber = ({ data, set, label }) => {
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Grid container spacing={2}>
+        <Grid container spacing={0}>
           {data.map((i,index)=>(
             <Grid item>
               <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
@@ -584,7 +517,8 @@ const ArrayInputNumber = ({ data, set, label }) => {
 const ArrayInput = ({ data, set, label }) => {
   const [valor, setValor] = useState("");
   const definir = () => {
-    set([...data, valor.toLowerCase()]);
+    const splitedValue = valor.split(',').map(value => value.toLocaleLowerCase())
+    set([...data, ...splitedValue]);
     setValor("");
     console.log(data);
   }
@@ -616,7 +550,7 @@ const ArrayInput = ({ data, set, label }) => {
       {data.length !== 0 && <Grid item xs={12}>
         <Grid container spacing={2}>
           {data.map((i,index)=>(
-            <Grid item>
+            <Grid key={index} item>
               <Badge color="secondary"  badgeContent={"X"} onClick={()=>eliminar(index)}>
                 <Button variant="outlined" color="primary" onClick={()=>actualizar(index)}>{i}</Button>
               </Badge>
@@ -643,6 +577,8 @@ const Icono = ({ nombre }) => {
 const mapStateToProps = estado => {
   return {
     usuario: estado.usuario,
+    config: estado.configuracion,
+    process: estado.procesos,
   }
 }
 

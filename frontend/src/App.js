@@ -10,11 +10,28 @@ import data from './componentes/DataProcesos';
 import './App.css';
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { initializeIcons } from '@uifabric/icons';
+import AWS from 'aws-sdk';
 initializeIcons();
+
+AWS.config.update({
+  region : 'us-east-2',
+  accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
+  secretAccessKey: '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',
+});
+
+const s3 = new AWS.S3({
+ accessKeyId: 'AKIA5XKDKZ4KRSBLKVGI',
+ secretAccessKey: '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',
+ Bucket: 'rosev0',
+ region : 'us-east-2',
+});
+
+console.log("AWS",AWS);
 
 
 const App = (props) => {
   //let history = useHistory();
+  const a = "a";//Para hacer de nuevo el commit y el push
   useEffect(()=>{
     console.log("useEffect App 1");
     //obtenerEstadoUsuarioTest(props);
@@ -37,6 +54,9 @@ const App = (props) => {
       requestHistorico(props.usuario.correo,props.cargarHistorico).then(response=>{
         console.log("Respuesta verdadera",response);
       }).catch(e=>console.log(e));
+      obtenerLogo(props.usuario.correo,props.cargarLogo).then(response=>{
+        console.log("Respuesta verdadera logo",response);
+      }).catch(e=>console.log("error logo",e));
     }
     
   },[props.usuario]);
@@ -108,11 +128,17 @@ const cargarTutoriales = (newState) => {
       newState: newState,
     }  
 }
+const cargarLogo = (newState) => {
+  return {
+      type: 'CARGAR_LOGO',
+      newState: newState,
+    }  
+}
 
 const requestsProcesos = (usuario, cargarProcesos) => {
     return new Promise((resolve, reject)=>{
       var state = data;
-      axios.get(`http://127.0.0.1:8000/selection/list/${usuario.correo}/`)
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/list/${usuario.correo}/`)
       .then(response=>{
         console.log(response);
         state = response.data.data;
@@ -136,7 +162,7 @@ const requestsProcesos = (usuario, cargarProcesos) => {
 const requestsCandidatosProceso = (idProceso) => {
     return new Promise((resolve, reject)=>{
       var candidatos;
-      axios.get(`http://127.0.0.1:8000/selection/${idProceso}/candidates/`)
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/${idProceso}/candidates/`)
       .then(response=>{
         console.log(response);
         candidatos = response.data.data;
@@ -151,7 +177,7 @@ const requestsCandidatosProceso = (idProceso) => {
 
 const requestHistorico = (correo, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection​/${correo}​/candidates​/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection​/${correo}​/candidates​/`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -166,7 +192,7 @@ const requestHistorico = (correo, cargar) => {
 
 const requestEventos = (correo, token, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/events/${encodeURIComponent(correo)}/${encodeURIComponent(token)}`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/events/${encodeURIComponent(correo)}/${encodeURIComponent(token)}`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -181,7 +207,7 @@ const requestEventos = (correo, token, cargar) => {
 
 const requestBienvenida = (correo, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/home/${correo}/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/home/${correo}/`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -196,7 +222,7 @@ const requestBienvenida = (correo, cargar) => {
 
 const requestConfiguracion = (correo, cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/config/${correo}/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/config/${correo}/`).then(response=>{
         console.log(response);
         cargar(response.data);
 
@@ -211,7 +237,7 @@ const requestConfiguracion = (correo, cargar) => {
 
 const requestTutoriales = (cargar) => {
     return new Promise((resolve, reject)=>{
-      axios.get(`http://127.0.0.1:8000/selection/tutorials/`).then(response=>{
+      axios.get(`https://rosev0-dev-api.myfuture.ai/selection/tutorials/`).then(response=>{
         console.log(response);
         cargar(response.data);
         resolve(true);
@@ -223,6 +249,24 @@ const requestTutoriales = (cargar) => {
     });
 }
 
+const obtenerLogo = (correo, cargar) => {
+  console.log("obtlogo",correo);
+  var email_cambiado = correo.replace("@","_");
+  console.log(email_cambiado);
+  var ruta = email_cambiado+'/icono';
+  return new Promise((resolve, reject)=>{
+    //s3.getObject({Key: ruta, Bucket:'rosev0'}, function(err, data) {
+    s3.listObjects({Prefix: ruta, Bucket:'rosev0'}, function(err, data) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }else{
+        console.log(data);
+        resolve(data);
+      }
+    });
+  });
+}
 
 const mapStateToProps = estado => {
   return {
@@ -241,6 +285,7 @@ const mapDispatchToProps = despachar => {
         cargarTutoriales: (newState) => despachar(cargarTutoriales(newState)),
         cargarEventos: (newState) => despachar(cargarEventos(newState)),
         cargarHistorico: (newState) => despachar(cargarHistorico(newState)),
+        cargarLogo: (newState) => despachar(cargarLogo(newState)),
     }
 }
 

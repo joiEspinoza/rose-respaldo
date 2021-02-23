@@ -11,7 +11,7 @@ const MicroSoftOld = (props) => {
   const authHandler = (err, data) => {
     console.log(err, data);
     if (err===null) {
-      axios.post("http://127.0.0.1:8000/social_auth/microsoft/",{
+      axios.post("https://rosev0-dev-api.myfuture.ai/social_auth/microsoft/",{
         "auth_token":data.accessToken,
       }).then(r=>{
         console.log(r);
@@ -40,7 +40,7 @@ const MicroSoftOld = (props) => {
  	
   return (
     <MicrosoftLogin clientId={"d236c53d-05c9-41c5-aade-d26ed6bb6c6d"} authCallback={authHandler} 
-      redirectUri={"http://localhost:3000/login/microsoft"} 
+      redirectUri={"https://rosev0-dev.myfuture.ai"} 
       graphScopes={["Calendars.ReadWrite.Shared","email","Mail.Send","offline_access","openid","profile","User.Read"]}
     >
       <IconButton aria-label="microsoft">

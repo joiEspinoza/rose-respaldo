@@ -61,7 +61,7 @@ const LoginView = (props) => {
           })}
           onSubmit={(values, actions) => {
             console.log({"email":values.email,"password":values.password});
-            axios.post("http://127.0.0.1:8000/auth/login/",
+            axios.post("https://rosev0-dev-api.myfuture.ai/auth/login/",
               {"email":values.email,"password":values.password}
             ).then(r=>{
               console.log(r);

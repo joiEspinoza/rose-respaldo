@@ -10,7 +10,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 class WelcomeSerializer(serializers.Serializer):
 
     selections_ct = serializers.IntegerField()
-    saved_time_min = serializers.DecimalField(max_digits=10, decimal_places=1)
+    saved_time_min = serializers.DecimalField(max_digits=10, decimal_places=2)
     resumes_ct = serializers.IntegerField()
     welcome_message = serializers.CharField()
 
@@ -62,3 +62,8 @@ class EventSerializer(serializers.ModelSerializer):
 
 class GetEventsSerializer(serializers.Serializer):
     events = serializers.JSONField()
+
+
+class CreateExcelSerializer(serializers.Serializer):
+    user = serializers.CharField()
+    type_id = serializers.IntegerField()

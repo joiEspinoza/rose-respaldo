@@ -23,8 +23,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2)
   }
 }));
-const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
-  
+const Tabla = ({ className, filtros, anadirFiltro, configuracion, eliminarFiltro, data, idSeleccionados, definirIdSeleccionados, columnas, seleccionarProceso, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
   
@@ -75,7 +74,7 @@ const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, defini
     <Card
       className={classes.root}
     >
-      <TablaEstilo>
+      <TablaEstilo configuracion={configuracion}>
       
           <Table>
             <TableHead>
@@ -88,13 +87,13 @@ const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, defini
                     } 
                   seleccionarTodos={seleccionarTodos}
                 />
-                {Object.keys(columnas).map(nombreColumna=>(
-                  <TableCell onClick={()=>setMostrar(!mostrar)}>
+                {Object.keys(columnas).map((nombreColumna, i)=>(
+                  <TableCell key={i} onClick={()=>setMostrar(!mostrar)}>
                     {columnas[nombreColumna].titulo}
                   </TableCell>
                 ))}
               </TableRow>
-              {mostrar && <FilaFiltros filtros={filtros} anadirFiltro={anadirFiltro} mostrar={mostrar} setMostrar={setMostrar} col={Object.keys(columnas)}/>}
+              {mostrar && <FilaFiltros filtros={filtros} anadirFiltro={anadirFiltro} eliminarFiltro={eliminarFiltro} mostrar={mostrar} setMostrar={setMostrar} col={Object.keys(columnas)}/>}
             </TableHead>
             <TableBody>
 
@@ -105,8 +104,8 @@ const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, defini
                   selected={idSeleccionados.indexOf(elemento.id) !== -1}
                 >
                   <CeldaColumnaSeleccionador seleccion={(evento) => seleccionarUno(evento, elemento.id)} chequeado={idSeleccionados.indexOf(elemento.id) !== -1} />
-                  {Object.keys(columnas).map(nombreColumna=>(
-                    <TableCell>
+                  {Object.keys(columnas).map((nombreColumna, index) => (
+                    <TableCell key={index}>
                       {typeof columnas[nombreColumna].href === 'undefined' ?
                         <>{nombreColumna === "status" ?
                           
@@ -134,7 +133,7 @@ const Tabla = ({ className, filtros, anadirFiltro, data, idSeleccionados, defini
                               color={columnas[nombreColumna].color}
                               variant={columnas[nombreColumna].tamano}
                             >
-                              {elemento[nombreColumna]===undefined ? "No definido" : elemento[nombreColumna]}
+                              {(elemento[nombreColumna]===undefined && elemento.kpis[nombreColumna]===undefined) ? "No definido" : (elemento[nombreColumna] || elemento.kpis[nombreColumna])}
                             </Typography>
                           }</>
                         }</>
@@ -176,7 +175,7 @@ const seleccionarProceso = (newIndex) => {
 
 const mapStateToProps = estado => {
   return {
-    
+    configuracion: estado.configuracion,
   }
 }
 

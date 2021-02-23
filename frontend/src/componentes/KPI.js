@@ -10,17 +10,17 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
+    height: 'auto',
     borderRadius: theme.spacing(4),
     backgroundColor: theme.palette.secondary.main,
-
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   },
   root2: {
     height: '100%',
     borderRadius: theme.spacing(4),
     backgroundColor: theme.palette.grisoscuro,
     paddingTop: theme.spacing(2),
-
   },
   icono: {
     paddingTop: theme.spacing(6),
@@ -45,29 +45,34 @@ const KPI = ({ nombre, cantidad, icon }) => {
         <Grid
           container
           justify="space-between"
-          spacing={3}
+          spacing={0}
         >
           <Grid item xs={8}>
             <Typography
               color="textSecondary"
               gutterBottom
-              variant="h6"
-              style={{ color: "white"}}
+              variant="body1"
+              align="center"
+              style={{ color: "white" }}
             >
               {nombre}
             </Typography>
             <Typography
               color="textPrimary"
-              variant="h1"
+              variant="h4"
+              align="center"
               style={{ color: "white"}}
             >
               {cantidad}
             </Typography>
           </Grid>
           <Grid item xs={4} >
-              <div className={classes.icono}>
-                {icon}
-              </div>
+            <Typography
+              align="center"
+              className={classes.icono2}
+            >
+              {icon}
+            </Typography>
           </Grid>
         </Grid>
       </CardContent>
@@ -86,7 +91,7 @@ const KPI2 = ({ nombre, cantidad, icon }) => {
         <Grid
           container
           justify="space-between"
-          spacing={3}
+          spacing={0}
         >
           <Grid item xs={7}>
             <Typography
@@ -94,26 +99,27 @@ const KPI2 = ({ nombre, cantidad, icon }) => {
               gutterBottom
               variant="body1"
               align="center"
-              style={{ color: "white"}}
+              style={{ color: "white", overflow: 'hidden', textOverflow: 'ellipsis' }}
             >
               {nombre}
             </Typography>
             <Typography
               color="textPrimary"
-              variant="h6"
+              variant="h4"
               align="center"
               style={{ color: "white"}}
             >
               {cantidad}
             </Typography>
           </Grid>
-          <Grid item xs={1} ></Grid>
-          <Grid item xs={3} >
-              <div className={classes.icono2}>
-                {icon}
-              </div>
+          <Grid item xs={4} >
+            <Typography
+              align="center"
+              className={classes.icono2}
+            >
+              {icon}
+            </Typography>
           </Grid>
-          <Grid item xs={1} ></Grid>
         </Grid>
       </CardContent>
     </Card>
